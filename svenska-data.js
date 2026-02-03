@@ -1,9 +1,9 @@
 // svenska-data.js
-// Données pédagogiques + quiz (Phase 2 + Phase 3)
+// Donnees pedagogiques (Lecons + Quiz + Flashcards) - Offline
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
-// ==================== LESSONS ====================
+// ==================== LESSONS (Phase 2) ====================
 
 const LESSONS = {
   A1: [
@@ -12,11 +12,7 @@ const LESSONS = {
       title: "Salutations",
       tags: ["vocabulaire"],
       sections: [
-        {
-          type: "theory",
-          title: "Bases",
-          text: "Voici quelques salutations tres courantes en suedois."
-        },
+        { type: "theory", title: "Bases", text: "Voici quelques salutations tres courantes en suedois." },
         {
           type: "examples",
           title: "Exemples",
@@ -55,11 +51,7 @@ const LESSONS = {
       title: "Verbes au present",
       tags: ["verbes"],
       sections: [
-        {
-          type: "theory",
-          title: "Regle simple",
-          text: "Au present, le verbe a la meme forme pour toutes les personnes."
-        },
+        { type: "theory", title: "Regle simple", text: "Au present, le verbe a la meme forme pour toutes les personnes." },
         {
           type: "examples",
           title: "Exemples",
@@ -76,13 +68,17 @@ const LESSONS = {
   A2: [
     {
       id: "A2-01",
-      title: "Exprimer une action",
+      title: "Phrases simples",
       tags: ["phrases"],
       sections: [
+        { type: "theory", title: "Structure", text: "Sujet + verbe + complement. L'ordre est important." },
         {
-          type: "theory",
-          title: "Structure",
-          text: "Sujet + verbe + complement. L'ordre est important."
+          type: "examples",
+          title: "Exemples",
+          examples: [
+            { sv: "Jag heter Alexandre.", fr: "Je m'appelle Alexandre." },
+            { sv: "Jag bor i Frankrike.", fr: "J'habite en France." }
+          ]
         }
       ]
     }
@@ -94,7 +90,7 @@ const LESSONS = {
   C2: []
 };
 
-// ==================== QUESTIONS QUIZ ====================
+// ==================== QUESTIONS QUIZ (Phase 3) ====================
 
 const QUESTIONS = [
   {
@@ -148,3 +144,107 @@ const QUESTIONS = [
     explanation: "Une seule forme par verbe."
   }
 ];
+
+// ==================== FLASHCARDS (Phase 4) ====================
+// Structure : FLASHCARDS[category] = [{ sv, fr }]
+
+const FLASHCARDS = {
+  "Bases": [
+    { sv: "hej", fr: "bonjour / salut" },
+    { sv: "tack", fr: "merci" },
+    { sv: "varsagod", fr: "de rien / je t'en prie" },
+    { sv: "ja", fr: "oui" },
+    { sv: "nej", fr: "non" },
+    { sv: "ursakta", fr: "excusez-moi" },
+    { sv: "forlat", fr: "desole" },
+    { sv: "snalla", fr: "s'il te plait" },
+    { sv: "god morgon", fr: "bonjour (matin)" },
+    { sv: "god natt", fr: "bonne nuit" }
+  ],
+
+  "Nombres": [
+    { sv: "noll", fr: "0" },
+    { sv: "ett", fr: "1" },
+    { sv: "tva", fr: "2" },
+    { sv: "tre", fr: "3" },
+    { sv: "fyra", fr: "4" },
+    { sv: "fem", fr: "5" },
+    { sv: "sex", fr: "6" },
+    { sv: "sju", fr: "7" },
+    { sv: "atta", fr: "8" },
+    { sv: "nio", fr: "9" },
+    { sv: "tio", fr: "10" },
+    { sv: "tjugo", fr: "20" },
+    { sv: "trettio", fr: "30" },
+    { sv: "hundra", fr: "100" }
+  ],
+
+  "Couleurs": [
+    { sv: "svart", fr: "noir" },
+    { sv: "vit", fr: "blanc" },
+    { sv: "rod", fr: "rouge" },
+    { sv: "bla", fr: "bleu" },
+    { sv: "gron", fr: "vert" },
+    { sv: "gul", fr: "jaune" },
+    { sv: "brun", fr: "marron" },
+    { sv: "gra", fr: "gris" },
+    { sv: "rosa", fr: "rose" },
+    { sv: "lila", fr: "violet" }
+  ],
+
+  "Famille": [
+    { sv: "mamma", fr: "maman" },
+    { sv: "pappa", fr: "papa" },
+    { sv: "son", fr: "fils" },
+    { sv: "dotter", fr: "fille" },
+    { sv: "bror", fr: "frere" },
+    { sv: "syster", fr: "soeur" },
+    { sv: "familj", fr: "famille" },
+    { sv: "barn", fr: "enfant" },
+    { sv: "man", fr: "mari / homme" },
+    { sv: "fru", fr: "femme (epouse)" }
+  ],
+
+  "Nourriture": [
+    { sv: "vatten", fr: "eau" },
+    { sv: "kaffe", fr: "cafe" },
+    { sv: "te", fr: "the" },
+    { sv: "brod", fr: "pain" },
+    { sv: "mjolk", fr: "lait" },
+    { sv: "ost", fr: "fromage" },
+    { sv: "apple", fr: "pomme" },
+    { sv: "fisk", fr: "poisson" },
+    { sv: "kyckling", fr: "poulet" },
+    { sv: "mat", fr: "nourriture / repas" }
+  ],
+
+  "Temps": [
+    { sv: "idag", fr: "aujourd'hui" },
+    { sv: "imorgon", fr: "demain" },
+    { sv: "igar", fr: "hier" },
+    { sv: "nu", fr: "maintenant" },
+    { sv: "snart", fr: "bientot" },
+    { sv: "alltid", fr: "toujours" },
+    { sv: "aldrig", fr: "jamais" },
+    { sv: "ibland", fr: "parfois" },
+    { sv: "klockan", fr: "l'heure (klockan...)" },
+    { sv: "vecka", fr: "semaine" }
+  ],
+
+  "Verbes": [
+    { sv: "vara", fr: "etre" },
+    { sv: "ha", fr: "avoir" },
+    { sv: "gora", fr: "faire" },
+    { sv: "ga", fr: "aller / marcher" },
+    { sv: "komma", fr: "venir" },
+    { sv: "se", fr: "voir" },
+    { sv: "veta", fr: "savoir" },
+    { sv: "kunna", fr: "pouvoir" },
+    { sv: "vilja", fr: "vouloir" },
+    { sv: "prata", fr: "parler" },
+    { sv: "lasa", fr: "lire / etudier" },
+    { sv: "skriva", fr: "ecrire" },
+    { sv: "lyssna", fr: "ecouter" },
+    { sv: "forsta", fr: "comprendre" }
+  ]
+};
