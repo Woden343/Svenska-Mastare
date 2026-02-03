@@ -1,5 +1,5 @@
 // svenska-logic.js
-// Etat global + navigation + progression (Lecons + Quiz)
+// Etat global + navigation + progression (Lecons + Quiz + Flashcards)
 
 const STORAGE_KEY = "svenska-mastare-state";
 
@@ -17,6 +17,9 @@ const appState = {
     quiz: {
       answered: 0,
       correct: 0
+    },
+    flashcards: {
+      learned: []
     }
   },
 
@@ -40,11 +43,13 @@ function loadState() {
     const parsed = JSON.parse(saved);
     Object.assign(appState, parsed);
 
-    // garde-fous si anciennes versions
+    // garde-fous (si anciennes versions)
+    if (!appState.user) appState.user = { xp: 0, level: "A1", streak: 0 };
     if (!appState.progress) appState.progress = {};
     if (!appState.progress.lessonsCompleted) appState.progress.lessonsCompleted = [];
     if (!appState.progress.quiz) appState.progress.quiz = { answered: 0, correct: 0 };
-    if (!appState.user) appState.user = { xp: 0, level: "A1", streak: 0 };
+    if (!appState.progress.flashcards) appState.progress.flashcards = { learned: [] };
+    if (!Array.isArray(appState.progress.flashcards.learned)) appState.progress.flashcards.learned = [];
     if (!appState.settings) appState.settings = { sound: true, autoNext: false, dailyGoal: 20, apiBase: "" };
   }
 }
@@ -86,9 +91,10 @@ function setActiveTab(tabId) {
   saveState();
   updateHeaderUI();
 
-  // Render des onglets (si fonctions presentes)
+  // Render des onglets
   if (tabId === "learn" && typeof renderLearn === "function") renderLearn();
   if (tabId === "practice" && typeof renderPractice === "function") renderPractice();
+  if (tabId === "flashcards" && typeof renderFlashcards === "function") renderFlashcards();
 }
 
 // -------------------- HEADER UI --------------------
