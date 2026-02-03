@@ -1,5 +1,5 @@
 // svenska-logic.js
-// État global + navigation + progression leçons (Phase 2)
+// Etat global + navigation + progression (Lecons + Quiz)
 
 const STORAGE_KEY = "svenska-mastare-state";
 
@@ -12,9 +12,12 @@ const appState = {
     streak: 0
   },
 
-  // ✅ Progression Phase 2
   progress: {
-    lessonsCompleted: []
+    lessonsCompleted: [],
+    quiz: {
+      answered: 0,
+      correct: 0
+    }
   },
 
   settings: {
@@ -33,7 +36,17 @@ function saveState() {
 
 function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) Object.assign(appState, JSON.parse(saved));
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    Object.assign(appState, parsed);
+
+    // garde-fous si anciennes versions
+    if (!appState.progress) appState.progress = {};
+    if (!appState.progress.lessonsCompleted) appState.progress.lessonsCompleted = [];
+    if (!appState.progress.quiz) appState.progress.quiz = { answered: 0, correct: 0 };
+    if (!appState.user) appState.user = { xp: 0, level: "A1", streak: 0 };
+    if (!appState.settings) appState.settings = { sound: true, autoNext: false, dailyGoal: 20, apiBase: "" };
+  }
 }
 
 // -------------------- LESSON PROGRESS --------------------
@@ -54,7 +67,7 @@ function computeLessonsProgressPercent() {
   const level = appState.user.level || "A1";
   const total = (LESSONS[level] || []).length;
   if (!total) return 0;
-  const done = (LESSONS[level] || []).filter(l => isLessonCompleted(l.id)).length;
+  const done = (LESSONS[level] || []).filter((l) => isLessonCompleted(l.id)).length;
   return Math.round((done / total) * 100);
 }
 
@@ -73,7 +86,9 @@ function setActiveTab(tabId) {
   saveState();
   updateHeaderUI();
 
-  if (tabId === "learn") renderLearn();
+  // Render des onglets (si fonctions presentes)
+  if (tabId === "learn" && typeof renderLearn === "function") renderLearn();
+  if (tabId === "practice" && typeof renderPractice === "function") renderPractice();
 }
 
 // -------------------- HEADER UI --------------------
@@ -119,11 +134,11 @@ function initSettingsModal() {
     saveState();
     updateHeaderUI();
     modal.classList.add("hidden");
-    toast("✅ Paramètres enregistrés");
+    toast("✅ Parametres enregistres");
   };
 
   document.getElementById("btn-reset-settings").onclick = () => {
-    if (!confirm("Réinitialiser toute la progression ?")) return;
+    if (!confirm("Reinitialiser toute la progression ?")) return;
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   };
