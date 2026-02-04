@@ -6,345 +6,534 @@
 // Les leçons sont maintenant complètes pour tous les niveaux A1-C2
 
 const LESSONS = {
-    A1: [
-        {
-            id: 'a1_l1',
-            title: 'L\'alphabet suédois et la prononciation',
-            category: 'Prononciation',
-            icon: '🔤',
-            duration: '15 min',
-            audioAvailable: true,
-            content: `
-                <h4>L'alphabet suédois</h4>
-                <p>L'alphabet suédois comporte 29 lettres, incluant les 26 lettres de l'alphabet latin plus trois lettres spéciales à la fin : <strong>Å, Ä, Ö</strong>.</p>
-                
-                <div class="example">
-                    <strong>Les 29 lettres :</strong><br>
-                    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö
-                </div>
-                
-                <h4>Prononciation des voyelles spéciales</h4>
-                <table>
-                    <tr>
-                        <th>Lettre</th>
-                        <th>Prononciation</th>
-                        <th>Exemple</th>
-                    </tr>
-                    <tr>
-                        <td><strong>Å</strong></td>
-                        <td>Comme "o" dans "port"</td>
-                        <td>Åka (aller) - prononcé "ô-ka"</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Ä</strong></td>
-                        <td>Comme "è" dans "mère"</td>
-                        <td>Äta (manger) - prononcé "è-ta"</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Ö</strong></td>
-                        <td>Comme "eu" dans "peu"</td>
-                        <td>Öra (oreille) - prononcé "eu-ra"</td>
-                    </tr>
-                </table>
-                
-                <h4>Consonnes particulières</h4>
-                <p><strong>J</strong> : Se prononce comme "y" dans "yeux"<br>
-                Exemple : <em>Ja</em> (oui) = "ya"</p>
-                
-                <p><strong>SJ, SK, STJ</strong> : Produisent un son chuintant unique au suédois.<br>
-                Exemple : <em>Sjuk</em> (malade), <em>Sköldpadda</em> (tortue)</p>
-                
-                <div class="rule-box">
-                    <strong>💡 Conseil :</strong> La musicalité suédoise repose sur les accents toniques.
-                </div>
-            `
-        },
-        {
-            id: 'a1_l2',
-            title: 'Les genres : EN et ETT',
-            category: 'Grammaire',
-            icon: '⚖️',
-            duration: '20 min',
-            audioAvailable: true,
-            content: `
-                <h4>Comprendre les genres en suédois</h4>
-                <p>Le suédois a deux genres grammaticaux : <strong>EN-ord</strong> (commun) et <strong>ETT-ord</strong> (neutre). Environ 75% des mots sont EN, 25% sont ETT.</p>
-                
-                <div class="rule-box">
-                    <strong>🎯 Règle fondamentale :</strong> Il n'y a pas de règle absolue. Apprenez le genre avec chaque mot.
-                </div>
-                
-                <h4>Articles indéfinis</h4>
-                <table>
-                    <tr>
-                        <th>Genre</th>
-                        <th>Article</th>
-                        <th>Exemple</th>
-                        <th>Traduction</th>
-                    </tr>
-                    <tr>
-                        <td>EN (commun)</td>
-                        <td>en</td>
-                        <td>en bil</td>
-                        <td>une voiture</td>
-                    </tr>
-                    <tr>
-                        <td>ETT (neutre)</td>
-                        <td>ett</td>
-                        <td>ett hus</td>
-                        <td>une maison</td>
-                    </tr>
-                </table>
-                
-                <h4>Articles définis (suffixes)</h4>
-                <p>En suédois, l'article défini s'ajoute à la fin :</p>
-                
-                <div class="example">
-                    <strong>EN-ord :</strong> bil → bil<strong>en</strong> (la voiture)<br>
-                    <strong>ETT-ord :</strong> hus → hus<strong>et</strong> (la maison)
-                </div>
-            `
-        },
-        {
-            id: 'a1_l3',
-            title: 'Les adjectifs : accord de base',
-            category: 'Grammaire',
-            icon: '🎨',
-            duration: '25 min',
-            audioAvailable: true,
-            content: `
-                <h4>Règles d'accord des adjectifs</h4>
-                <p>Les adjectifs s'accordent selon le genre, le nombre et le caractère défini/indéfini.</p>
-                
-                <h4>Forme indéfinie (singulier)</h4>
-                <div class="example">
-                    <strong>EN-ord :</strong> L'adjectif reste à sa forme de base<br>
-                    <em>en stor bil</em> (une grande voiture)<br><br>
-                    
-                    <strong>ETT-ord :</strong> On ajoute <strong>-t</strong><br>
-                    <em>ett stor<strong>t</strong> hus</em> (une grande maison)
-                </div>
-                
-                <h4>Forme définie ou pluriel</h4>
-                <p>L'adjectif prend <strong>-a</strong> :</p>
-                
-                <div class="example">
-                    <strong>Défini EN :</strong> den stora bilen<br>
-                    <strong>Défini ETT :</strong> det stora huset<br>
-                    <strong>Pluriel :</strong> stora bilar
-                </div>
-                
-                <h4>La règle du "sandwich"</h4>
-                <div class="rule-box">
-                    <strong>DEN/DET</strong> + adjectif<strong>-a</strong> + nom<strong>-en/-et</strong>
-                </div>
-            `
-        },
-        {
-            id: 'a1_l4',
-            title: 'Salutations et expressions courantes',
-            category: 'Vocabulaire',
-            icon: '👋',
-            duration: '15 min',
-            audioAvailable: true,
-            content: `
-                <h4>Salutations de base</h4>
-                <table>
-                    <tr>
-                        <th>Suédois</th>
-                        <th>Français</th>
-                        <th>Contexte</th>
-                    </tr>
-                    <tr>
-                        <td>Hej</td>
-                        <td>Salut / Bonjour</td>
-                        <td>Informel</td>
-                    </tr>
-                    <tr>
-                        <td>God morgon</td>
-                        <td>Bonjour (matin)</td>
-                        <td>Formel, jusqu'à 10h</td>
-                    </tr>
-                    <tr>
-                        <td>God dag</td>
-                        <td>Bonjour (jour)</td>
-                        <td>Très formel</td>
-                    </tr>
-                    <tr>
-                        <td>Hej då</td>
-                        <td>Au revoir</td>
-                        <td>Standard</td>
-                    </tr>
-                </table>
-                
-                <h4>Politesse</h4>
-                <div class="example">
-                    <strong>Tack</strong> - Merci<br>
-                    <strong>Varsågod</strong> - De rien<br>
-                    <strong>Ursäkta</strong> - Excusez-moi<br>
-                    <strong>Förlåt</strong> - Désolé
-                </div>
-            `
-        },
-        {
-            id: 'a1_l5',
-            title: 'Les nombres de 0 à 100',
-            category: 'Vocabulaire',
-            icon: '🔢',
-            duration: '20 min',
-            audioAvailable: true,
-            content: `
-                <h4>Nombres 0-20</h4>
-                <table>
-                    <tr>
-                        <th>Chiffre</th>
-                        <th>Suédois</th>
-                        <th>Chiffre</th>
-                        <th>Suédois</th>
-                    </tr>
-                    <tr><td>0</td><td>noll</td><td>11</td><td>elva</td></tr>
-                    <tr><td>1</td><td>ett/en</td><td>12</td><td>tolv</td></tr>
-                    <tr><td>2</td><td>två</td><td>13</td><td>tretton</td></tr>
-                    <tr><td>3</td><td>tre</td><td>14</td><td>fjorton</td></tr>
-                    <tr><td>4</td><td>fyra</td><td>15</td><td>femton</td></tr>
-                    <tr><td>5</td><td>fem</td><td>16</td><td>sexton</td></tr>
-                    <tr><td>6</td><td>sex</td><td>17</td><td>sjutton</td></tr>
-                    <tr><td>7</td><td>sju</td><td>18</td><td>arton</td></tr>
-                    <tr><td>8</td><td>åtta</td><td>19</td><td>nitton</td></tr>
-                    <tr><td>9</td><td>nio</td><td>20</td><td>tjugo</td></tr>
-                    <tr><td>10</td><td>tio</td><td></td><td></td></tr>
-                </table>
-                
-                <h4>Dizaines</h4>
-                <div class="example">
-                    30 - <strong>trettio</strong><br>
-                    40 - <strong>fyrtio</strong><br>
-                    50 - <strong>femtio</strong><br>
-                    60 - <strong>sextio</strong><br>
-                    70 - <strong>sjuttio</strong><br>
-                    80 - <strong>åttio</strong><br>
-                    90 - <strong>nittio</strong><br>
-                    100 - <strong>hundra</strong>
-                </div>
-            `
-        },
-        {
-            id: 'a1_l6',
-            title: 'La règle V2 : position du verbe',
-            category: 'Syntaxe',
-            icon: '⚡',
-            duration: '25 min',
-            audioAvailable: true,
-            content: `
-                <h4>La règle V2</h4>
-                <p>En suédois, le verbe conjugué occupe TOUJOURS la 2ème position.</p>
-                
-                <div class="rule-box">
-                    <strong>🎯 Règle d'or :</strong> Le verbe est toujours en position 2.
-                </div>
-                
-                <h4>Structure de base</h4>
-                <div class="example">
-                    <strong>Jag äter äpplen</strong><br>
-                    Position 1: Jag (sujet)<br>
-                    Position 2: äter (verbe)<br>
-                    Position 3: äpplen (objet)
-                </div>
-                
-                <h4>Inversion</h4>
-                <div class="example">
-                    <strong>Idag äter jag äpplen</strong><br>
-                    Position 1: Idag<br>
-                    Position 2: äter (verbe)<br>
-                    Position 3: jag (sujet)
-                </div>
-            `
-        },
-        {
-            id: 'a1_l7',
-            title: 'Les pronoms personnels',
-            category: 'Grammaire',
-            icon: '👤',
-            duration: '20 min',
-            audioAvailable: true,
-            content: `
-                <h4>Pronoms sujets</h4>
-                <table>
-                    <tr>
-                        <th>Français</th>
-                        <th>Suédois</th>
-                    </tr>
-                    <tr><td>Je</td><td>jag</td></tr>
-                    <tr><td>Tu</td><td>du</td></tr>
-                    <tr><td>Il</td><td>han</td></tr>
-                    <tr><td>Elle</td><td>hon</td></tr>
-                    <tr><td>On/Il impersonnel</td><td>man</td></tr>
-                    <tr><td>Nous</td><td>vi</td></tr>
-                    <tr><td>Vous</td><td>ni</td></tr>
-                    <tr><td>Ils/Elles</td><td>de</td></tr>
-                </table>
-                
-                <div class="rule-box">
-                    <strong>💡 Note :</strong> "Du" est utilisé universellement, même avec supérieurs.
-                </div>
-                
-                <h4>Pronoms objets</h4>
-                <div class="example">
-                    moi = <strong>mig</strong><br>
-                    toi = <strong>dig</strong><br>
-                    lui = <strong>honom</strong><br>
-                    elle = <strong>henne</strong><br>
-                    nous = <strong>oss</strong><br>
-                    vous = <strong>er</strong><br>
-                    eux = <strong>dem</strong>
-                </div>
-            `
-        },
-        {
-            id: 'a1_l8',
-            title: 'Les jours et les mois',
-            category: 'Vocabulaire',
-            icon: '📅',
-            duration: '15 min',
-            audioAvailable: true,
-            content: `
-                <h4>Les jours de la semaine</h4>
-                <table>
-                    <tr>
-                        <th>Français</th>
-                        <th>Suédois</th>
-                    </tr>
-                    <tr><td>Lundi</td><td>måndag</td></tr>
-                    <tr><td>Mardi</td><td>tisdag</td></tr>
-                    <tr><td>Mercredi</td><td>onsdag</td></tr>
-                    <tr><td>Jeudi</td><td>torsdag</td></tr>
-                    <tr><td>Vendredi</td><td>fredag</td></tr>
-                    <tr><td>Samedi</td><td>lördag</td></tr>
-                    <tr><td>Dimanche</td><td>söndag</td></tr>
-                </table>
-                
-                <h4>Les mois</h4>
-                <div class="example">
-                    janvier = <strong>januari</strong><br>
-                    février = <strong>februari</strong><br>
-                    mars = <strong>mars</strong><br>
-                    avril = <strong>april</strong><br>
-                    mai = <strong>maj</strong><br>
-                    juin = <strong>juni</strong><br>
-                    juillet = <strong>juli</strong><br>
-                    août = <strong>augusti</strong><br>
-                    septembre = <strong>september</strong><br>
-                    octobre = <strong>oktober</strong><br>
-                    novembre = <strong>november</strong><br>
-                    décembre = <strong>december</strong>
-                </div>
-                
-                <div class="rule-box">
-                    <strong>💡 Note :</strong> En suédois, les jours et mois s'écrivent en minuscules.
-                </div>
-            `
-        }
-    ],
+   A1: [
+  {
+    id: 'a1_l1',
+    title: "Alphabet, sons, Å Ä Ö, voyelles longues/courtes",
+    category: 'Prononciation',
+    icon: '🔤',
+    duration: '35–45 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Lire et prononcer correctement les bases du suédois : voyelles longues/courtes, Å Ä Ö, consonnes spéciales et l’accent tonique.</p>
+
+      <h4>Alphabet suédois</h4>
+      <p>Le suédois utilise <strong>29 lettres</strong> : les 26 lettres latines + <strong>Å, Ä, Ö</strong> (à la fin).</p>
+
+      <h4>Règle la plus importante : voyelles longues / courtes</h4>
+      <p>Le rythme suédois repose sur la longueur vocalique.</p>
+      <ul>
+        <li><strong>Voyelle longue</strong> : souvent quand la voyelle est suivie d’une seule consonne : <em>tak</em> (toit), <em>vita</em> (blancs)</li>
+        <li><strong>Voyelle courte</strong> : souvent quand la voyelle est suivie de deux consonnes : <em>tack</em> (merci), <em>vitt</em> (blanc - neutre)</li>
+      </ul>
+      <p><strong>Exemple minimal</strong> : <em>tak</em> (toit) vs <em>tack</em> (merci) — différence réelle à l’oral.</p>
+
+      <h4>Å, Ä, Ö (les 3 stars)</h4>
+      <table style="width:100%; border-collapse:collapse">
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Lettre</th>
+          <th style="border:1px solid #ddd; padding:8px">Idée de son (approx.)</th>
+          <th style="border:1px solid #ddd; padding:8px">Exemples (SV → FR)</th>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><strong>Å</strong></td>
+          <td style="border:1px solid #ddd; padding:8px">“o” plus ouvert (entre o / au)</td>
+          <td style="border:1px solid #ddd; padding:8px"><em>åtta</em> = 8, <em>mål</em> = but/objectif</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><strong>Ä</strong></td>
+          <td style="border:1px solid #ddd; padding:8px">“è/ê” (variable selon accent)</td>
+          <td style="border:1px solid #ddd; padding:8px"><em>här</em> = ici, <em>lära</em> = apprendre</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><strong>Ö</strong></td>
+          <td style="border:1px solid #ddd; padding:8px">“eu” (comme “peur”)</td>
+          <td style="border:1px solid #ddd; padding:8px"><em>öl</em> = bière, <em>röd</em> = rouge</td>
+        </tr>
+      </table>
+
+      <h4>Consonnes importantes</h4>
+      <ul>
+        <li><strong>sj / sk / stj</strong> : son “ch” très soufflé (ex: <em>sju</em> = 7, <em>sjö</em> = lac)</li>
+        <li><strong>tj / k</strong> devant e/i/y/ä/ö : son “tch/ti” (ex: <em>tjugo</em> = 20, <em>kille</em> = gars)</li>
+        <li><strong>r</strong> : roulé/présent (varie selon régions) mais doit être <em>entendu</em> au début de l’apprentissage</li>
+      </ul>
+
+      <h4>Accent tonique (stress)</h4>
+      <p>En suédois, l’accent tombe souvent sur la première syllabe d’un mot “simple”.</p>
+      <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0">
+        <p><strong>Exemples :</strong></p>
+        <ul>
+          <li><em>TA-la</em> = parler</li>
+          <li><em>SKO-la</em> = école</li>
+          <li><em>HEJ</em> = salut</li>
+        </ul>
+      </div>
+
+      <h4>Erreurs fréquentes</h4>
+      <ul>
+        <li>Ignorer la longueur vocalique → accent étranger très fort</li>
+        <li>Confondre Å / O / Ö</li>
+        <li>Prononcer “sj” comme un “ch” français classique (trop fermé)</li>
+      </ul>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Lis à voix haute : <em>tak – tack – tak – tack</em></li>
+        <li>Lis : <em>här</em>, <em>hör</em>, <em>hår</em> (ici / entendre / cheveux) et note la différence.</li>
+        <li>Répète : <em>sju</em>, <em>sjö</em>, <em>sjuk</em> (7 / lac / malade)</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l2',
+    title: "Salutations, politesse, se présenter",
+    category: 'Communication',
+    icon: '👋',
+    duration: '30–40 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Savoir saluer, remercier, s’excuser et se présenter en suédois avec des formules naturelles.</p>
+
+      <h4>Formules essentielles</h4>
+      <table style="width:100%; border-collapse:collapse">
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Suédois</th>
+          <th style="border:1px solid #ddd; padding:8px">Français</th>
+          <th style="border:1px solid #ddd; padding:8px">Note</th>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>Hej!</em></td>
+          <td style="border:1px solid #ddd; padding:8px">Salut / Bonjour</td>
+          <td style="border:1px solid #ddd; padding:8px">Très courant (pro/perso)</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>God morgon</em></td>
+          <td style="border:1px solid #ddd; padding:8px">Bonjour (matin)</td>
+          <td style="border:1px solid #ddd; padding:8px">Plus formel</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>Tack!</em></td>
+          <td style="border:1px solid #ddd; padding:8px">Merci</td>
+          <td style="border:1px solid #ddd; padding:8px">Indispensable</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>Tack så mycket</em></td>
+          <td style="border:1px solid #ddd; padding:8px">Merci beaucoup</td>
+          <td style="border:1px solid #ddd; padding:8px">Très naturel</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>Ursäkta</em></td>
+          <td style="border:1px solid #ddd; padding:8px">Excusez-moi</td>
+          <td style="border:1px solid #ddd; padding:8px">Pour attirer l’attention</td>
+        </tr>
+      </table>
+
+      <h4>Se présenter</h4>
+      <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0">
+        <p><strong>Modèle :</strong></p>
+        <ul>
+          <li><em>Jag heter Alex.</em> = Je m’appelle Alex.</li>
+          <li><em>Jag kommer från Frankrike.</em> = Je viens de France.</li>
+          <li><em>Jag bor i Ballancourt.</em> = J’habite à Ballancourt.</li>
+          <li><em>Trevligt att träffas!</em> = Enchanté !</li>
+        </ul>
+      </div>
+
+      <h4>Questions très utiles</h4>
+      <ul>
+        <li><em>Vad heter du?</em> = Comment tu t’appelles ?</li>
+        <li><em>Var bor du?</em> = Tu habites où ?</li>
+        <li><em>Varifrån kommer du?</em> = Tu viens d’où ?</li>
+      </ul>
+
+      <h4>Culture / pragmatique</h4>
+      <p>Les Suédois utilisent beaucoup <em>Hej</em>. Le registre reste souvent simple même au travail (moins de formules lourdes qu’en français).</p>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Écris ta présentation en 4 phrases (comme le modèle).</li>
+        <li>Lis-la à voix haute avec l’audio.</li>
+        <li>Ajoute 1 question : <em>Och du?</em> (= Et toi ?)</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l3',
+    title: "Pronoms personnels + verbe être (vara) + structure de base",
+    category: 'Grammaire',
+    icon: '🧩',
+    duration: '45–60 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Construire des phrases simples : sujet + verbe + complément.</p>
+
+      <h4>Pronoms personnels</h4>
+      <table style="width:100%; border-collapse:collapse">
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Suédois</th>
+          <th style="border:1px solid #ddd; padding:8px">Français</th>
+          <th style="border:1px solid #ddd; padding:8px">Note</th>
+        </tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>jag</em></td><td style="border:1px solid #ddd; padding:8px">je</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>du</em></td><td style="border:1px solid #ddd; padding:8px">tu</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>han</em></td><td style="border:1px solid #ddd; padding:8px">il</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>hon</em></td><td style="border:1px solid #ddd; padding:8px">elle</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>vi</em></td><td style="border:1px solid #ddd; padding:8px">nous</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>ni</em></td><td style="border:1px solid #ddd; padding:8px">vous</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>de</em></td><td style="border:1px solid #ddd; padding:8px">ils/elles</td><td style="border:1px solid #ddd; padding:8px">—</td></tr>
+      </table>
+
+      <h4>Le verbe “être” : <em>vara</em> (présent)</h4>
+      <p>Au présent :</p>
+      <ul>
+        <li><strong>jag är</strong> = je suis</li>
+        <li><strong>du är</strong> = tu es</li>
+        <li><strong>han/hon är</strong> = il/elle est</li>
+        <li><strong>vi är</strong> = nous sommes</li>
+        <li><strong>ni är</strong> = vous êtes</li>
+        <li><strong>de är</strong> = ils/elles sont</li>
+      </ul>
+
+      <h4>Structure de phrase de base (SVO)</h4>
+      <p>En phrase simple (déclarative), on peut utiliser Sujet + Verbe + Objet/Complément.</p>
+      <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0">
+        <ul>
+          <li><em>Jag är Alex.</em> = Je suis Alex.</li>
+          <li><em>Du är snäll.</em> = Tu es gentil.</li>
+          <li><em>Vi är trötta.</em> = Nous sommes fatigués.</li>
+        </ul>
+      </div>
+
+      <h4>Point clé : pas de “être” caché</h4>
+      <p>En suédois, on dit <em>Jag är...</em> (pas comme en russe où on peut l’omettre).</p>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Traduis : “Je suis français”, “Tu es ici”, “Nous sommes à Paris”.</li>
+        <li>Crée 5 phrases avec : jag/du/han/hon/vi.</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l4',
+    title: "EN / ETT : genre des noms + article indéfini",
+    category: 'Grammaire',
+    icon: '📦',
+    duration: '60–75 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Comprendre les deux genres suédois et choisir <strong>en</strong> ou <strong>ett</strong> au singulier indéfini.</p>
+
+      <h4>Les 2 genres</h4>
+      <ul>
+        <li><strong>en-ord</strong> (genre commun) : ~75% des noms</li>
+        <li><strong>ett-ord</strong> (genre neutre) : ~25% des noms</li>
+      </ul>
+
+      <h4>Article indéfini</h4>
+      <table style="width:100%; border-collapse:collapse">
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Genre</th>
+          <th style="border:1px solid #ddd; padding:8px">Article</th>
+          <th style="border:1px solid #ddd; padding:8px">Exemples</th>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px">Commun</td>
+          <td style="border:1px solid #ddd; padding:8px"><strong>en</strong></td>
+          <td style="border:1px solid #ddd; padding:8px"><em>en bok</em> (un livre), <em>en stol</em> (une chaise)</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px">Neutre</td>
+          <td style="border:1px solid #ddd; padding:8px"><strong>ett</strong></td>
+          <td style="border:1px solid #ddd; padding:8px"><em>ett hus</em> (une maison), <em>ett barn</em> (un enfant)</td>
+        </tr>
+      </table>
+
+      <h4>Comment deviner ?</h4>
+      <p>Il y a quelques tendances, mais beaucoup doit être mémorisé. Bonne stratégie : apprendre le nom avec son article.</p>
+
+      <h4>Mini-liste A1 à apprendre (avec article)</h4>
+      <ul>
+        <li><em>en person</em> = une personne</li>
+        <li><em>en vän</em> = un ami</li>
+        <li><em>en dag</em> = un jour</li>
+        <li><em>ett land</em> = un pays</li>
+        <li><em>ett språk</em> = une langue</li>
+        <li><em>ett arbete</em> = un travail</li>
+      </ul>
+
+      <h4>Erreurs fréquentes</h4>
+      <ul>
+        <li>Mélanger <em>en</em> et <em>ett</em> au hasard → mieux vaut apprendre en “pack”</li>
+        <li>Se baser sur le genre français → ça ne marche pas</li>
+      </ul>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Classe : bok, hus, stol, barn, dag, språk (en ou ett)</li>
+        <li>Écris 6 phrases : “C’est un/une …” → <em>Det är en… / Det är ett…</em></li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l5',
+    title: "Présent des verbes : forme unique + verbes clés",
+    category: 'Grammaire',
+    icon: '⚙️',
+    duration: '60–75 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Conjuguer au présent : en suédois, c’est très simple (une seule forme par personne).</p>
+
+      <h4>Règle générale</h4>
+      <p>Au présent, le suédois n’a pas de conjugaison par personne : la forme est la même pour jag/du/han/hon/vi/ni/de.</p>
+
+      <h4>Exemples de verbes A1</h4>
+      <table style="width:100%; border-collapse:collapse">
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Infinitif</th>
+          <th style="border:1px solid #ddd; padding:8px">Présent</th>
+          <th style="border:1px solid #ddd; padding:8px">Exemple</th>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>att tala</em> (parler)</td>
+          <td style="border:1px solid #ddd; padding:8px"><em>talar</em></td>
+          <td style="border:1px solid #ddd; padding:8px"><em>Jag talar svenska.</em> = Je parle suédois.</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>att bo</em> (habiter)</td>
+          <td style="border:1px solid #ddd; padding:8px"><em>bor</em></td>
+          <td style="border:1px solid #ddd; padding:8px"><em>Vi bor i Frankrike.</em> = Nous habitons en France.</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd; padding:8px"><em>att komma</em> (venir)</td>
+          <td style="border:1px solid #ddd; padding:8px"><em>kommer</em></td>
+          <td style="border:1px solid #ddd; padding:8px"><em>Jag kommer från Paris.</em> = Je viens de Paris.</td>
+        </tr>
+      </table>
+
+      <h4>Forme “att”</h4>
+      <p>Les dictionnaires donnent souvent l’infinitif avec <strong>att</strong> (comme “to” en anglais). En phrase, on utilise le verbe conjugué : <em>Jag talar</em>, pas <em>Jag att tala</em>.</p>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Conjugue au présent (même forme) : tala, bo, komma, arbeta, läsa.</li>
+        <li>Traduis : “Je travaille”, “Tu lis”, “Ils parlent suédois”.</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l6',
+    title: "Ordre des mots V2 : le verbe en 2e position",
+    category: 'Syntaxe',
+    icon: '🧠',
+    duration: '70–90 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Maîtriser la règle la plus importante du suédois : <strong>V2</strong> en proposition principale.</p>
+
+      <h4>Principe V2 (verbe deuxième)</h4>
+      <p>En suédois, dans une phrase déclarative principale, le verbe conjugué est en <strong>2e position</strong> (2e “bloc”, pas forcément 2e mot). :contentReference[oaicite:3]{index=3}</p>
+
+      <h4>Cas 1 : phrase “normale” (Sujet d’abord)</h4>
+      <p><strong>Sujet + Verbe + …</strong></p>
+      <ul>
+        <li><em>Jag bor i Paris.</em> = J’habite à Paris.</li>
+        <li><em>Du talar svenska.</em> = Tu parles suédois.</li>
+      </ul>
+
+      <h4>Cas 2 : on met un autre élément au début (temps/lieu/objet)</h4>
+      <p>Si tu commences par “Aujourd’hui / ici / ce livre…”, le verbe reste 2e, donc le sujet passe après le verbe.</p>
+      <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0">
+        <ul>
+          <li><em>Idag bor jag i Paris.</em> = Aujourd’hui, j’habite à Paris.</li>
+          <li><em>I Sverige talar de svenska.</em> = En Suède, ils parlent suédois.</li>
+        </ul>
+      </div>
+
+      <h4>Erreur classique</h4>
+      <p>❌ <em>Idag jag bor i Paris</em> (incorrect) → ✅ <em>Idag bor jag i Paris</em>. :contentReference[oaicite:4]{index=4}</p>
+
+      <h4>Placement de “inte” (négation)</h4>
+      <p>En général, <strong>inte</strong> vient après le verbe (et après le sujet si inversion V2).</p>
+      <ul>
+        <li><em>Jag bor inte här.</em> = Je n’habite pas ici.</li>
+        <li><em>Idag bor jag inte här.</em> = Aujourd’hui, je n’habite pas ici.</li>
+      </ul>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Réécris en commençant par <em>Idag</em> : “Jag arbetar hemma.”</li>
+        <li>Corrige : “Nu jag går.”</li>
+        <li>Ajoute <em>inte</em> : “Jag talar svenska.”</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l7',
+    title: "Questions A1 : ja/nej + mots interrogatifs",
+    category: 'Grammaire',
+    icon: '❓',
+    duration: '45–60 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Poser des questions simples : questions fermées (oui/non) et ouvertes (qui/quoi/où…).</p>
+
+      <h4>Questions oui/non</h4>
+      <p>On inverse souvent verbe et sujet :</p>
+      <ul>
+        <li><em>Bor du här?</em> = Tu habites ici ?</li>
+        <li><em>Talar du engelska?</em> = Tu parles anglais ?</li>
+      </ul>
+
+      <h4>Mots interrogatifs</h4>
+      <table style="width:100%; border-collapse:collapse">
+        <tr>
+          <th style="border:1px solid #ddd; padding:8px">Mot</th>
+          <th style="border:1px solid #ddd; padding:8px">Sens</th>
+          <th style="border:1px solid #ddd; padding:8px">Exemple</th>
+        </tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>Vad</em></td><td style="border:1px solid #ddd; padding:8px">quoi</td><td style="border:1px solid #ddd; padding:8px"><em>Vad heter du?</em> = Comment tu t’appelles ?</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>Var</em></td><td style="border:1px solid #ddd; padding:8px">où</td><td style="border:1px solid #ddd; padding:8px"><em>Var bor du?</em> = Tu habites où ?</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>När</em></td><td style="border:1px solid #ddd; padding:8px">quand</td><td style="border:1px solid #ddd; padding:8px"><em>När kommer du?</em> = Tu viens quand ?</td></tr>
+        <tr><td style="border:1px solid #ddd; padding:8px"><em>Vem</em></td><td style="border:1px solid #ddd; padding:8px">qui</td><td style="border:1px solid #ddd; padding:8px"><em>Vem är du?</em> = Qui es-tu ?</td></tr>
+      </table>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Crée 5 questions : Vad/Var/När/Vem + verbe.</li>
+        <li>Transforme en question : “Du bor här.”</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l8',
+    title: "Négation + adverbes de base (inte, också, alltid…)",
+    category: 'Grammaire',
+    icon: '🚫',
+    duration: '45–60 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Savoir dire “ne … pas” et utiliser quelques adverbes courants.</p>
+
+      <h4>Négation : inte</h4>
+      <p>Règle générale : <strong>inte</strong> vient après le verbe conjugué.</p>
+      <ul>
+        <li><em>Jag äter inte fisk.</em> = Je ne mange pas de poisson.</li>
+        <li><em>Han bor inte här.</em> = Il n’habite pas ici.</li>
+      </ul>
+
+      <h4>Adverbes utiles</h4>
+      <ul>
+        <li><em>också</em> = aussi</li>
+        <li><em>alltid</em> = toujours</li>
+        <li><em>ofta</em> = souvent</li>
+        <li><em>ibland</em> = parfois</li>
+        <li><em>aldrig</em> = jamais</li>
+      </ul>
+
+      <h4>Placement (simplifié A1)</h4>
+      <p>Souvent après le verbe (comme inte).</p>
+      <ul>
+        <li><em>Jag bor också i Paris.</em> = J’habite aussi à Paris.</li>
+        <li><em>Jag är alltid trött.</em> = Je suis toujours fatigué.</li>
+      </ul>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Ajoute “inte” : “Jag talar svenska.”</li>
+        <li>Ajoute “också” : “Jag bor i Frankrike.”</li>
+        <li>Traduis : “Je ne suis jamais ici.”</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l9',
+    title: "Nombres, heures, dates (A1 solide)",
+    category: 'Vocabulaire',
+    icon: '🕒',
+    duration: '45–60 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Savoir compter, dire l’heure, donner une date simple.</p>
+
+      <h4>Nombres essentiels</h4>
+      <p>0–10 : <em>noll, ett, två, tre, fyra, fem, sex, sju, åtta, nio, tio</em></p>
+      <p>11–20 : <em>elva, tolv, tretton, fjorton, femton, sexton, sjutton, arton, nitton, tjugo</em></p>
+
+      <h4>Heures</h4>
+      <ul>
+        <li><em>Klockan är tre.</em> = Il est 3 heures.</li>
+        <li><em>Klockan är halv fyra.</em> = Il est 3h30 (litt. “la moitié vers 4”).</li>
+      </ul>
+
+      <h4>Dates (simple)</h4>
+      <ul>
+        <li><em>Idag är det den 4 februari.</em> = Aujourd’hui, on est le 4 février.</li>
+        <li><em>Jag är född 1997.</em> = Je suis né en 1997.</li>
+      </ul>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Écris 5 nombres au hasard et prononce-les.</li>
+        <li>Traduis : “Il est 7 heures”, “Il est 9h30”.</li>
+      </ol>
+    `
+  },
+
+  {
+    id: 'a1_l10',
+    title: "Dialogue A1 : au café (script + variations)",
+    category: 'Communication',
+    icon: '☕',
+    duration: '45–60 min',
+    audioAvailable: true,
+    content: `
+      <h4>Objectif</h4>
+      <p>Savoir commander simplement au café / restaurant et comprendre des réponses typiques.</p>
+
+      <h4>Dialogue modèle</h4>
+      <div style="background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0">
+        <p><strong>A:</strong> <em>Hej! Jag vill ha en kaffe, tack.</em><br/>= Bonjour ! Je voudrais un café, merci.</p>
+        <p><strong>B:</strong> <em>Vill du ha mjölk?</em><br/>= Tu veux du lait ?</p>
+        <p><strong>A:</strong> <em>Ja, lite mjölk.</em><br/>= Oui, un peu de lait.</p>
+        <p><strong>B:</strong> <em>Det blir 45 kronor.</em><br/>= Ça fait 45 couronnes.</p>
+        <p><strong>A:</strong> <em>Tack!</em><br/>= Merci !</p>
+      </div>
+
+      <h4>Variations utiles</h4>
+      <ul>
+        <li><em>Jag vill ha...</em> = Je voudrais…</li>
+        <li><em>Kan jag få...?</em> = Est-ce que je peux avoir…?</li>
+        <li><em>Ursäkta, var är toaletten?</em> = Excusez-moi, où sont les toilettes ?</li>
+      </ul>
+
+      <h4>Mini-exercices</h4>
+      <ol>
+        <li>Remplace “kaffe” par “te”, “vatten”, “en smörgås”.</li>
+        <li>Fais 3 versions : polie / très simple / plus longue.</li>
+      </ol>
+    `
+  }
+],
     
     A2: [
         {
