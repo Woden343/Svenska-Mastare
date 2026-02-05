@@ -5,15 +5,13 @@ const App = {
 
   // Niveaux chargés : { A1: {...}, A2: {...}, B1: {...}, B2: {...} }
   levels: {},
-
-  // Ordre d’affichage sur l’accueil
   levelsOrder: ["A1", "A2", "B1", "B2"],
 
   // Référence
   refData: null,
 
   async init() {
-    // Nav (sécurisé)
+    // Nav
     const navHome = document.getElementById("nav-home");
     const navReview = document.getElementById("nav-review");
     const navStats = document.getElementById("nav-stats");
@@ -30,23 +28,28 @@ const App = {
     Router.on("/lesson", (p) => this.viewLesson(p.level, p.lessonId));
     Router.on("/review", () => this.viewReview());
     Router.on("/stats", () => this.viewStats());
+
+    // Référence
     Router.on("/ref", () => this.viewRef());
     Router.on("/ref-sheet", (p) => this.viewRefSheet(p.moduleId));
 
-    // Charger niveaux + ref
+    // Preload
     await this.preloadLevels();
     await this.preloadRef();
 
     Router.start("/");
   },
 
-  setView(html) {
-    this.mount.innerHTML = html;
+  // -------------------- LOADERS --------------------
+
+  async loadJson(url) {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
+    return await res.json();
   },
 
   async preloadLevels() {
     this.levels = {};
-
     for (const lvl of this.levelsOrder) {
       try {
         this.levels[lvl] = await this.loadLevel(lvl);
@@ -54,38 +57,6 @@ const App = {
         console.warn(`[loadLevel] ${lvl} non chargé:`, e.message || e);
       }
     }
-
-    if (Object.keys(this.levels).length === 0) {
-      this.setView(`
-        <section class="card">
-          <h2>Erreur de chargement</h2>
-          <p class="muted">Aucun niveau n’a pu être chargé. Vérifie tes fichiers dans <code>assets/data/</code>.</p>
-          <ul>
-            <li><code>assets/data/a1.json</code></li>
-            <li><code>assets/data/a2.json</code></li>
-            <li><code>assets/data/b1.json</code></li>
-            <li><code>assets/data/b2.json</code></li>
-          </ul>
-        </section>
-      `);
-    }
-  },
-
-  async preloadRef() {
-    try {
-      // si tu utilises ref.json
-      this.refData = await this.loadJson("assets/data/ref.json");
-    } catch (e) {
-      // la ref est optionnelle : on ne casse pas l'app
-      this.refData = null;
-      console.warn("[ref] non chargé:", e.message || e);
-    }
-  },
-
-  async loadJson(url) {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
-    return await res.json();
   },
 
   async loadLevel(level) {
@@ -100,7 +71,6 @@ const App = {
     if (!url) throw new Error(`Niveau non supporté: ${level}`);
 
     const json = await this.loadJson(url);
-
     return {
       level: json.level || level,
       title: json.title || "",
@@ -108,8 +78,67 @@ const App = {
     };
   },
 
+  async preloadRef() {
+    try {
+      this.refData = await this.loadJson("assets/data/ref.json");
+    } catch (e) {
+      this.refData = null;
+      console.warn("[ref] non chargé:", e.message || e);
+    }
+  },
+
+  // -------------------- HELPERS --------------------
+
+  setView(html) {
+    this.mount.innerHTML = html;
+  },
+
   getLevelData(level) {
     return this.levels[level] || null;
+  },
+
+  escapeHtml(s) {
+    return String(s ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  },
+
+  // Référence: récupère la liste des “modules” quel que soit le format
+  refGetModules() {
+    const r = this.refData;
+    if (!r) return [];
+
+    // Formats acceptés :
+    // r.modules / r.sections / r.sheets
+    const mods =
+      (Array.isArray(r.modules) && r.modules) ||
+      (Array.isArray(r.sections) && r.sections) ||
+      (Array.isArray(r.sheets) && r.sheets) ||
+      [];
+
+    return mods;
+  },
+
+  // Référence: récupère les entrées quel que soit le format
+  refGetItems(mod) {
+    if (!mod) return [];
+    // formats acceptés : items / rows / entries / lessons / data
+    return (
+      (Array.isArray(mod.items) && mod.items) ||
+      (Array.isArray(mod.rows) && mod.rows) ||
+      (Array.isArray(mod.entries) && mod.entries) ||
+      (Array.isArray(mod.lessons) && mod.lessons) ||
+      (Array.isArray(mod.data) && mod.data) ||
+      []
+    );
+  },
+
+  // Identifiant stable pour un module
+  refGetModuleId(mod, idx) {
+    return String(mod.id || mod.key || mod.slug || mod.title || mod.name || `module_${idx}`);
   },
 
   // -------------------- VIEWS --------------------
@@ -128,7 +157,7 @@ const App = {
         return `
           <div class="card">
             <span class="pill">Niveau ${L.level}</span>
-            <h3 style="margin-top:10px;">${levelTitle}</h3>
+            <h3 style="margin-top:10px;">${this.escapeHtml(levelTitle)}</h3>
             <p class="muted">Modules : ${modulesCount}</p>
             <button class="btn btn-primary" onclick="Router.go('/level',{level:'${L.level}'})">Ouvrir</button>
           </div>
@@ -161,11 +190,10 @@ const App = {
   viewLevel(level) {
     const L = this.getLevelData(level);
     if (!L) {
-      const loaded = Object.keys(this.levels).join(", ") || "aucun";
       return this.setView(`
         <section class="card">
           <h2>Niveau introuvable</h2>
-          <p class="muted">Niveaux chargés : ${loaded}</p>
+          <p class="muted">Niveau non chargé : ${this.escapeHtml(level)}</p>
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
@@ -174,19 +202,19 @@ const App = {
     this.setView(`
       <section class="card">
         <span class="pill">Niveau ${L.level}</span>
-        <h2 style="margin-top:10px;">${L.level} — ${L.title}</h2>
+        <h2 style="margin-top:10px;">${this.escapeHtml(L.level)} — ${this.escapeHtml(L.title)}</h2>
         <p class="muted">Choisis un module, puis une leçon.</p>
       </section>
 
       <section style="margin-top:12px;" class="grid">
         ${(L.modules || []).map(m => `
           <div class="card">
-            <h3>${m.title || "Module"}</h3>
+            <h3>${this.escapeHtml(m.title || "Module")}</h3>
             <p class="muted">Leçons : ${(m.lessons || []).length}</p>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
               ${(m.lessons || []).map(les => `
                 <button class="btn" onclick="Router.go('/lesson',{level:'${L.level}', lessonId:'${les.id}'})">
-                  ${les.title || "Leçon"}
+                  ${this.escapeHtml(les.title || "Leçon")}
                 </button>
               `).join("")}
             </div>
@@ -202,52 +230,37 @@ const App = {
 
   viewLesson(level, lessonId) {
     const L = this.getLevelData(level);
-    if (!L) {
-      return this.setView(`
-        <section class="card">
-          <h2>Leçon introuvable</h2>
-          <p class="muted">Niveau non chargé : ${level}</p>
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </section>
-      `);
-    }
+    if (!L) return Router.go("/");
 
     const lesson =
       (L.modules || [])
         .flatMap(m => (m.lessons || []))
         .find(x => x.id === lessonId);
 
-    if (!lesson) {
-      return this.setView(`
-        <section class="card">
-          <h2>Leçon introuvable</h2>
-          <button class="btn" onclick="Router.go('/level',{level:'${L.level}'})">← Retour</button>
-        </section>
-      `);
-    }
+    if (!lesson) return Router.go("/level", { level: L.level });
 
-    const contentHtml = (lesson.content || []).map(p => `<p>${p}</p>`).join("");
+    const contentHtml = (lesson.content || []).map(p => `<p>${this.escapeHtml(p)}</p>`).join("");
 
     const examplesHtml = (lesson.examples || []).map(e => `
       <div class="choice" style="cursor:default;">
         <div>
-          <b>${e.sv || ""}</b>
-          <div class="muted">${e.fr || ""}${e.pron ? ` • <i>${e.pron}</i>` : ""}</div>
+          <b>${this.escapeHtml(e.sv || "")}</b>
+          <div class="muted">${this.escapeHtml(e.fr || "")}${e.pron ? ` • <i>${this.escapeHtml(e.pron)}</i>` : ""}</div>
         </div>
       </div>
     `).join("");
 
     const vocabHtml = (lesson.vocab || []).map(w => `
       <div class="choice" style="cursor:default;">
-        <div style="min-width:110px;"><b>${w.sv || ""}</b></div>
-        <div class="muted">${w.fr || ""}${w.pron ? ` • <i>${w.pron}</i>` : ""}</div>
+        <div style="min-width:110px;"><b>${this.escapeHtml(w.sv || "")}</b></div>
+        <div class="muted">${this.escapeHtml(w.fr || "")}${w.pron ? ` • <i>${this.escapeHtml(w.pron)}</i>` : ""}</div>
       </div>
     `).join("");
 
     this.setView(`
       <section class="card">
-        <span class="pill">${L.level}</span>
-        <h2 style="margin-top:10px;">${lesson.title || "Leçon"}</h2>
+        <span class="pill">${this.escapeHtml(L.level)}</span>
+        <h2 style="margin-top:10px;">${this.escapeHtml(lesson.title || "Leçon")}</h2>
 
         ${contentHtml}
 
@@ -282,7 +295,6 @@ const App = {
     if (!host) return;
 
     const quizzes = Array.isArray(lesson.quiz) ? lesson.quiz : (lesson.quiz ? [lesson.quiz] : []);
-
     if (quizzes.length === 0) {
       host.innerHTML = `<p class="muted">Aucun exercice pour cette leçon.</p>`;
       return;
@@ -308,26 +320,24 @@ const App = {
 
       const qbox = host.querySelector("#qbox");
       const fb = host.querySelector("#fb");
+      const lock = () => answered[idx];
 
       const setFeedback = (ok, extra = "") => {
         fb.textContent = ok ? `✅ Correct. ${extra}` : `❌ Non. ${extra}`;
       };
 
-      const lockIfAnswered = () => answered[idx];
-
       if (q.type === "mcq") {
         qbox.innerHTML = `
-          <p><b>${q.q || ""}</b></p>
+          <p><b>${this.escapeHtml(q.q || "")}</b></p>
           <div class="grid">
-            ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${c}</div>`).join("")}
+            ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${this.escapeHtml(c)}</div>`).join("")}
           </div>
         `;
 
         const nodes = qbox.querySelectorAll(".choice");
         nodes.forEach(node => {
           node.onclick = () => {
-            if (lockIfAnswered()) return;
-
+            if (lock()) return;
             const i = Number(node.dataset.i);
             const ok = i === q.answerIndex;
 
@@ -343,7 +353,7 @@ const App = {
         });
       } else if (q.type === "gap") {
         qbox.innerHTML = `
-          <p><b>${q.q || ""}</b></p>
+          <p><b>${this.escapeHtml(q.q || "")}</b></p>
           <input id="gap" placeholder="Ta réponse..." />
           <button class="btn" style="margin-top:10px;" id="check">Vérifier</button>
         `;
@@ -352,7 +362,7 @@ const App = {
         const btn = qbox.querySelector("#check");
 
         btn.onclick = () => {
-          if (lockIfAnswered()) return;
+          if (lock()) return;
 
           const val = (input.value || "").trim().toLowerCase();
           const expected = (q.answer || "").trim().toLowerCase();
@@ -378,6 +388,7 @@ const App = {
   },
 
   viewReview() {
+    // C’est normal que ça affiche encore ce message : tu n’as pas encore ajouté de système SRS.
     this.setView(`
       <section class="card">
         <h2>Révision</h2>
@@ -406,28 +417,25 @@ const App = {
     `);
   },
 
-  // --------- Référence (simple) ---------
+  // -------------------- RÉFÉRENCE --------------------
 
   viewRef() {
     if (!this.refData) {
       return this.setView(`
         <section class="card">
-          <h2>Références</h2>
+          <h2>Références (M+)</h2>
           <p class="muted">Le fichier <code>assets/data/ref.json</code> n’est pas chargé (ou absent).</p>
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
     }
 
-    // Supporte plusieurs formats : modules / sections
-    const mods = Array.isArray(this.refData.modules) ? this.refData.modules
-               : (Array.isArray(this.refData.sections) ? this.refData.sections : []);
-
+    const mods = this.refGetModules();
     if (!mods.length) {
       return this.setView(`
         <section class="card">
-          <h2>Références</h2>
-          <p class="muted">Aucun module trouvé dans <code>ref.json</code>.</p>
+          <h2>Références (M+)</h2>
+          <p class="muted">Aucun module détecté. Ton <code>ref.json</code> doit contenir <code>modules</code> (ou <code>sections</code>/<code>sheets</code>).</p>
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
@@ -436,18 +444,26 @@ const App = {
     this.setView(`
       <section class="card">
         <h2>Références (M+)</h2>
-        <p class="muted">Choisis un module (verbes / vocab / particules), puis une fiche.</p>
+        <p class="muted">Choisis un module, puis accède au tableau complet.</p>
       </section>
 
       <section class="grid grid-2" style="margin-top:12px;">
-        ${mods.map(m => `
-          <div class="card">
-            <span class="pill">Référence</span>
-            <h3 style="margin-top:10px;">${m.title || "Module"}</h3>
-            <p class="muted">${(m.items || m.lessons || []).length} entrées</p>
-            <button class="btn btn-primary" onclick="Router.go('/ref-sheet',{moduleId:'${m.id || m.title || ""}'})">Ouvrir</button>
-          </div>
-        `).join("")}
+        ${mods.map((m, idx) => {
+          const id = this.refGetModuleId(m, idx);
+          const title = m.title || m.name || "Module";
+          const items = this.refGetItems(m);
+          const desc = m.description || m.desc || "";
+
+          return `
+            <div class="card">
+              <span class="pill">Référence</span>
+              <h3 style="margin-top:10px;">${this.escapeHtml(title)}</h3>
+              ${desc ? `<p class="muted">${this.escapeHtml(desc)}</p>` : `<p class="muted">${items.length} entrées</p>`}
+              <p class="muted"><b>${items.length}</b> entrées détectées</p>
+              <button class="btn btn-primary" onclick="Router.go('/ref-sheet',{moduleId:'${this.escapeHtml(id)}'})">Ouvrir le tableau</button>
+            </div>
+          `;
+        }).join("")}
       </section>
     `);
   },
@@ -455,49 +471,109 @@ const App = {
   viewRefSheet(moduleId) {
     if (!this.refData) return Router.go("/ref");
 
-    const mods = Array.isArray(this.refData.modules) ? this.refData.modules
-               : (Array.isArray(this.refData.sections) ? this.refData.sections : []);
-
+    const mods = this.refGetModules();
     const mod =
-      mods.find(x => (x.id || x.title || "") === moduleId) ||
-      mods.find(x => (x.title || "") === moduleId);
+      mods.find((m, idx) => this.refGetModuleId(m, idx) === moduleId) ||
+      mods.find(m => (m.title || m.name || "") === moduleId);
 
     if (!mod) return Router.go("/ref");
 
-    const rows = (mod.items || mod.lessons || []);
-    const table = rows.length ? `
-      <div class="table-wrap" style="margin-top:12px;">
-        <table class="zebra">
-          <thead>
-            <tr>
-              <th>Suédois</th>
-              <th>Français</th>
-              <th>Prononciation</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map(it => `
-              <tr>
-                <td><b>${it.sv || it.word || ""}</b></td>
-                <td>${it.fr || it.meaning || ""}</td>
-                <td class="muted">${it.pron || ""}</td>
-                <td class="muted">${it.note || ""}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
-    ` : `<p class="muted" style="margin-top:12px;">Aucune entrée.</p>`;
+    const title = mod.title || mod.name || "Module";
+    const items = this.refGetItems(mod);
+
+    if (!items.length) {
+      return this.setView(`
+        <section class="card">
+          <span class="pill">Référence</span>
+          <h2 style="margin-top:10px;">${this.escapeHtml(title)}</h2>
+          <p class="muted">Aucune entrée trouvée dans ce module.</p>
+          <p class="muted">Clés attendues : <code>items</code> ou <code>rows</code> ou <code>entries</code> ou <code>data</code>.</p>
+          <button class="btn" onclick="Router.go('/ref')">← Retour</button>
+        </section>
+      `);
+    }
+
+    // Détection de type : verbes (bescherelle) vs vocab vs particules vs générique
+    const sample = items[0] || {};
+    const keys = Object.keys(sample);
+
+    const isVerbTable =
+      ["infinitive","inf","sv_inf","pres","present","preteritum","pret","past","supinum","sup","imperativ","imp"]
+        .some(k => keys.includes(k));
+
+    const isVocabTable =
+      ["sv","word","lemma"].some(k => keys.includes(k)) &&
+      ["fr","meaning","translation"].some(k => keys.includes(k));
+
+    const isParticleTable =
+      ["verb","particle","expression"].some(k => keys.includes(k));
+
+    let header = [];
+    let rowsHtml = "";
+
+    if (isVerbTable) {
+      header = ["Infinitif", "Présent", "Prétérit", "Supinum", "Impératif", "FR", "Pron"];
+      rowsHtml = items.map(v => `
+        <tr>
+          <td><b>${this.escapeHtml(v.infinitive || v.inf || v.sv_inf || v.sv || v.word || "")}</b></td>
+          <td>${this.escapeHtml(v.pres || v.present || "")}</td>
+          <td>${this.escapeHtml(v.pret || v.preteritum || v.past || "")}</td>
+          <td>${this.escapeHtml(v.sup || v.supinum || "")}</td>
+          <td>${this.escapeHtml(v.imp || v.imperativ || "")}</td>
+          <td class="muted">${this.escapeHtml(v.fr || v.meaning || "")}</td>
+          <td class="muted">${this.escapeHtml(v.pron || "")}</td>
+        </tr>
+      `).join("");
+    } else if (isParticleTable) {
+      header = ["Expression", "FR", "Exemple", "Pron", "Note"];
+      rowsHtml = items.map(p => `
+        <tr>
+          <td><b>${this.escapeHtml(p.expression || p.verb || p.sv || p.word || "")}</b></td>
+          <td>${this.escapeHtml(p.fr || p.meaning || "")}</td>
+          <td class="muted">${this.escapeHtml(p.example || p.ex || "")}</td>
+          <td class="muted">${this.escapeHtml(p.pron || "")}</td>
+          <td class="muted">${this.escapeHtml(p.note || "")}</td>
+        </tr>
+      `).join("");
+    } else if (isVocabTable) {
+      header = ["Suédois", "Français", "Pron", "Genre/Pluriel", "Note"];
+      rowsHtml = items.map(w => `
+        <tr>
+          <td><b>${this.escapeHtml(w.sv || w.word || w.lemma || "")}</b></td>
+          <td>${this.escapeHtml(w.fr || w.meaning || w.translation || "")}</td>
+          <td class="muted">${this.escapeHtml(w.pron || "")}</td>
+          <td class="muted">${this.escapeHtml(w.gender || w.plural || w.forms || "")}</td>
+          <td class="muted">${this.escapeHtml(w.note || "")}</td>
+        </tr>
+      `).join("");
+    } else {
+      // Générique : on affiche les premières clés
+      const cols = keys.slice(0, 6);
+      header = cols.length ? cols : ["Donnée"];
+      rowsHtml = items.map(obj => {
+        const cells = cols.length
+          ? cols.map(k => `<td class="muted">${this.escapeHtml(obj[k])}</td>`).join("")
+          : `<td class="muted">${this.escapeHtml(JSON.stringify(obj))}</td>`;
+        return `<tr>${cells}</tr>`;
+      }).join("");
+    }
+
+    const thead = header.map(h => `<th>${this.escapeHtml(h)}</th>`).join("");
 
     this.setView(`
       <section class="card">
         <span class="pill">Référence</span>
-        <h2 style="margin-top:10px;">${mod.title || "Module"}</h2>
-        <p class="muted">Tableau consultable.</p>
+        <h2 style="margin-top:10px;">${this.escapeHtml(title)}</h2>
+        <p class="muted">${items.length} entrées</p>
         <button class="btn" onclick="Router.go('/ref')">← Retour</button>
       </section>
-      ${table}
+
+      <div class="table-wrap" style="margin-top:12px;">
+        <table class="zebra">
+          <thead><tr>${thead}</tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
     `);
   }
 };
