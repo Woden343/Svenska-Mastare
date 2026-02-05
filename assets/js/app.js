@@ -6,27 +6,29 @@ const App = {
   levels: {},
   levelsOrder: ["A1", "A2", "B1", "B2"],
 
+  // Référence (ref.json)
   refData: null,
 
   async init() {
-    // Bind nav
     const byId = (id) => document.getElementById(id);
 
+    // Nav
     byId("nav-home")?.addEventListener("click", () => Router.go("/"));
     byId("nav-review")?.addEventListener("click", () => Router.go("/review"));
     byId("nav-stats")?.addEventListener("click", () => Router.go("/stats"));
     byId("nav-ref")?.addEventListener("click", () => Router.go("/ref"));
 
-    // Routes
+    // Routes (cours)
     Router.on("/", () => this.viewHome());
     Router.on("/level", (p) => this.viewLevel(p.level));
     Router.on("/lesson", (p) => this.viewLesson(p.level, p.lessonId));
     Router.on("/review", () => this.viewReview());
     Router.on("/stats", () => this.viewStats());
 
-    // Reference
-    Router.on("/ref", () => this.viewRef());
-    Router.on("/ref-sheet", (p) => this.viewRefSheet(p.id));
+    // Routes (référence)
+    Router.on("/ref", () => this.viewRefHome());
+    Router.on("/ref-module", (p) => this.viewRefModule(p.moduleId));
+    Router.on("/ref-lesson", (p) => this.viewRefLesson(p.moduleId, p.lessonId));
 
     // Load data
     await this.preloadLevels();
@@ -34,6 +36,8 @@ const App = {
 
     Router.start("/");
   },
+
+  // -------------------- CORE --------------------
 
   setView(html) {
     this.mount.innerHTML = html;
@@ -53,6 +57,8 @@ const App = {
     if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
     return await res.json();
   },
+
+  // -------------------- LEVELS --------------------
 
   async preloadLevels() {
     const map = {
@@ -78,6 +84,8 @@ const App = {
     }
   },
 
+  // -------------------- REF --------------------
+
   async preloadRef() {
     try {
       this.refData = await this.loadJson("assets/data/ref.json");
@@ -87,7 +95,24 @@ const App = {
     }
   },
 
-  // ---------- HOME ----------
+  refModules() {
+    if (!this.refData) return [];
+    return Array.isArray(this.refData.modules) ? this.refData.modules : [];
+  },
+
+  refModuleById(moduleId) {
+    const mods = this.refModules();
+    return mods.find(m => String(m.id) === String(moduleId)) || null;
+  },
+
+  refLessonById(moduleId, lessonId) {
+    const mod = this.refModuleById(moduleId);
+    if (!mod) return null;
+    const lessons = Array.isArray(mod.lessons) ? mod.lessons : [];
+    return lessons.find(l => String(l.id) === String(lessonId)) || null;
+  },
+
+  // -------------------- VIEWS: HOME --------------------
 
   viewHome() {
     const s = Storage.load();
@@ -111,12 +136,10 @@ const App = {
       })
       .join("");
 
-    const diagMissing = this.levelsOrder.filter(l => !this.levels[l]);
-
     this.setView(`
       <section class="card">
         <h2>Bienvenue 👋</h2>
-        <p class="muted">Objectif : apprendre le suédois de zéro (A1 → C2) avec cours + exercices.</p>
+        <p class="muted">Objectif : apprendre le suédois de zéro (A1 → C2) avec cours + exercices + révision.</p>
         <div class="kpi">
           <span class="pill">Leçons validées : <b>${doneCount}</b></span>
           <span class="pill">Bonnes réponses : <b>${s.stats?.correct ?? 0}</b></span>
@@ -132,18 +155,10 @@ const App = {
           </div>
         `}
       </section>
-
-      ${diagMissing.length ? `
-        <section class="card" style="margin-top:12px;">
-          <h3>Diagnostic</h3>
-          <p class="muted">Niveaux manquants/non chargés : <b>${this.esc(diagMissing.join(", "))}</b></p>
-          <p class="muted">Vérifie les noms exacts (ex: <code>b2.json</code> en minuscules) et que les fichiers sont bien push sur GitHub.</p>
-        </section>
-      ` : ""}
     `);
   },
 
-  // ---------- LEVEL ----------
+  // -------------------- VIEWS: LEVEL --------------------
 
   viewLevel(level) {
     const L = this.levels[level];
@@ -178,7 +193,7 @@ const App = {
     `);
   },
 
-  // ---------- LESSON ----------
+  // -------------------- VIEWS: LESSON --------------------
 
   viewLesson(level, lessonId) {
     const L = this.levels[level];
@@ -190,9 +205,23 @@ const App = {
 
     if (!lesson) return Router.go("/level", { level });
 
-    const contentHtml = (lesson.content || []).map(p => `<p>${this.esc(p)}</p>`).join("");
+    this.renderLessonLikePage({
+      pill: L.level,
+      title: lesson.title || "Leçon",
+      content: lesson.content || [],
+      examples: lesson.examples || [],
+      vocab: lesson.vocab || [],
+      showQuiz: true,
+      quiz: lesson.quiz || null,
+      doneKey: `${L.level}:${lesson.id}`,
+      back: () => Router.go("/level", { level: L.level })
+    });
+  },
 
-    const examplesHtml = (lesson.examples || []).map(e => `
+  renderLessonLikePage({ pill, title, content, examples, vocab, showQuiz, quiz, doneKey, back }) {
+    const contentHtml = (content || []).map(p => `<p>${this.esc(p)}</p>`).join("");
+
+    const examplesHtml = (examples || []).map(e => `
       <div class="choice" style="cursor:default;">
         <div>
           <b>${this.esc(e.sv || "")}</b>
@@ -201,7 +230,7 @@ const App = {
       </div>
     `).join("");
 
-    const vocabHtml = (lesson.vocab || []).map(w => `
+    const vocabHtml = (vocab || []).map(w => `
       <div class="choice" style="cursor:default;">
         <div style="min-width:110px;"><b>${this.esc(w.sv || "")}</b></div>
         <div class="muted">${this.esc(w.fr || "")}${w.pron ? ` • <i>${this.esc(w.pron)}</i>` : ""}</div>
@@ -210,42 +239,47 @@ const App = {
 
     this.setView(`
       <section class="card">
-        <span class="pill">${this.esc(L.level)}</span>
-        <h2 style="margin-top:10px;">${this.esc(lesson.title || "Leçon")}</h2>
+        <span class="pill">${this.esc(pill || "")}</span>
+        <h2 style="margin-top:10px;">${this.esc(title || "")}</h2>
 
         ${contentHtml}
 
-        ${(lesson.examples && lesson.examples.length) ? `
+        ${(examples && examples.length) ? `
           <hr />
           <h3>Exemples</h3>
           ${examplesHtml}
         ` : ""}
 
-        ${(lesson.vocab && lesson.vocab.length) ? `
+        ${(vocab && vocab.length) ? `
           <hr />
           <h3>Vocabulaire</h3>
           ${vocabHtml}
         ` : ""}
 
-        <hr />
-        <h3>Exercices</h3>
-        <div id="quiz"></div>
+        ${showQuiz ? `
+          <hr />
+          <h3>Exercices</h3>
+          <div id="quiz"></div>
+        ` : ""}
 
         <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-          <button class="btn btn-success" onclick="Storage.markDone('${this.esc(L.level)}:${this.esc(lesson.id)}'); Router.go('/level',{level:'${this.esc(L.level)}'})">✔ Marquer comme faite</button>
-          <button class="btn" onclick="Router.go('/level',{level:'${this.esc(L.level)}'})">← Retour</button>
+          ${doneKey ? `<button class="btn btn-success" onclick="Storage.markDone('${this.esc(doneKey)}');">✔ Marquer comme faite</button>` : ""}
+          <button class="btn" id="backBtn">← Retour</button>
         </div>
       </section>
     `);
 
-    this.renderQuiz(lesson);
+    const backBtn = document.getElementById("backBtn");
+    if (backBtn) backBtn.onclick = back;
+
+    if (showQuiz) this.renderQuiz(quiz);
   },
 
-  renderQuiz(lesson) {
+  renderQuiz(quiz) {
     const host = document.getElementById("quiz");
     if (!host) return;
 
-    const quizzes = Array.isArray(lesson.quiz) ? lesson.quiz : (lesson.quiz ? [lesson.quiz] : []);
+    const quizzes = Array.isArray(quiz) ? quiz : (quiz ? [quiz] : []);
     if (!quizzes.length) {
       host.innerHTML = `<p class="muted">Aucun exercice pour cette leçon.</p>`;
       return;
@@ -271,8 +305,8 @@ const App = {
 
       const qbox = host.querySelector("#qbox");
       const fb = host.querySelector("#fb");
-
       const lock = () => answered[idx];
+
       const setFeedback = (ok, extra = "") => {
         fb.textContent = ok ? `✅ Correct. ${extra}` : `❌ Non. ${extra}`;
       };
@@ -338,7 +372,7 @@ const App = {
     renderOne();
   },
 
-  // ---------- REVIEW / STATS ----------
+  // -------------------- REVIEW / STATS --------------------
 
   viewReview() {
     this.setView(`
@@ -369,103 +403,89 @@ const App = {
     `);
   },
 
-  // ---------- REFERENCE (simple et stable) ----------
+  // -------------------- REF VIEWS --------------------
 
-  getRefModules() {
-    const r = this.refData;
-    if (!r) return [];
-    return (Array.isArray(r.modules) && r.modules) || (Array.isArray(r.sections) && r.sections) || [];
-  },
-
-  getRefItems(mod) {
-    if (!mod) return [];
-    return (Array.isArray(mod.items) && mod.items) || (Array.isArray(mod.rows) && mod.rows) || (Array.isArray(mod.entries) && mod.entries) || [];
-  },
-
-  viewRef() {
+  viewRefHome() {
     if (!this.refData) {
       return this.setView(`
         <section class="card">
           <h2>Références</h2>
-          <p class="muted">Aucun <code>ref.json</code> détecté dans <code>assets/data/</code> (optionnel).</p>
+          <p class="muted">Le fichier <code>assets/data/ref.json</code> est introuvable ou invalide.</p>
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
     }
 
-    const mods = this.getRefModules();
-    if (!mods.length) {
-      return this.setView(`
-        <section class="card">
-          <h2>Références</h2>
-          <p class="muted">Ton <code>ref.json</code> ne contient pas <code>modules</code> ou <code>sections</code>.</p>
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </section>
-      `);
-    }
+    const mods = this.refModules();
+    const title = this.refData.title || "Références";
 
     this.setView(`
       <section class="card">
-        <h2>Références</h2>
-        <p class="muted">Choisis un module puis ouvre son tableau.</p>
+        <h2>${this.esc(title)}</h2>
+        <p class="muted">Choisis un module (Bescherelle / Vocab / Particules), puis une fiche.</p>
       </section>
 
       <section class="grid grid-2" style="margin-top:12px;">
-        ${mods.map((m, idx) => {
-          const id = m.id || `m${idx}`;
-          const title = m.title || "Module";
-          const count = this.getRefItems(m).length;
-          return `
-            <div class="card">
-              <span class="pill">Référence</span>
-              <h3 style="margin-top:10px;">${this.esc(title)}</h3>
-              <p class="muted">${count} entrées</p>
-              <button class="btn btn-primary" onclick="Router.go('/ref-sheet',{id:'${this.esc(id)}'})">Ouvrir</button>
-            </div>
-          `;
-        }).join("")}
+        ${mods.map(m => `
+          <div class="card">
+            <span class="pill">Référence</span>
+            <h3 style="margin-top:10px;">${this.esc(m.title || "Module")}</h3>
+            <p class="muted">Fiches : ${(m.lessons || []).length}</p>
+            <button class="btn btn-primary" onclick="Router.go('/ref-module',{moduleId:'${this.esc(m.id)}'})">Ouvrir</button>
+          </div>
+        `).join("")}
       </section>
     `);
   },
 
-  viewRefSheet(id) {
-    const mods = this.getRefModules();
-    const mod = mods.find(m => String(m.id || "") === String(id)) || mods.find((_, idx) => `m${idx}` === String(id));
+  viewRefModule(moduleId) {
+    const mod = this.refModuleById(moduleId);
     if (!mod) return Router.go("/ref");
 
-    const items = this.getRefItems(mod);
+    const lessons = Array.isArray(mod.lessons) ? mod.lessons : [];
 
     this.setView(`
       <section class="card">
         <span class="pill">Référence</span>
         <h2 style="margin-top:10px;">${this.esc(mod.title || "Module")}</h2>
-        <p class="muted">${items.length} entrées</p>
-        <button class="btn" onclick="Router.go('/ref')">← Retour</button>
+        <p class="muted">Choisis une fiche.</p>
       </section>
 
-      <div class="table-wrap" style="margin-top:12px;">
-        <table class="zebra">
-          <thead>
-            <tr>
-              <th>Suédois</th>
-              <th>Français</th>
-              <th>Pron</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${items.map(it => `
-              <tr>
-                <td><b>${this.esc(it.sv || it.word || "")}</b></td>
-                <td>${this.esc(it.fr || it.meaning || "")}</td>
-                <td class="muted">${this.esc(it.pron || "")}</td>
-                <td class="muted">${this.esc(it.note || "")}</td>
-              </tr>
+      <section class="grid" style="margin-top:12px;">
+        <div class="card">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            ${lessons.map(l => `
+              <button class="btn" onclick="Router.go('/ref-lesson',{moduleId:'${this.esc(mod.id)}',lessonId:'${this.esc(l.id)}'})">
+                ${this.esc(l.title || "Fiche")}
+              </button>
             `).join("")}
-          </tbody>
-        </table>
+          </div>
+        </div>
+      </section>
+
+      <div style="margin-top:12px;">
+        <button class="btn" onclick="Router.go('/ref')">← Retour</button>
       </div>
     `);
+  },
+
+  viewRefLesson(moduleId, lessonId) {
+    const mod = this.refModuleById(moduleId);
+    const lesson = this.refLessonById(moduleId, lessonId);
+    if (!mod || !lesson) return Router.go("/ref");
+
+    // On affiche comme une leçon MAIS sans quiz (référence)
+    this.renderLessonLikePage({
+      pill: "Référence",
+      title: lesson.title || "Fiche",
+      content: lesson.content || [],
+      examples: lesson.examples || [],
+      vocab: lesson.vocab || [],
+      showQuiz: false,
+      quiz: null,
+      doneKey: null,
+      back: () => Router.go("/ref-module", { moduleId })
+    });
   }
 };
 
