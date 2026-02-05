@@ -18,9 +18,9 @@ const Storage = {
     localStorage.setItem(this.key, JSON.stringify(state));
   },
 
-  markDone(lessonId) {
+  markDone(lessonKey) {
     const s = this.load();
-    s.done[lessonId] = true;
+    s.done[lessonKey] = true;
     this.save(s);
   },
 
