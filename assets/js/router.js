@@ -1,68 +1,38 @@
 // assets/js/router.js
-// Router hash: #/path?x=1  (fonctionne local + GitHub Pages)
+const Router = {
+  routes: {},
 
-const Router = (() => {
-  const routes = [];
+  on(path, handler) {
+    this.routes[path] = handler;
+  },
 
-  const parseHash = () => {
-    const h = (location.hash || "#/").replace(/^#/, "");
-    const [pathPart, queryPart] = h.split("?");
-    const path = pathPart || "/";
-    const params = {};
+  go(path, params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    const url = "#" + path + (qs ? ("?" + qs) : "");
+    location.hash = url;
+  },
 
-    if (queryPart) {
-      for (const part of queryPart.split("&")) {
-        if (!part) continue;
-        const [k, v] = part.split("=");
-        params[decodeURIComponent(k)] = decodeURIComponent(v || "");
-      }
-    }
-
+  parseHash() {
+    const hash = location.hash || "#/";
+    const [rawPath, rawQuery] = hash.slice(1).split("?");
+    const path = rawPath || "/";
+    const params = Object.fromEntries(new URLSearchParams(rawQuery || ""));
     return { path, params };
-  };
+  },
 
-  const match = (pattern, path) => {
-    // pattern ex: "/lesson"  (params via query)
-    // On reste simple: match exact
-    return pattern === path;
-  };
-
-  const render = () => {
-    const { path, params } = parseHash();
-
-    for (const r of routes) {
-      if (match(r.pattern, path)) {
-        r.handler(params);
-        return;
-      }
+  dispatch() {
+    const { path, params } = this.parseHash();
+    const handler = this.routes[path];
+    if (handler) handler(params);
+    else {
+      // fallback
+      if (this.routes["/"]) this.routes["/"]({});
     }
+  },
 
-    // fallback -> home
-    go("/");
-  };
-
-  const on = (pattern, handler) => {
-    routes.push({ pattern, handler });
-  };
-
-  const go = (path, params = null) => {
-    let hash = `#${path}`;
-    if (params && typeof params === "object") {
-      const qs = Object.entries(params)
-        .filter(([, v]) => v !== undefined && v !== null)
-        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
-        .join("&");
-      if (qs) hash += `?${qs}`;
-    }
-    if (location.hash !== hash) location.hash = hash;
-    else render(); // si même hash, on force le render
-  };
-
-  const start = (defaultPath = "/") => {
-    window.addEventListener("hashchange", render);
-    if (!location.hash) location.hash = `#${defaultPath}`;
-    render();
-  };
-
-  return { on, go, start };
-})();
+  start(defaultPath = "/") {
+    if (!location.hash) location.hash = "#" + defaultPath;
+    window.addEventListener("hashchange", () => this.dispatch());
+    this.dispatch();
+  }
+};
