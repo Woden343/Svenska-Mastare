@@ -2,7 +2,12 @@
 
 const App = {
   mount: document.getElementById("app"),
-  data: null, // contiendra le JSON de A1
+
+  // Contiendra tous les niveaux chargés : { A1: {...}, A2: {...} }
+  levels: {},
+
+  // Ordre d’affichage sur l’accueil
+  levelsOrder: ["A1", "A2"],
 
   async init() {
     // Nav
@@ -17,16 +22,44 @@ const App = {
     Router.on("/review", () => this.viewReview());
     Router.on("/stats", () => this.viewStats());
 
-    // Charger le contenu A1 depuis le JSON
-    this.data = await this.loadLevel("A1");
+    // Charger A1 + A2 (et ignorer proprement un niveau manquant)
+    await this.preloadLevels();
 
     Router.start("/");
   },
 
+  async preloadLevels() {
+    const toLoad = this.levelsOrder.slice();
+
+    for (const lvl of toLoad) {
+      try {
+        this.levels[lvl] = await this.loadLevel(lvl);
+      } catch (e) {
+        console.warn(`[loadLevel] ${lvl} non chargé:`, e.message || e);
+      }
+    }
+
+    // Sécurité : si aucun niveau n’est chargé, on affiche une erreur lisible
+    if (Object.keys(this.levels).length === 0) {
+      this.setView(`
+        <section class="card">
+          <h2>Erreur de chargement</h2>
+          <p class="muted">Aucun niveau n’a pu être chargé. Vérifie que les fichiers JSON existent bien dans <code>assets/data/</code>.</p>
+          <ul>
+            <li><code>assets/data/a1.json</code></li>
+            <li><code>assets/data/a2.json</code></li>
+          </ul>
+        </section>
+      `);
+      return;
+    }
+  },
+
   async loadLevel(level) {
-    // Pour l’instant: uniquement A1. (On ajoutera A2/B1/etc après)
+    // Map des niveaux → fichiers
     const map = {
-      A1: "assets/data/a1.json"
+      A1: "assets/data/a1.json",
+      A2: "assets/data/a2.json"
     };
 
     const url = map[level];
@@ -37,7 +70,6 @@ const App = {
     const json = await res.json();
 
     // Normalisation minimaliste
-    // On s’assure que les champs existent pour éviter les crashs.
     return {
       level: json.level || level,
       title: json.title || "",
@@ -49,14 +81,32 @@ const App = {
     this.mount.innerHTML = html;
   },
 
+  getLevelData(level) {
+    return this.levels[level] || null;
+  },
+
   viewHome() {
     const s = Storage.load();
     const doneCount = Object.keys(s.done).length;
 
-    // V1: on expose A1 (on ajoutera les autres niveaux ensuite)
-    const level = this.data.level || "A1";
-    const levelTitle = this.data.title ? `${level} — ${this.data.title}` : level;
-    const modulesCount = this.data.modules.length;
+    // Cartes niveaux disponibles
+    const cards = this.levelsOrder
+      .map(lvl => this.getLevelData(lvl))
+      .filter(Boolean)
+      .map(L => {
+        const modulesCount = (L.modules || []).length;
+        const levelTitle = L.title ? `${L.level} — ${L.title}` : L.level;
+
+        return `
+          <div class="card">
+            <span class="pill">Niveau ${L.level}</span>
+            <h3 style="margin-top:10px;">${levelTitle}</h3>
+            <p class="muted">Modules : ${modulesCount}</p>
+            <button class="btn" onclick="Router.go('/level',{level:'${L.level}'})">Ouvrir</button>
+          </div>
+        `;
+      })
+      .join("");
 
     this.setView(`
       <section class="card">
@@ -70,29 +120,29 @@ const App = {
       </section>
 
       <section class="grid grid-2" style="margin-top:12px;">
-        <div class="card">
-          <span class="pill">Niveau ${level}</span>
-          <h3 style="margin-top:10px;">${levelTitle}</h3>
-          <p class="muted">Modules : ${modulesCount}</p>
-          <button class="btn" onclick="Router.go('/level',{level:'${level}'})">Ouvrir</button>
-        </div>
+        ${cards || `
+          <div class="card">
+            <h3>Aucun niveau chargé</h3>
+            <p class="muted">Vérifie tes fichiers JSON.</p>
+          </div>
+        `}
       </section>
     `);
   },
 
   viewLevel(level) {
-    // V1: seul A1 est chargé
-    if (level !== (this.data.level || "A1")) {
+    const L = this.getLevelData(level);
+
+    if (!L) {
+      const loaded = Object.keys(this.levels).join(", ") || "aucun";
       return this.setView(`
         <section class="card">
           <h2>Niveau introuvable</h2>
-          <p class="muted">Pour l’instant, seul le niveau ${this.data.level || "A1"} est chargé.</p>
+          <p class="muted">Niveaux chargés : ${loaded}</p>
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
     }
-
-    const L = this.data;
 
     this.setView(`
       <section class="card">
@@ -102,7 +152,7 @@ const App = {
       </section>
 
       <section style="margin-top:12px;" class="grid">
-        ${L.modules.map(m => `
+        ${(L.modules || []).map(m => `
           <div class="card">
             <h3>${m.title || "Module"}</h3>
             <p class="muted">Leçons : ${(m.lessons || []).length}</p>
@@ -124,14 +174,20 @@ const App = {
   },
 
   viewLesson(level, lessonId) {
-    if (level !== (this.data.level || "A1")) {
-      return this.setView(`<div class="card">Leçon introuvable (niveau non chargé).</div>`);
+    const L = this.getLevelData(level);
+
+    if (!L) {
+      return this.setView(`
+        <section class="card">
+          <h2>Leçon introuvable</h2>
+          <p class="muted">Niveau non chargé : ${level}</p>
+          <button class="btn" onclick="Router.go('/')">← Retour</button>
+        </section>
+      `);
     }
 
-    const L = this.data;
-
     const lesson =
-      L.modules
+      (L.modules || [])
         .flatMap(m => (m.lessons || []))
         .find(x => x.id === lessonId);
 
@@ -182,11 +238,11 @@ const App = {
         ` : ""}
 
         <hr />
-        <h3>Exercice</h3>
+        <h3>Exercices</h3>
         <div id="quiz"></div>
 
         <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-          <button class="btn" onclick="Storage.markDone('${lesson.id}'); Router.go('/level',{level:'${L.level}'})">✔ Marquer comme faite</button>
+          <button class="btn" onclick="Storage.markDone('${L.level}:${lesson.id}'); Router.go('/level',{level:'${L.level}'})">✔ Marquer comme faite</button>
           <button class="btn" onclick="Router.go('/level',{level:'${L.level}'})">← Retour</button>
         </div>
       </section>
@@ -196,67 +252,106 @@ const App = {
   },
 
   renderQuiz(lesson) {
-    const q = lesson.quiz;
-    const el = document.getElementById("quiz");
-    if (!el) return;
+    const host = document.getElementById("quiz");
+    if (!host) return;
 
-    if (!q) {
-      el.innerHTML = `<p class="muted">Aucun exercice pour cette leçon.</p>`;
+    // Support ancien + nouveau format :
+    // - ancien : lesson.quiz = { ... }
+    // - nouveau : lesson.quiz = [ { ... }, { ... } ]
+    const quizzes = Array.isArray(lesson.quiz) ? lesson.quiz : (lesson.quiz ? [lesson.quiz] : []);
+
+    if (quizzes.length === 0) {
+      host.innerHTML = `<p class="muted">Aucun exercice pour cette leçon.</p>`;
       return;
     }
 
-    if (q.type === "mcq") {
-      el.innerHTML = `
-        <p><b>${q.q || ""}</b></p>
-        <div class="grid">
-          ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${c}</div>`).join("")}
+    let idx = 0;
+    let answered = new Array(quizzes.length).fill(false);
+
+    const renderOne = () => {
+      const q = quizzes[idx];
+
+      host.innerHTML = `
+        <div class="card" style="margin-top:10px;">
+          <div class="muted" style="margin-bottom:8px;">Exercice ${idx + 1} / ${quizzes.length}</div>
+          <div id="qbox"></div>
+          <p id="fb" class="muted" style="margin-top:10px;"></p>
+          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+            <button class="btn" id="prev" ${idx === 0 ? "disabled" : ""}>← Précédent</button>
+            <button class="btn" id="next">${idx === quizzes.length - 1 ? "Terminer" : "Suivant →"}</button>
+          </div>
         </div>
-        <p id="fb" class="muted" style="margin-top:10px;"></p>
       `;
 
-      const choicesNodes = el.querySelectorAll(".choice");
-      choicesNodes.forEach(node => {
-        node.onclick = () => {
-          const i = Number(node.dataset.i);
-          const ok = i === q.answerIndex;
+      const qbox = host.querySelector("#qbox");
+      const fb = host.querySelector("#fb");
+
+      const setFeedback = (ok, extra = "") => {
+        fb.textContent = ok ? `✅ Correct. ${extra}` : `❌ Non. ${extra}`;
+      };
+
+      const lockIfAnswered = () => answered[idx];
+
+      if (q.type === "mcq") {
+        qbox.innerHTML = `
+          <p><b>${q.q || ""}</b></p>
+          <div class="grid">
+            ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${c}</div>`).join("")}
+          </div>
+        `;
+
+        const nodes = qbox.querySelectorAll(".choice");
+        nodes.forEach(node => {
+          node.onclick = () => {
+            if (lockIfAnswered()) return;
+
+            const i = Number(node.dataset.i);
+            const ok = i === q.answerIndex;
+
+            Storage.addResult(ok);
+            answered[idx] = true;
+
+            nodes.forEach(n => n.classList.remove("correct", "wrong"));
+            node.classList.add(ok ? "correct" : "wrong");
+
+            const answer = (q.choices && q.choices[q.answerIndex] != null) ? q.choices[q.answerIndex] : "";
+            setFeedback(ok, ok ? "" : `Réponse : ${answer}`);
+          };
+        });
+      } else if (q.type === "gap") {
+        qbox.innerHTML = `
+          <p><b>${q.q || ""}</b></p>
+          <input id="gap" placeholder="Ta réponse..." />
+          <button class="btn" style="margin-top:10px;" id="check">Vérifier</button>
+        `;
+
+        const input = qbox.querySelector("#gap");
+        const btn = qbox.querySelector("#check");
+
+        btn.onclick = () => {
+          if (lockIfAnswered()) return;
+
+          const val = (input.value || "").trim().toLowerCase();
+          const expected = (q.answer || "").trim().toLowerCase();
+          const ok = val === expected;
 
           Storage.addResult(ok);
+          answered[idx] = true;
 
-          choicesNodes.forEach(n => n.classList.remove("correct", "wrong"));
-          node.classList.add(ok ? "correct" : "wrong");
-
-          const fb = el.querySelector("#fb");
-          if (fb) {
-            const answer = (q.choices && q.choices[q.answerIndex] != null) ? q.choices[q.answerIndex] : "";
-            fb.textContent = ok ? "✅ Correct." : `❌ Non. Réponse : ${answer}`;
-          }
+          setFeedback(ok, ok ? "" : `Attendu : ${q.answer || ""}`);
         };
-      });
-      return;
-    }
+      } else {
+        qbox.innerHTML = `<p class="muted">Type de quiz non géré.</p>`;
+      }
 
-    if (q.type === "gap") {
-      el.innerHTML = `
-        <p><b>${q.q || ""}</b></p>
-        <input id="gap" placeholder="Ta réponse..." />
-        <button class="btn" style="margin-top:10px;" id="check">Vérifier</button>
-        <p id="fb" class="muted" style="margin-top:10px;"></p>
-      `;
-
-      el.querySelector("#check").onclick = () => {
-        const val = (el.querySelector("#gap").value || "").trim().toLowerCase();
-        const expected = (q.answer || "").trim().toLowerCase();
-        const ok = val === expected;
-
-        Storage.addResult(ok);
-
-        const fb = el.querySelector("#fb");
-        fb.textContent = ok ? "✅ Correct." : `❌ Attendu : ${q.answer || ""}`;
+      host.querySelector("#prev").onclick = () => { if (idx > 0) { idx--; renderOne(); } };
+      host.querySelector("#next").onclick = () => {
+        if (idx < quizzes.length - 1) { idx++; renderOne(); }
+        else { fb.textContent = "✅ Série terminée."; }
       };
-      return;
-    }
+    };
 
-    el.innerHTML = `<p class="muted">Type de quiz non géré.</p>`;
+    renderOne();
   },
 
   viewReview() {
