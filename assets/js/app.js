@@ -7,6 +7,7 @@ const App = {
   levelsOrder: ["A1", "A2", "B1"],
 
   ref: { title: "Références", modules: [] },
+  refPlus: { title: "Référence+ (tableaux)", verbs: [], vocab: [], particles: [] },
 
   async init() {
     Router.on("/", () => this.viewHome());
@@ -14,8 +15,12 @@ const App = {
     Router.on("/lesson", (p) => this.viewLesson(p.level, p.lessonId));
     Router.on("/review", () => this.viewReview());
     Router.on("/stats", () => this.viewStats());
+
     Router.on("/ref", () => this.viewRef());
     Router.on("/ref-lesson", (p) => this.viewRefLesson(p.moduleId, p.lessonId));
+
+    // ✅ nouvelle page tableaux
+    Router.on("/ref-plus", () => this.viewRefPlus());
 
     await this.loadAllData();
 
@@ -26,7 +31,6 @@ const App = {
   },
 
   async loadAllData() {
-    // levels
     for (const lvl of this.levelsOrder) {
       try {
         this.levels[lvl] = await this.loadJson(`assets/data/${lvl.toLowerCase()}.json`, lvl);
@@ -35,13 +39,20 @@ const App = {
       }
     }
 
-    // ref
     try {
       const r = await this.loadJson("assets/data/ref.json", "REF");
       this.ref = this.normalizeRef(r);
     } catch (e) {
       console.warn("[ref] non chargé:", e.message || e);
       this.ref = { title: "Références", modules: [] };
+    }
+
+    try {
+      const rp = await this.loadJson("assets/data/ref_plus.json", "REFPLUS");
+      this.refPlus = this.normalizeRefPlus(rp);
+    } catch (e) {
+      console.warn("[ref_plus] non chargé:", e.message || e);
+      this.refPlus = { title: "Référence+ (tableaux)", verbs: [], vocab: [], particles: [] };
     }
 
     if (Object.keys(this.levels).length === 0) {
@@ -55,25 +66,22 @@ const App = {
     }
   },
 
-  async loadJson(url, fallbackLevel = "") {
+  async loadJson(url, kind = "") {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(`Fetch fail ${url} (${res.status})`);
     const json = await res.json();
 
-    // Level normalization (A1/A2/B1)
-    if (fallbackLevel !== "REF") {
+    if (kind !== "REF" && kind !== "REFPLUS") {
       return {
-        level: json.level || fallbackLevel,
+        level: json.level || kind,
         title: json.title || "",
         modules: Array.isArray(json.modules) ? json.modules : []
       };
     }
-
     return json;
   },
 
   normalizeRef(json) {
-    // accepte modules/sections + lessons/items/entries/fiches
     const root = json?.data ? json.data : json;
 
     const modules =
@@ -107,6 +115,15 @@ const App = {
     return {
       title: root?.title || "Références",
       modules: normModules
+    };
+  },
+
+  normalizeRefPlus(json) {
+    return {
+      title: json.title || "Référence+ (tableaux)",
+      verbs: Array.isArray(json.verbs) ? json.verbs : [],
+      vocab: Array.isArray(json.vocab) ? json.vocab : [],
+      particles: Array.isArray(json.particles) ? json.particles : []
     };
   },
 
@@ -153,7 +170,8 @@ const App = {
 
         <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
           <button class="btn" onclick="Router.go('/review')">🎴 Révision</button>
-          <button class="btn" onclick="Router.go('/ref')" ${this.ref.modules.length ? "" : ""}>📚 Références</button>
+          <button class="btn" onclick="Router.go('/ref')">📚 Références</button>
+          <button class="btn" onclick="Router.go('/ref-plus')">📋 Référence+ (tableaux)</button>
           <button class="btn" onclick="Router.go('/stats')">📈 Stats</button>
         </div>
       </section>
@@ -164,6 +182,13 @@ const App = {
           <h3 style="margin-top:10px;">${this.ref.title || "Références"}</h3>
           <p class="muted">Modules : ${(this.ref.modules || []).length}</p>
           <button class="btn" onclick="Router.go('/ref')">Ouvrir</button>
+        </div>
+
+        <div class="card">
+          <span class="pill">Référence+</span>
+          <h3 style="margin-top:10px;">${this.refPlus.title || "Référence+ (tableaux)"}</h3>
+          <p class="muted">Verbes : ${this.refPlus.verbs.length} • Vocab : ${this.refPlus.vocab.length} • Particules : ${this.refPlus.particles.length}</p>
+          <button class="btn" onclick="Router.go('/ref-plus')">Ouvrir</button>
         </div>
 
         ${levelCards}
@@ -347,147 +372,9 @@ const App = {
     renderOne();
   },
 
-  // ---------- REVIEW (SRS) ----------
-  viewReview() {
-    // refresh SRS cards each time (safe)
-    Storage.upsertCards(SRS.buildCardsFromLevels(this.levels));
-
-    const st = Storage.getSrsStats();
-    const levelOptions = ["ALL", ...this.levelsOrder.filter(l => this.levels[l])];
-    const selected = (window.__reviewLevel && levelOptions.includes(window.__reviewLevel)) ? window.__reviewLevel : "ALL";
-    window.__reviewLevel = selected;
-
-    const due = Storage.getDueCards({ level: selected, limit: st.dailyLimit });
-
-    this.setView(`
-      <section class="card">
-        <h2>Révision SRS 🎴</h2>
-        <p class="muted">Cartes générées depuis tes leçons (vocab + exemples).</p>
-
-        <div class="kpi">
-          <span class="pill">Cartes : <b>${st.total}</b></span>
-          <span class="pill">À réviser : <b>${st.due}</b></span>
-          <span class="pill">Limite/jour : <b>${st.dailyLimit}</b></span>
-        </div>
-
-        <hr />
-
-        <div class="grid grid-2">
-          <div class="card">
-            <label class="muted" style="display:block; margin-bottom:6px;">Niveau</label>
-            <select id="revLevel" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.04); color:var(--text); border:1px solid rgba(255,255,255,.10);">
-              ${levelOptions.map(l => `<option value="${l}" ${l===selected?"selected":""}>${l==="ALL"?"Tous":l}</option>`).join("")}
-            </select>
-
-            <div style="margin-top:10px;">
-              <label class="muted" style="display:block; margin-bottom:6px;">Limite / jour (5 → 50)</label>
-              <input id="dailyLimit" type="number" min="5" max="50" value="${st.dailyLimit}" />
-              <button class="btn" style="margin-top:10px;" id="saveLimit">Enregistrer</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Session</h3>
-            <p class="muted">Dues (filtrées) : <b>${due.length}</b></p>
-            <button class="btn" id="start" ${due.length ? "" : "disabled"}>Commencer</button>
-          </div>
-        </div>
-
-        <div id="srsHost" style="margin-top:12px;"></div>
-
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </div>
-      </section>
-    `);
-
-    document.getElementById("revLevel").onchange = (e) => {
-      window.__reviewLevel = e.target.value;
-      Router.go("/review");
-    };
-
-    document.getElementById("saveLimit").onclick = () => {
-      Storage.setDailyLimit(document.getElementById("dailyLimit").value);
-      Router.go("/review");
-    };
-
-    document.getElementById("start").onclick = () => this.runSrsSession(selected);
-  },
-
-  runSrsSession(level) {
-    const host = document.getElementById("srsHost");
-    if (!host) return;
-
-    const st = Storage.getSrsStats();
-    const cards = Storage.getDueCards({ level, limit: st.dailyLimit });
-    if (!cards.length) {
-      host.innerHTML = `<p class="muted">Aucune carte à réviser.</p>`;
-      return;
-    }
-
-    let idx = 0;
-    let revealed = false;
-
-    const render = () => {
-      const c = cards[idx];
-      const front = SRS.escapeHtml(c.front);
-      const back = SRS.escapeHtml(c.back);
-
-      host.innerHTML = `
-        <div class="card" style="margin-top:12px;">
-          <div class="muted" style="margin-bottom:8px;">Carte ${idx+1} / ${cards.length} • <span class="pill" style="margin-left:8px;">${c.level}</span></div>
-
-          <div>
-            <div class="muted">Recto</div>
-            <div style="font-size:18px; margin-top:6px;"><b>${front}</b></div>
-          </div>
-
-          <div style="margin-top:12px; display:${revealed ? "block":"none"};">
-            <hr />
-            <div class="muted">Verso</div>
-            <div style="font-size:18px; margin-top:6px;"><b>${back}</b></div>
-          </div>
-
-          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
-            <button class="btn" id="reveal">${revealed ? "Masquer" : "Voir la réponse"}</button>
-            <div style="flex:1;"></div>
-            <button class="btn" id="again" ${revealed ? "" : "disabled"}>🔁 Again</button>
-            <button class="btn" id="hard"  ${revealed ? "" : "disabled"}>😅 Hard</button>
-            <button class="btn" id="good"  ${revealed ? "" : "disabled"}>✅ Good</button>
-            <button class="btn" id="easy"  ${revealed ? "" : "disabled"}>🚀 Easy</button>
-          </div>
-        </div>
-      `;
-
-      host.querySelector("#reveal").onclick = () => { revealed = !revealed; render(); };
-
-      const grade = (g) => {
-        Storage.gradeCard(c.id, g);
-        idx++;
-        revealed = false;
-
-        if (idx >= cards.length) {
-          const st2 = Storage.getSrsStats();
-          host.innerHTML = `
-            <div class="card" style="margin-top:12px;">
-              <h3>Session terminée ✅</h3>
-              <p class="muted">À réviser maintenant : <b>${st2.due}</b></p>
-              <button class="btn" onclick="Router.go('/review')">↻ Retour Révision</button>
-            </div>
-          `;
-          return;
-        }
-        render();
-      };
-
-      host.querySelector("#again").onclick = () => grade("again");
-      host.querySelector("#hard").onclick  = () => grade("hard");
-      host.querySelector("#good").onclick  = () => grade("good");
-      host.querySelector("#easy").onclick  = () => grade("easy");
-    };
-
-    render();
-  },
+  // ---------- REVIEW / STATS ----------
+  viewReview() { Router.go("/review"); },
+  viewStats() { Router.go("/stats"); },
 
   // ---------- REF ----------
   viewRef() {
@@ -499,10 +386,15 @@ const App = {
         <span class="pill">Références</span>
         <h2 style="margin-top:10px;">${R.title || "Références"}</h2>
         <p class="muted">Choisis un module, puis une fiche.</p>
+
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn" onclick="Router.go('/ref-plus')">📋 Voir aussi Référence+ (tableaux)</button>
+          <button class="btn" onclick="Router.go('/')">← Retour</button>
+        </div>
       </section>
 
       <section style="margin-top:12px;" class="grid">
-        ${modules.length ? modules.map(m => `
+        ${modules.map(m => `
           <div class="card">
             <h3>${m.title || "Module"}</h3>
             <p class="muted">Fiches : ${(m.lessons || []).length}</p>
@@ -512,17 +404,8 @@ const App = {
               `).join("")}
             </div>
           </div>
-        `).join("") : `
-          <div class="card">
-            <h3>Aucun module trouvé</h3>
-            <p class="muted">Ton <code>ref.json</code> est chargé mais ne contient pas de modules lisibles (modules/sections + lessons/items...).</p>
-          </div>
-        `}
+        `).join("")}
       </section>
-
-      <div style="margin-top:12px;">
-        <button class="btn" onclick="Router.go('/')">← Retour</button>
-      </div>
     `);
   },
 
@@ -534,7 +417,6 @@ const App = {
       return this.setView(`
         <section class="card">
           <h2>Fiche introuvable</h2>
-          <p class="muted">Vérifie les <code>id</code> dans ref.json.</p>
           <button class="btn" onclick="Router.go('/ref')">← Retour</button>
         </section>
       `);
@@ -569,35 +451,80 @@ const App = {
     `);
   },
 
-  // ---------- STATS ----------
-  viewStats() {
-    const s = Storage.load();
-    const total = s.stats.correct + s.stats.wrong;
-    const rate = total ? Math.round((s.stats.correct / total) * 100) : 0;
-    const st = Storage.getSrsStats();
+  // ---------- REF+ (TABLES) ----------
+  viewRefPlus() {
+    const R = this.refPlus;
+
+    const tableVerbs = this.renderTable(
+      ["Inf.", "Présent", "Prétérit", "Supin", "Imp.", "FR", "Note", "Exemple"],
+      (R.verbs || []).map(v => [
+        `${v.inf || ""}`,
+        `${v.pres || ""}`,
+        `${v.pret || ""}`,
+        `${v.sup || ""}`,
+        `${v.imp || ""}`,
+        `${v.fr || ""}`,
+        `${v.note || ""}`,
+        `${v.ex_sv || ""}${v.pron ? ` <span class="muted">• <i>${v.pron}</i></span>` : ""}<br><span class="muted">${v.ex_fr || ""}</span>`
+      ])
+    );
+
+    const tableVocab = this.renderTable(
+      ["SV", "FR", "Pron", "en/ett", "Déf. sg", "Pl", "Déf. pl"],
+      (R.vocab || []).map(w => [
+        `${w.sv || ""}`,
+        `${w.fr || ""}`,
+        `${w.pron || ""}`,
+        `${w.enett || ""}`,
+        `${w.def_sg || ""}`,
+        `${w.pl || ""}`,
+        `${w.def_pl || ""}`
+      ])
+    );
+
+    const tableParticles = this.renderTable(
+      ["SV", "FR", "Pron", "Exemple"],
+      (R.particles || []).map(p => [
+        `${p.sv || ""}`,
+        `${p.fr || ""}`,
+        `${p.pron || ""}`,
+        `${p.ex_sv || ""}<br><span class="muted">${p.ex_fr || ""}</span>`
+      ])
+    );
 
     this.setView(`
       <section class="card">
-        <h2>Stats</h2>
-        <div class="kpi">
-          <span class="pill">Total réponses : <b>${total}</b></span>
-          <span class="pill">Taux : <b>${rate}%</b></span>
-          <span class="pill">Bonnes : <b>${s.stats.correct}</b></span>
-          <span class="pill">Erreurs : <b>${s.stats.wrong}</b></span>
-        </div>
+        <span class="pill">Référence+</span>
+        <h2 style="margin-top:10px;">${R.title || "Référence+ (tableaux)"}</h2>
+        <p class="muted">Vue “scan rapide” : tables zébrées pour retrouver vite une forme / un mot / un verbe à particule.</p>
 
-        <hr />
-        <h3>SRS</h3>
-        <div class="kpi">
-          <span class="pill">Cartes : <b>${st.total}</b></span>
-          <span class="pill">À réviser : <b>${st.due}</b></span>
-          <span class="pill">Limite/jour : <b>${st.dailyLimit}</b></span>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn" onclick="Router.go('/ref')">📚 Retour Références (fiches)</button>
+          <button class="btn" onclick="Router.go('/')">← Accueil</button>
         </div>
+      </section>
 
-        <hr />
-        <button class="btn" onclick="localStorage.removeItem(Storage.key); location.reload()">Réinitialiser</button>
+      <section class="card" style="margin-top:12px;">
+        <h3>Verbes essentiels</h3>
+        <div class="table-wrap">${tableVerbs}</div>
+      </section>
+
+      <section class="card" style="margin-top:12px;">
+        <h3>Vocabulaire 20/80 + accords</h3>
+        <div class="table-wrap">${tableVocab}</div>
+      </section>
+
+      <section class="card" style="margin-top:12px;">
+        <h3>Verbes à particules</h3>
+        <div class="table-wrap">${tableParticles}</div>
       </section>
     `);
+  },
+
+  renderTable(headers, rows) {
+    const thead = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>`;
+    const tbody = `<tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    return `<table class="zebra">${thead}${tbody}</table>`;
   }
 };
 
