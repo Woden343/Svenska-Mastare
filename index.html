@@ -3,27 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Svenska — De A1 à C2</title>
+  <title>Svenska Mästare</title>
+  <meta name="description" content="Apprendre le suédois de zéro (A1 → C2) : cours, exercices, révision." />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
+
 <body>
   <header class="topbar">
-    <div class="brand">Svenska<span class="muted"> — FR → SV</span></div>
-    <nav class="topnav">
+    <div class="brand">
+      <div class="logo">🇸🇪</div>
+      <div class="title">
+        <div class="name">Svenska Mästare</div>
+        <div class="tagline">A1 → C2 • cours • exercices • révision</div>
+      </div>
+    </div>
+
+    <nav class="nav">
       <button id="nav-home" class="btn">Accueil</button>
       <button id="nav-review" class="btn">Révision</button>
       <button id="nav-stats" class="btn">Stats</button>
+      <button id="nav-ref" class="btn">Références</button>
     </nav>
   </header>
 
-  <main id="app" class="container"></main>
+  <main class="container">
+    <div id="app"></div>
+  </main>
 
-  <footer class="footer">
-    <span class="muted">Local • Offline • GitHub-friendly</span>
-  </footer>
-
-  <script src="assets/js/storage.js"></script>
+  <!-- JS -->
   <script src="assets/js/router.js"></script>
+  <script src="assets/js/storage.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
