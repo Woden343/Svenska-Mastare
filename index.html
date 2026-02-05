@@ -3,34 +3,42 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Svenska Mästare</title>
-  <meta name="description" content="Apprendre le suédois de zéro (A1 → C2) : cours, exercices, révision." />
+  <title>Svenska Mästare — Apprendre le suédois</title>
+
+  <meta name="description" content="Application locale pour apprendre le suédois (A1 → C2) : cours, exercices, révision SRS, références." />
+  <meta name="theme-color" content="#0b0f14" />
+
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 
 <body>
+  <!-- Topbar -->
   <header class="topbar">
-    <div class="brand">
-      <div class="logo">🇸🇪</div>
-      <div class="title">
-        <div class="name">Svenska Mästare</div>
-        <div class="tagline">A1 → C2 • cours • exercices • révision</div>
-      </div>
-    </div>
+    <div class="brand">Svenska Mästare</div>
 
-    <nav class="nav">
-      <button id="nav-home" class="btn">Accueil</button>
-      <button id="nav-review" class="btn">Révision</button>
-      <button id="nav-stats" class="btn">Stats</button>
-      <button id="nav-ref" class="btn">Références</button>
+    <nav class="topnav" aria-label="Navigation principale">
+      <button id="nav-home" class="btn" type="button">Accueil</button>
+      <button id="nav-review" class="btn" type="button">Révision</button>
+      <button id="nav-ref" class="btn" type="button">Références</button>
+      <button id="nav-stats" class="btn" type="button">Stats</button>
     </nav>
   </header>
 
+  <!-- App container -->
   <main class="container">
-    <div id="app"></div>
+    <div id="app">
+      <section class="card">
+        <h2>Chargement…</h2>
+        <p class="muted">Si rien ne s’affiche, vérifie que les fichiers JS/CSS sont bien au bon endroit.</p>
+      </section>
+    </div>
   </main>
 
-  <!-- JS -->
+  <footer class="footer">
+    <div>© Svenska Mästare — Apprentissage du suédois (A1 → C2)</div>
+  </footer>
+
+  <!-- Scripts (ordre IMPORTANT) -->
   <script src="assets/js/router.js"></script>
   <script src="assets/js/storage.js"></script>
   <script src="assets/js/srs.js"></script>
