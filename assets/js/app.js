@@ -3,20 +3,26 @@
 const App = {
   mount: document.getElementById("app"),
 
-  // Contiendra tous les niveaux chargés : { A1: {...}, A2: {...}, B1: {...}, B2: {...} }
+  // Niveaux chargés : { A1: {...}, A2: {...}, B1: {...}, B2: {...} }
   levels: {},
-
-  // Stocke les erreurs de chargement par niveau
-  loadErrors: {},
 
   // Ordre d’affichage sur l’accueil
   levelsOrder: ["A1", "A2", "B1", "B2"],
 
+  // Référence
+  refData: null,
+
   async init() {
-    // Nav
-    document.getElementById("nav-home").onclick = () => Router.go("/");
-    document.getElementById("nav-review").onclick = () => Router.go("/review");
-    document.getElementById("nav-stats").onclick = () => Router.go("/stats");
+    // Nav (sécurisé)
+    const navHome = document.getElementById("nav-home");
+    const navReview = document.getElementById("nav-review");
+    const navStats = document.getElementById("nav-stats");
+    const navRef = document.getElementById("nav-ref");
+
+    if (navHome) navHome.onclick = () => Router.go("/");
+    if (navReview) navReview.onclick = () => Router.go("/review");
+    if (navStats) navStats.onclick = () => Router.go("/stats");
+    if (navRef) navRef.onclick = () => Router.go("/ref");
 
     // Routes
     Router.on("/", () => this.viewHome());
@@ -24,23 +30,28 @@ const App = {
     Router.on("/lesson", (p) => this.viewLesson(p.level, p.lessonId));
     Router.on("/review", () => this.viewReview());
     Router.on("/stats", () => this.viewStats());
+    Router.on("/ref", () => this.viewRef());
+    Router.on("/ref-sheet", (p) => this.viewRefSheet(p.moduleId));
 
+    // Charger niveaux + ref
     await this.preloadLevels();
+    await this.preloadRef();
 
     Router.start("/");
   },
 
+  setView(html) {
+    this.mount.innerHTML = html;
+  },
+
   async preloadLevels() {
     this.levels = {};
-    this.loadErrors = {};
 
     for (const lvl of this.levelsOrder) {
       try {
         this.levels[lvl] = await this.loadLevel(lvl);
       } catch (e) {
-        const msg = (e && (e.message || String(e))) || "Erreur inconnue";
-        this.loadErrors[lvl] = msg;
-        console.warn(`[loadLevel] ${lvl} non chargé:`, msg);
+        console.warn(`[loadLevel] ${lvl} non chargé:`, e.message || e);
       }
     }
 
@@ -48,17 +59,36 @@ const App = {
       this.setView(`
         <section class="card">
           <h2>Erreur de chargement</h2>
-          <p class="muted">Aucun niveau n’a pu être chargé. Vérifie que les fichiers JSON existent dans <code>assets/data/</code>.</p>
-          <hr />
-          <p><b>Détails</b></p>
-          <pre style="white-space:pre-wrap; word-break:break-word; margin:0;">${this.escapeHtml(JSON.stringify(this.loadErrors, null, 2))}</pre>
+          <p class="muted">Aucun niveau n’a pu être chargé. Vérifie tes fichiers dans <code>assets/data/</code>.</p>
+          <ul>
+            <li><code>assets/data/a1.json</code></li>
+            <li><code>assets/data/a2.json</code></li>
+            <li><code>assets/data/b1.json</code></li>
+            <li><code>assets/data/b2.json</code></li>
+          </ul>
         </section>
       `);
     }
   },
 
+  async preloadRef() {
+    try {
+      // si tu utilises ref.json
+      this.refData = await this.loadJson("assets/data/ref.json");
+    } catch (e) {
+      // la ref est optionnelle : on ne casse pas l'app
+      this.refData = null;
+      console.warn("[ref] non chargé:", e.message || e);
+    }
+  },
+
+  async loadJson(url) {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
+    return await res.json();
+  },
+
   async loadLevel(level) {
-    // IMPORTANT : noms en minuscules pour GitHub Pages (Linux)
     const map = {
       A1: "assets/data/a1.json",
       A2: "assets/data/a2.json",
@@ -69,10 +99,7 @@ const App = {
     const url = map[level];
     if (!url) throw new Error(`Niveau non supporté: ${level}`);
 
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
-
-    const json = await res.json();
+    const json = await this.loadJson(url);
 
     return {
       level: json.level || level,
@@ -81,29 +108,15 @@ const App = {
     };
   },
 
-  setView(html) {
-    this.mount.innerHTML = html;
-  },
-
   getLevelData(level) {
     return this.levels[level] || null;
   },
 
-  escapeHtml(str) {
-    return String(str)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  },
+  // -------------------- VIEWS --------------------
 
   viewHome() {
     const s = Storage.load();
     const doneCount = Object.keys(s.done || {}).length;
-
-    const loadedLevels = Object.keys(this.levels);
-    const missingLevels = this.levelsOrder.filter(l => !this.levels[l]);
 
     const cards = this.levelsOrder
       .map(lvl => this.getLevelData(lvl))
@@ -117,30 +130,11 @@ const App = {
             <span class="pill">Niveau ${L.level}</span>
             <h3 style="margin-top:10px;">${levelTitle}</h3>
             <p class="muted">Modules : ${modulesCount}</p>
-            <button class="btn" onclick="Router.go('/level',{level:'${L.level}'})">Ouvrir</button>
+            <button class="btn btn-primary" onclick="Router.go('/level',{level:'${L.level}'})">Ouvrir</button>
           </div>
         `;
       })
       .join("");
-
-    const errorsBlock = missingLevels.length
-      ? `
-        <div class="card" style="margin-top:12px;">
-          <h3>Diagnostic chargement</h3>
-          <p class="muted">
-            Chargés : <b>${loadedLevels.join(", ") || "aucun"}</b><br/>
-            Manquants : <b>${missingLevels.join(", ")}</b>
-          </p>
-          <hr />
-          <p class="muted" style="margin-bottom:8px;">Détails erreurs :</p>
-          <pre style="white-space:pre-wrap; word-break:break-word; margin:0;">${this.escapeHtml(JSON.stringify(this.loadErrors, null, 2))}</pre>
-          <hr />
-          <p class="muted">
-            Vérifie surtout le nom exact du fichier (ex: <code>b2.json</code> en minuscules) et qu’il est bien dans <code>assets/data/</code>.
-          </p>
-        </div>
-      `
-      : "";
 
     this.setView(`
       <section class="card">
@@ -161,22 +155,17 @@ const App = {
           </div>
         `}
       </section>
-
-      ${errorsBlock}
     `);
   },
 
   viewLevel(level) {
     const L = this.getLevelData(level);
-
     if (!L) {
       const loaded = Object.keys(this.levels).join(", ") || "aucun";
-      const err = this.loadErrors[level] ? `<p class="muted">Erreur : <code>${this.escapeHtml(this.loadErrors[level])}</code></p>` : "";
       return this.setView(`
         <section class="card">
           <h2>Niveau introuvable</h2>
           <p class="muted">Niveaux chargés : ${loaded}</p>
-          ${err}
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
@@ -213,7 +202,6 @@ const App = {
 
   viewLesson(level, lessonId) {
     const L = this.getLevelData(level);
-
     if (!L) {
       return this.setView(`
         <section class="card">
@@ -238,12 +226,7 @@ const App = {
       `);
     }
 
-    const vocabHtml = (lesson.vocab || []).map(w => `
-      <div class="choice" style="cursor:default;">
-        <div style="min-width:110px;"><b>${w.sv || ""}</b></div>
-        <div class="muted">${w.fr || ""}${w.pron ? ` • <i>${w.pron}</i>` : ""}</div>
-      </div>
-    `).join("");
+    const contentHtml = (lesson.content || []).map(p => `<p>${p}</p>`).join("");
 
     const examplesHtml = (lesson.examples || []).map(e => `
       <div class="choice" style="cursor:default;">
@@ -254,7 +237,12 @@ const App = {
       </div>
     `).join("");
 
-    const contentHtml = (lesson.content || []).map(p => `<p>${p}</p>`).join("");
+    const vocabHtml = (lesson.vocab || []).map(w => `
+      <div class="choice" style="cursor:default;">
+        <div style="min-width:110px;"><b>${w.sv || ""}</b></div>
+        <div class="muted">${w.fr || ""}${w.pron ? ` • <i>${w.pron}</i>` : ""}</div>
+      </div>
+    `).join("");
 
     this.setView(`
       <section class="card">
@@ -280,7 +268,7 @@ const App = {
         <div id="quiz"></div>
 
         <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-          <button class="btn" onclick="Storage.markDone('${L.level}:${lesson.id}'); Router.go('/level',{level:'${L.level}'})">✔ Marquer comme faite</button>
+          <button class="btn btn-success" onclick="Storage.markDone('${L.level}:${lesson.id}'); Router.go('/level',{level:'${L.level}'})">✔ Marquer comme faite</button>
           <button class="btn" onclick="Router.go('/level',{level:'${L.level}'})">← Retour</button>
         </div>
       </section>
@@ -415,6 +403,101 @@ const App = {
         <hr />
         <button class="btn" onclick="localStorage.removeItem(Storage.key); location.reload()">Réinitialiser</button>
       </section>
+    `);
+  },
+
+  // --------- Référence (simple) ---------
+
+  viewRef() {
+    if (!this.refData) {
+      return this.setView(`
+        <section class="card">
+          <h2>Références</h2>
+          <p class="muted">Le fichier <code>assets/data/ref.json</code> n’est pas chargé (ou absent).</p>
+          <button class="btn" onclick="Router.go('/')">← Retour</button>
+        </section>
+      `);
+    }
+
+    // Supporte plusieurs formats : modules / sections
+    const mods = Array.isArray(this.refData.modules) ? this.refData.modules
+               : (Array.isArray(this.refData.sections) ? this.refData.sections : []);
+
+    if (!mods.length) {
+      return this.setView(`
+        <section class="card">
+          <h2>Références</h2>
+          <p class="muted">Aucun module trouvé dans <code>ref.json</code>.</p>
+          <button class="btn" onclick="Router.go('/')">← Retour</button>
+        </section>
+      `);
+    }
+
+    this.setView(`
+      <section class="card">
+        <h2>Références (M+)</h2>
+        <p class="muted">Choisis un module (verbes / vocab / particules), puis une fiche.</p>
+      </section>
+
+      <section class="grid grid-2" style="margin-top:12px;">
+        ${mods.map(m => `
+          <div class="card">
+            <span class="pill">Référence</span>
+            <h3 style="margin-top:10px;">${m.title || "Module"}</h3>
+            <p class="muted">${(m.items || m.lessons || []).length} entrées</p>
+            <button class="btn btn-primary" onclick="Router.go('/ref-sheet',{moduleId:'${m.id || m.title || ""}'})">Ouvrir</button>
+          </div>
+        `).join("")}
+      </section>
+    `);
+  },
+
+  viewRefSheet(moduleId) {
+    if (!this.refData) return Router.go("/ref");
+
+    const mods = Array.isArray(this.refData.modules) ? this.refData.modules
+               : (Array.isArray(this.refData.sections) ? this.refData.sections : []);
+
+    const mod =
+      mods.find(x => (x.id || x.title || "") === moduleId) ||
+      mods.find(x => (x.title || "") === moduleId);
+
+    if (!mod) return Router.go("/ref");
+
+    const rows = (mod.items || mod.lessons || []);
+    const table = rows.length ? `
+      <div class="table-wrap" style="margin-top:12px;">
+        <table class="zebra">
+          <thead>
+            <tr>
+              <th>Suédois</th>
+              <th>Français</th>
+              <th>Prononciation</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(it => `
+              <tr>
+                <td><b>${it.sv || it.word || ""}</b></td>
+                <td>${it.fr || it.meaning || ""}</td>
+                <td class="muted">${it.pron || ""}</td>
+                <td class="muted">${it.note || ""}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    ` : `<p class="muted" style="margin-top:12px;">Aucune entrée.</p>`;
+
+    this.setView(`
+      <section class="card">
+        <span class="pill">Référence</span>
+        <h2 style="margin-top:10px;">${mod.title || "Module"}</h2>
+        <p class="muted">Tableau consultable.</p>
+        <button class="btn" onclick="Router.go('/ref')">← Retour</button>
+      </section>
+      ${table}
     `);
   }
 };
