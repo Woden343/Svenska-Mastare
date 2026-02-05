@@ -6,6 +6,9 @@ const App = {
   // Contiendra tous les niveaux chargés : { A1: {...}, A2: {...}, B1: {...}, B2: {...} }
   levels: {},
 
+  // Stocke les erreurs de chargement par niveau
+  loadErrors: {},
+
   // Ordre d’affichage sur l’accueil
   levelsOrder: ["A1", "A2", "B1", "B2"],
 
@@ -22,20 +25,22 @@ const App = {
     Router.on("/review", () => this.viewReview());
     Router.on("/stats", () => this.viewStats());
 
-    // Charger les niveaux (ignore proprement ceux manquants)
     await this.preloadLevels();
 
     Router.start("/");
   },
 
   async preloadLevels() {
-    const toLoad = this.levelsOrder.slice();
+    this.levels = {};
+    this.loadErrors = {};
 
-    for (const lvl of toLoad) {
+    for (const lvl of this.levelsOrder) {
       try {
         this.levels[lvl] = await this.loadLevel(lvl);
       } catch (e) {
-        console.warn(`[loadLevel] ${lvl} non chargé:`, e.message || e);
+        const msg = (e && (e.message || String(e))) || "Erreur inconnue";
+        this.loadErrors[lvl] = msg;
+        console.warn(`[loadLevel] ${lvl} non chargé:`, msg);
       }
     }
 
@@ -43,20 +48,17 @@ const App = {
       this.setView(`
         <section class="card">
           <h2>Erreur de chargement</h2>
-          <p class="muted">Aucun niveau n’a pu être chargé. Vérifie que les fichiers JSON existent bien dans <code>assets/data/</code>.</p>
-          <ul>
-            <li><code>assets/data/a1.json</code></li>
-            <li><code>assets/data/a2.json</code></li>
-            <li><code>assets/data/b1.json</code></li>
-            <li><code>assets/data/b2.json</code></li>
-          </ul>
+          <p class="muted">Aucun niveau n’a pu être chargé. Vérifie que les fichiers JSON existent dans <code>assets/data/</code>.</p>
+          <hr />
+          <p><b>Détails</b></p>
+          <pre style="white-space:pre-wrap; word-break:break-word; margin:0;">${this.escapeHtml(JSON.stringify(this.loadErrors, null, 2))}</pre>
         </section>
       `);
     }
   },
 
   async loadLevel(level) {
-    // Map des niveaux → fichiers
+    // IMPORTANT : noms en minuscules pour GitHub Pages (Linux)
     const map = {
       A1: "assets/data/a1.json",
       A2: "assets/data/a2.json",
@@ -68,10 +70,10 @@ const App = {
     if (!url) throw new Error(`Niveau non supporté: ${level}`);
 
     const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Impossible de charger ${url} (${res.status})`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
+
     const json = await res.json();
 
-    // Normalisation minimaliste
     return {
       level: json.level || level,
       title: json.title || "",
@@ -87,9 +89,21 @@ const App = {
     return this.levels[level] || null;
   },
 
+  escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  },
+
   viewHome() {
     const s = Storage.load();
     const doneCount = Object.keys(s.done || {}).length;
+
+    const loadedLevels = Object.keys(this.levels);
+    const missingLevels = this.levelsOrder.filter(l => !this.levels[l]);
 
     const cards = this.levelsOrder
       .map(lvl => this.getLevelData(lvl))
@@ -108,6 +122,25 @@ const App = {
         `;
       })
       .join("");
+
+    const errorsBlock = missingLevels.length
+      ? `
+        <div class="card" style="margin-top:12px;">
+          <h3>Diagnostic chargement</h3>
+          <p class="muted">
+            Chargés : <b>${loadedLevels.join(", ") || "aucun"}</b><br/>
+            Manquants : <b>${missingLevels.join(", ")}</b>
+          </p>
+          <hr />
+          <p class="muted" style="margin-bottom:8px;">Détails erreurs :</p>
+          <pre style="white-space:pre-wrap; word-break:break-word; margin:0;">${this.escapeHtml(JSON.stringify(this.loadErrors, null, 2))}</pre>
+          <hr />
+          <p class="muted">
+            Vérifie surtout le nom exact du fichier (ex: <code>b2.json</code> en minuscules) et qu’il est bien dans <code>assets/data/</code>.
+          </p>
+        </div>
+      `
+      : "";
 
     this.setView(`
       <section class="card">
@@ -128,6 +161,8 @@ const App = {
           </div>
         `}
       </section>
+
+      ${errorsBlock}
     `);
   },
 
@@ -136,10 +171,12 @@ const App = {
 
     if (!L) {
       const loaded = Object.keys(this.levels).join(", ") || "aucun";
+      const err = this.loadErrors[level] ? `<p class="muted">Erreur : <code>${this.escapeHtml(this.loadErrors[level])}</code></p>` : "";
       return this.setView(`
         <section class="card">
           <h2>Niveau introuvable</h2>
           <p class="muted">Niveaux chargés : ${loaded}</p>
+          ${err}
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </section>
       `);
@@ -256,9 +293,6 @@ const App = {
     const host = document.getElementById("quiz");
     if (!host) return;
 
-    // Support ancien + nouveau format :
-    // - ancien : lesson.quiz = { ... }
-    // - nouveau : lesson.quiz = [ { ... }, { ... } ]
     const quizzes = Array.isArray(lesson.quiz) ? lesson.quiz : (lesson.quiz ? [lesson.quiz] : []);
 
     if (quizzes.length === 0) {
