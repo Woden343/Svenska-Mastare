@@ -1,632 +1,743 @@
-// assets/js/app.js
-
-const App = {
-  mount: document.getElementById("app"),
-
-  levels: {},
-  levelsOrder: ["A1", "A2", "B1", "B2"],
-
-  refData: null,
-
-  async init() {
-    // Nav
-    const navHome = document.getElementById("nav-home");
-    const navReview = document.getElementById("nav-review");
-    const navStats = document.getElementById("nav-stats");
-    const navRef = document.getElementById("nav-ref");
-
-    if (navHome) navHome.onclick = () => Router.go("/");
-    if (navReview) navReview.onclick = () => Router.go("/review");
-    if (navStats) navStats.onclick = () => Router.go("/stats");
-    if (navRef) navRef.onclick = () => Router.go("/ref");
-
-    // Routes
-    Router.on("/", () => this.viewHome());
-    Router.on("/level", (p) => this.viewLevel(p.level));
-    Router.on("/lesson", (p) => this.viewLesson(p.level, p.lessonId));
-    Router.on("/review", () => this.viewReview());
-    Router.on("/stats", () => this.viewStats());
-
-    // Référence
-    Router.on("/ref", () => this.viewRef());
-    Router.on("/ref-sheet", (p) => this.viewRefSheet(p.moduleId));
-
-    // Preload
-    await this.preloadLevels();
-    await this.preloadRef();
-
-    Router.start("/");
-  },
-
-  // -------------------- LOADERS --------------------
-
-  async loadJson(url) {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${url}`);
-    return await res.json();
-  },
-
-  async preloadLevels() {
-    this.levels = {};
-    for (const lvl of this.levelsOrder) {
-      try {
-        this.levels[lvl] = await this.loadLevel(lvl);
-      } catch (e) {
-        console.warn(`[loadLevel] ${lvl} non chargé:`, e.message || e);
-      }
-    }
-  },
-
-  async loadLevel(level) {
-    const map = {
-      A1: "assets/data/a1.json",
-      A2: "assets/data/a2.json",
-      B1: "assets/data/b1.json",
-      B2: "assets/data/b2.json"
-    };
-    const url = map[level];
-    if (!url) throw new Error(`Niveau non supporté: ${level}`);
-
-    const json = await this.loadJson(url);
-    return {
-      level: json.level || level,
-      title: json.title || "",
-      modules: Array.isArray(json.modules) ? json.modules : []
-    };
-  },
-
-  async preloadRef() {
-    try {
-      this.refData = await this.loadJson("assets/data/ref.json");
-    } catch (e) {
-      this.refData = null;
-      console.warn("[ref] non chargé:", e.message || e);
-    }
-  },
-
-  // -------------------- HELPERS --------------------
-
-  setView(html) {
-    this.mount.innerHTML = html;
-  },
-
-  getLevelData(level) {
-    return this.levels[level] || null;
-  },
-
-  escapeHtml(s) {
-    return String(s ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  },
-
-  // Permet d’injecter une string dans onclick sans casser (JSON.stringify safe)
-  jsString(s) {
-    return JSON.stringify(String(s ?? ""));
-  },
-
-  // ----------- RÉFÉRENCE : extraction ultra-tolérante -----------
-
-  refGetModules() {
-    const r = this.refData;
-    if (!r) return [];
-
-    return (
-      (Array.isArray(r.modules) && r.modules) ||
-      (Array.isArray(r.sections) && r.sections) ||
-      (Array.isArray(r.sheets) && r.sheets) ||
-      (Array.isArray(r.categories) && r.categories) ||
-      []
-    );
-  },
-
-  refGetModuleId(mod, idx) {
-    return String(mod.id || mod.key || mod.slug || mod.name || mod.title || `module_${idx}`);
-  },
-
-  // Détecte si un objet ressemble à une entrée de ref (verbe / vocab / particule)
-  looksLikeRefItem(obj) {
-    if (!obj || typeof obj !== "object" || Array.isArray(obj)) return false;
-    const keys = Object.keys(obj);
-
-    // verbes (bescherelle)
-    const verbKeys = ["infinitive","inf","sv_inf","pres","present","pret","preteritum","past","sup","supinum","imp","imperativ"];
-    // vocab
-    const vocabKeys = ["sv","word","lemma","fr","meaning","translation"];
-    // particules
-    const partKeys = ["expression","verb","particle","fr","meaning","example","pron"];
-
-    const hasAny = (arr) => arr.some(k => keys.includes(k));
-
-    return hasAny(verbKeys) || hasAny(vocabKeys) || hasAny(partKeys);
-  },
-
-  // Extraction standard + deep fallback
-  refGetItems(mod) {
-    if (!mod) return [];
-
-    const direct =
-      (Array.isArray(mod.items) && mod.items) ||
-      (Array.isArray(mod.rows) && mod.rows) ||
-      (Array.isArray(mod.entries) && mod.entries) ||
-      (Array.isArray(mod.lessons) && mod.lessons) ||
-      (Array.isArray(mod.data) && mod.data) ||
-      (Array.isArray(mod.list) && mod.list) ||
-      null;
-
-    if (direct && direct.length && this.looksLikeRefItem(direct[0])) return direct;
-
-    // Fallback deep : on explore l'objet et on récupère la première “grosse” liste d’objets
-    // qui ressemble à des entrées (sv/fr ou infinitive/pres/etc).
-    const visited = new Set();
-    const stack = [mod];
-
-    while (stack.length) {
-      const cur = stack.pop();
-      if (!cur || typeof cur !== "object") continue;
-      if (visited.has(cur)) continue;
-      visited.add(cur);
-
-      if (Array.isArray(cur)) {
-        if (cur.length && this.looksLikeRefItem(cur[0])) return cur;
-        for (const it of cur) stack.push(it);
-        continue;
-      }
-
-      for (const k of Object.keys(cur)) {
-        const v = cur[k];
-        if (Array.isArray(v)) {
-          if (v.length && this.looksLikeRefItem(v[0])) return v;
-          // explore aussi au cas où les objets sont 1 niveau plus bas
-          stack.push(v);
-        } else if (v && typeof v === "object") {
-          stack.push(v);
-        }
-      }
-    }
-
-    // Rien trouvé
-    return direct || [];
-  },
-
-  // Détection type tableau
-  refDetectTableType(items) {
-    const sample = items[0] || {};
-    const keys = Object.keys(sample);
-
-    const has = (k) => keys.includes(k);
-
-    const isVerb =
-      ["infinitive","inf","sv_inf"].some(has) &&
-      (["pres","present"].some(has) || ["pret","preteritum","past"].some(has) || ["sup","supinum"].some(has));
-
-    const isParticle =
-      ["expression","verb"].some(has) && (has("particle") || has("example") || has("fr") || has("meaning"));
-
-    const isVocab =
-      (["sv","word","lemma"].some(has)) && (["fr","meaning","translation"].some(has));
-
-    return isVerb ? "verb" : isParticle ? "particle" : isVocab ? "vocab" : "generic";
-  },
-
-  // -------------------- VIEWS --------------------
-
-  viewHome() {
-    const s = Storage.load();
-    const doneCount = Object.keys(s.done || {}).length;
-
-    const cards = this.levelsOrder
-      .map(lvl => this.getLevelData(lvl))
-      .filter(Boolean)
-      .map(L => {
-        const modulesCount = (L.modules || []).length;
-        const levelTitle = L.title ? `${L.level} — ${L.title}` : L.level;
-        return `
-          <div class="card">
-            <span class="pill">Niveau ${this.escapeHtml(L.level)}</span>
-            <h3 style="margin-top:10px;">${this.escapeHtml(levelTitle)}</h3>
-            <p class="muted">Modules : ${modulesCount}</p>
-            <button class="btn btn-primary" onclick="Router.go('/level',{level:${this.jsString(L.level)}})">Ouvrir</button>
-          </div>
-        `;
-      })
-      .join("");
-
-    this.setView(`
-      <section class="card">
-        <h2>Bienvenue 👋</h2>
-        <p class="muted">Objectif : apprendre le suédois de zéro (A1 → C2) avec cours + exercices + révision.</p>
-        <div class="kpi">
-          <span class="pill">Leçons validées : <b>${doneCount}</b></span>
-          <span class="pill">Bonnes réponses : <b>${s.stats?.correct ?? 0}</b></span>
-          <span class="pill">Erreurs : <b>${s.stats?.wrong ?? 0}</b></span>
-        </div>
-      </section>
-
-      <section class="grid grid-2" style="margin-top:12px;">
-        ${cards || `
-          <div class="card">
-            <h3>Aucun niveau chargé</h3>
-            <p class="muted">Vérifie tes fichiers JSON.</p>
-          </div>
-        `}
-      </section>
-    `);
-  },
-
-  viewLevel(level) {
-    const L = this.getLevelData(level);
-    if (!L) return Router.go("/");
-
-    this.setView(`
-      <section class="card">
-        <span class="pill">Niveau ${this.escapeHtml(L.level)}</span>
-        <h2 style="margin-top:10px;">${this.escapeHtml(L.level)} — ${this.escapeHtml(L.title)}</h2>
-        <p class="muted">Choisis un module, puis une leçon.</p>
-      </section>
-
-      <section style="margin-top:12px;" class="grid">
-        ${(L.modules || []).map(m => `
-          <div class="card">
-            <h3>${this.escapeHtml(m.title || "Module")}</h3>
-            <p class="muted">Leçons : ${(m.lessons || []).length}</p>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              ${(m.lessons || []).map(les => `
-                <button class="btn" onclick="Router.go('/lesson',{level:${this.jsString(L.level)}, lessonId:${this.jsString(les.id)}})">
-                  ${this.escapeHtml(les.title || "Leçon")}
-                </button>
-              `).join("")}
-            </div>
-          </div>
-        `).join("")}
-      </section>
-
-      <div style="margin-top:12px;">
-        <button class="btn" onclick="Router.go('/')">← Retour</button>
-      </div>
-    `);
-  },
-
-  viewLesson(level, lessonId) {
-    const L = this.getLevelData(level);
-    if (!L) return Router.go("/");
-
-    const lesson =
-      (L.modules || [])
-        .flatMap(m => (m.lessons || []))
-        .find(x => x.id === lessonId);
-
-    if (!lesson) return Router.go("/level", { level: L.level });
-
-    const contentHtml = (lesson.content || []).map(p => `<p>${this.escapeHtml(p)}</p>`).join("");
-
-    const examplesHtml = (lesson.examples || []).map(e => `
-      <div class="choice" style="cursor:default;">
-        <div>
-          <b>${this.escapeHtml(e.sv || "")}</b>
-          <div class="muted">${this.escapeHtml(e.fr || "")}${e.pron ? ` • <i>${this.escapeHtml(e.pron)}</i>` : ""}</div>
-        </div>
-      </div>
-    `).join("");
-
-    const vocabHtml = (lesson.vocab || []).map(w => `
-      <div class="choice" style="cursor:default;">
-        <div style="min-width:110px;"><b>${this.escapeHtml(w.sv || "")}</b></div>
-        <div class="muted">${this.escapeHtml(w.fr || "")}${w.pron ? ` • <i>${this.escapeHtml(w.pron)}</i>` : ""}</div>
-      </div>
-    `).join("");
-
-    this.setView(`
-      <section class="card">
-        <span class="pill">${this.escapeHtml(L.level)}</span>
-        <h2 style="margin-top:10px;">${this.escapeHtml(lesson.title || "Leçon")}</h2>
-
-        ${contentHtml}
-
-        ${(lesson.examples && lesson.examples.length) ? `
-          <hr />
-          <h3>Exemples</h3>
-          ${examplesHtml}
-        ` : ""}
-
-        ${(lesson.vocab && lesson.vocab.length) ? `
-          <hr />
-          <h3>Vocabulaire</h3>
-          ${vocabHtml}
-        ` : ""}
-
-        <hr />
-        <h3>Exercices</h3>
-        <div id="quiz"></div>
-
-        <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-          <button class="btn btn-success" onclick="Storage.markDone(${this.jsString(L.level + ':' + lesson.id)}); Router.go('/level',{level:${this.jsString(L.level)}})">✔ Marquer comme faite</button>
-          <button class="btn" onclick="Router.go('/level',{level:${this.jsString(L.level)}})">← Retour</button>
-        </div>
-      </section>
-    `);
-
-    this.renderQuiz(lesson);
-  },
-
-  renderQuiz(lesson) {
-    const host = document.getElementById("quiz");
-    if (!host) return;
-
-    const quizzes = Array.isArray(lesson.quiz) ? lesson.quiz : (lesson.quiz ? [lesson.quiz] : []);
-    if (quizzes.length === 0) {
-      host.innerHTML = `<p class="muted">Aucun exercice pour cette leçon.</p>`;
-      return;
-    }
-
-    let idx = 0;
-    const answered = new Array(quizzes.length).fill(false);
-
-    const renderOne = () => {
-      const q = quizzes[idx];
-
-      host.innerHTML = `
-        <div class="card" style="margin-top:10px;">
-          <div class="muted" style="margin-bottom:8px;">Exercice ${idx + 1} / ${quizzes.length}</div>
-          <div id="qbox"></div>
-          <p id="fb" class="muted" style="margin-top:10px;"></p>
-          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-            <button class="btn" id="prev" ${idx === 0 ? "disabled" : ""}>← Précédent</button>
-            <button class="btn" id="next">${idx === quizzes.length - 1 ? "Terminer" : "Suivant →"}</button>
-          </div>
-        </div>
-      `;
-
-      const qbox = host.querySelector("#qbox");
-      const fb = host.querySelector("#fb");
-      const lock = () => answered[idx];
-      const setFeedback = (ok, extra = "") => {
-        fb.textContent = ok ? `✅ Correct. ${extra}` : `❌ Non. ${extra}`;
-      };
-
-      if (q.type === "mcq") {
-        qbox.innerHTML = `
-          <p><b>${this.escapeHtml(q.q || "")}</b></p>
-          <div class="grid">
-            ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${this.escapeHtml(c)}</div>`).join("")}
-          </div>
-        `;
-
-        const nodes = qbox.querySelectorAll(".choice");
-        nodes.forEach(node => {
-          node.onclick = () => {
-            if (lock()) return;
-            const i = Number(node.dataset.i);
-            const ok = i === q.answerIndex;
-
-            Storage.addResult(ok);
-            answered[idx] = true;
-
-            nodes.forEach(n => n.classList.remove("correct", "wrong"));
-            node.classList.add(ok ? "correct" : "wrong");
-
-            const answer = (q.choices && q.choices[q.answerIndex] != null) ? q.choices[q.answerIndex] : "";
-            setFeedback(ok, ok ? "" : `Réponse : ${answer}`);
-          };
-        });
-      } else if (q.type === "gap") {
-        qbox.innerHTML = `
-          <p><b>${this.escapeHtml(q.q || "")}</b></p>
-          <input id="gap" placeholder="Ta réponse..." />
-          <button class="btn" style="margin-top:10px;" id="check">Vérifier</button>
-        `;
-
-        const input = qbox.querySelector("#gap");
-        const btn = qbox.querySelector("#check");
-
-        btn.onclick = () => {
-          if (lock()) return;
-
-          const val = (input.value || "").trim().toLowerCase();
-          const expected = (q.answer || "").trim().toLowerCase();
-          const ok = val === expected;
-
-          Storage.addResult(ok);
-          answered[idx] = true;
-
-          setFeedback(ok, ok ? "" : `Attendu : ${q.answer || ""}`);
-        };
-      } else {
-        qbox.innerHTML = `<p class="muted">Type de quiz non géré.</p>`;
-      }
-
-      host.querySelector("#prev").onclick = () => { if (idx > 0) { idx--; renderOne(); } };
-      host.querySelector("#next").onclick = () => {
-        if (idx < quizzes.length - 1) { idx++; renderOne(); }
-        else { fb.textContent = "✅ Série terminée."; }
-      };
-    };
-
-    renderOne();
-  },
-
-  viewReview() {
-    this.setView(`
-      <section class="card">
-        <h2>Révision</h2>
-        <p class="muted">Bientôt : flashcards + rappel espacée (SRS).</p>
-      </section>
-    `);
-  },
-
-  viewStats() {
-    const s = Storage.load();
-    const total = (s.stats?.correct ?? 0) + (s.stats?.wrong ?? 0);
-    const rate = total ? Math.round(((s.stats?.correct ?? 0) / total) * 100) : 0;
-
-    this.setView(`
-      <section class="card">
-        <h2>Stats</h2>
-        <div class="kpi">
-          <span class="pill">Total réponses : <b>${total}</b></span>
-          <span class="pill">Taux : <b>${rate}%</b></span>
-          <span class="pill">Bonnes : <b>${s.stats?.correct ?? 0}</b></span>
-          <span class="pill">Erreurs : <b>${s.stats?.wrong ?? 0}</b></span>
-        </div>
-        <hr />
-        <button class="btn" onclick="localStorage.removeItem(Storage.key); location.reload()">Réinitialiser</button>
-      </section>
-    `);
-  },
-
-  // -------------------- RÉFÉRENCE --------------------
-
-  viewRef() {
-    if (!this.refData) {
-      return this.setView(`
-        <section class="card">
-          <h2>Références (M+)</h2>
-          <p class="muted">Le fichier <code>assets/data/ref.json</code> n’est pas chargé (ou absent).</p>
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </section>
-      `);
-    }
-
-    const mods = this.refGetModules();
-    if (!mods.length) {
-      return this.setView(`
-        <section class="card">
-          <h2>Références (M+)</h2>
-          <p class="muted">Aucun module détecté dans <code>ref.json</code>.</p>
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </section>
-      `);
-    }
-
-    this.setView(`
-      <section class="card">
-        <h2>Références (M+)</h2>
-        <p class="muted">Choisis un module, puis ouvre le tableau complet.</p>
-      </section>
-
-      <section class="grid grid-2" style="margin-top:12px;">
-        ${mods.map((m, idx) => {
-          const id = this.refGetModuleId(m, idx);
-          const title = m.title || m.name || "Module";
-          const items = this.refGetItems(m);
-
-          return `
-            <div class="card">
-              <span class="pill">Référence</span>
-              <h3 style="margin-top:10px;">${this.escapeHtml(title)}</h3>
-              <p class="muted"><b>${items.length}</b> entrées détectées</p>
-              <button class="btn btn-primary"
-                onclick="Router.go('/ref-sheet',{moduleId:${this.jsString(id)}})">
-                Ouvrir le tableau
-              </button>
-            </div>
-          `;
-        }).join("")}
-      </section>
-    `);
-  },
-
-  viewRefSheet(moduleId) {
-    if (!this.refData) return Router.go("/ref");
-
-    const mods = this.refGetModules();
-    const mod = mods.find((m, idx) => this.refGetModuleId(m, idx) === String(moduleId));
-
-    if (!mod) {
-      return this.setView(`
-        <section class="card">
-          <h2>Référence</h2>
-          <p class="muted">Module introuvable (id: <code>${this.escapeHtml(moduleId)}</code>).</p>
-          <button class="btn" onclick="Router.go('/ref')">← Retour</button>
-        </section>
-      `);
-    }
-
-    const title = mod.title || mod.name || "Module";
-    const items = this.refGetItems(mod);
-
-    if (!items.length) {
-      return this.setView(`
-        <section class="card">
-          <span class="pill">Référence</span>
-          <h2 style="margin-top:10px;">${this.escapeHtml(title)}</h2>
-          <p class="muted">Aucune entrée détectée dans ce module (même en mode deep).</p>
-          <p class="muted">➡️ Ça veut dire que tes entrées ne ressemblent pas à des objets “ref” (sv/fr, infinitive/pres/pret, expression...).</p>
-          <button class="btn" onclick="Router.go('/ref')">← Retour</button>
-        </section>
-      `);
-    }
-
-    const type = this.refDetectTableType(items);
-
-    let header = [];
-    let rowsHtml = "";
-
-    if (type === "verb") {
-      header = ["Infinitif", "Présent", "Prétérit", "Supinum", "Impératif", "FR", "Pron"];
-      rowsHtml = items.map(v => `
-        <tr>
-          <td><b>${this.escapeHtml(v.infinitive || v.inf || v.sv_inf || v.sv || v.word || "")}</b></td>
-          <td>${this.escapeHtml(v.pres || v.present || "")}</td>
-          <td>${this.escapeHtml(v.pret || v.preteritum || v.past || "")}</td>
-          <td>${this.escapeHtml(v.sup || v.supinum || "")}</td>
-          <td>${this.escapeHtml(v.imp || v.imperativ || "")}</td>
-          <td class="muted">${this.escapeHtml(v.fr || v.meaning || "")}</td>
-          <td class="muted">${this.escapeHtml(v.pron || "")}</td>
-        </tr>
-      `).join("");
-    } else if (type === "particle") {
-      header = ["Expression", "FR", "Exemple", "Pron", "Note"];
-      rowsHtml = items.map(p => `
-        <tr>
-          <td><b>${this.escapeHtml(p.expression || p.verb || p.sv || p.word || "")}</b></td>
-          <td>${this.escapeHtml(p.fr || p.meaning || "")}</td>
-          <td class="muted">${this.escapeHtml(p.example || p.ex || "")}</td>
-          <td class="muted">${this.escapeHtml(p.pron || "")}</td>
-          <td class="muted">${this.escapeHtml(p.note || "")}</td>
-        </tr>
-      `).join("");
-    } else if (type === "vocab") {
-      header = ["Suédois", "Français", "Pron", "Genre/Pluriel", "Note"];
-      rowsHtml = items.map(w => `
-        <tr>
-          <td><b>${this.escapeHtml(w.sv || w.word || w.lemma || "")}</b></td>
-          <td>${this.escapeHtml(w.fr || w.meaning || w.translation || "")}</td>
-          <td class="muted">${this.escapeHtml(w.pron || "")}</td>
-          <td class="muted">${this.escapeHtml(w.gender || w.plural || w.forms || "")}</td>
-          <td class="muted">${this.escapeHtml(w.note || "")}</td>
-        </tr>
-      `).join("");
-    } else {
-      // generic
-      const keys = Object.keys(items[0] || {}).slice(0, 6);
-      header = keys.length ? keys : ["Donnée"];
-      rowsHtml = items.map(obj => `
-        <tr>
-          ${(keys.length ? keys : ["_"]).map(k => `<td class="muted">${this.escapeHtml(k === "_" ? JSON.stringify(obj) : obj[k])}</td>`).join("")}
-        </tr>
-      `).join("");
-    }
-
-    this.setView(`
-      <section class="card">
-        <span class="pill">Référence</span>
-        <h2 style="margin-top:10px;">${this.escapeHtml(title)}</h2>
-        <p class="muted">${items.length} entrées</p>
-        <button class="btn" onclick="Router.go('/ref')">← Retour</button>
-      </section>
-
-      <div class="table-wrap" style="margin-top:12px;">
-        <table class="zebra">
-          <thead><tr>${header.map(h => `<th>${this.escapeHtml(h)}</th>`).join("")}</tr></thead>
-          <tbody>${rowsHtml}</tbody>
-        </table>
-      </div>
-    `);
+/* ============================================
+   SVENSKA MÄSTARE PRO - CSS MODERNE
+   Design professionnel avec animations fluides
+============================================ */
+
+:root {
+  /* Couleurs principales - Palette moderne */
+  --bg-primary: #0a0e16;
+  --bg-secondary: #141b26;
+  --bg-elevated: #1a2332;
+  
+  --text-primary: #f0f4f8;
+  --text-secondary: #a8b8cc;
+  --text-muted: #6b7a8f;
+  
+  --accent-blue: #5b9eff;
+  --accent-blue-hover: #4a8fef;
+  --accent-purple: #8b7ff6;
+  --accent-green: #5dd694;
+  --accent-yellow: #ffc247;
+  --accent-red: #ff6b7a;
+  
+  /* Gradients modernes */
+  --gradient-primary: linear-gradient(135deg, #5b9eff 0%, #8b7ff6 100%);
+  --gradient-success: linear-gradient(135deg, #5dd694 0%, #3ab76e 100%);
+  --gradient-card: linear-gradient(135deg, rgba(91, 158, 255, 0.05) 0%, rgba(139, 127, 246, 0.05) 100%);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(26, 35, 50, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  /* Ombres élégantes */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.16);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.24);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.32);
+  
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   BASE & RESET
+============================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Background animé subtil */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(91, 158, 255, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(139, 127, 246, 0.05) 0%, transparent 50%);
+  animation: backgroundPulse 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes backgroundPulse {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5%, -5%); }
+}
+
+/* ============================================
+   LAYOUT
+============================================ */
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
   }
-};
+}
 
-App.init();
+/* ============================================
+   TOPBAR MODERNE
+============================================ */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  
+  /* Glassmorphism effect */
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  
+  transition: all var(--transition-base);
+}
+
+.topbar.scrolled {
+  padding: 12px 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+/* ============================================
+   BRAND & LOGO
+============================================ */
+
+.brand {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform var(--transition-fast);
+}
+
+.brand:hover {
+  transform: scale(1.02);
+}
+
+.brand::before {
+  content: '🇸🇪';
+  font-size: 24px;
+  -webkit-text-fill-color: initial;
+}
+
+/* ============================================
+   NAVIGATION
+============================================ */
+
+.topnav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ============================================
+   BUTTONS MODERNES
+============================================ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  
+  cursor: pointer;
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+/* Effet de brillance au hover */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left var(--transition-slow);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Variantes de boutons */
+.btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(91, 158, 255, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(91, 158, 255, 0.4);
+  transform: translateY(-3px);
+}
+
+.btn-success {
+  background: var(--gradient-success);
+  border: none;
+  color: white;
+  box-shadow: 0 4px 16px rgba(93, 214, 148, 0.3);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   CARDS ÉLÉGANTES
+============================================ */
+
+.card {
+  position: relative;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+/* Gradient subtil en background */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.card h4 {
+  margin: 16px 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent-blue);
+}
+
+.card p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+/* Card avec accent coloré */
+.card-accent {
+  background: linear-gradient(135deg, rgba(91, 158, 255, 0.08) 0%, rgba(139, 127, 246, 0.08) 100%);
+  border-color: rgba(91, 158, 255, 0.2);
+}
+
+/* ============================================
+   GRID SYSTEM
+============================================ */
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   PILLS & BADGES
+============================================ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  
+  font-size: 13px;
+  font-weight: 600;
+  
+  background: rgba(91, 158, 255, 0.15);
+  color: var(--accent-blue);
+  border: 1px solid rgba(91, 158, 255, 0.3);
+  
+  transition: all var(--transition-fast);
+}
+
+.pill:hover {
+  background: rgba(91, 158, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.pill-success {
+  background: rgba(93, 214, 148, 0.15);
+  color: var(--accent-green);
+  border-color: rgba(93, 214, 148, 0.3);
+}
+
+.pill-warning {
+  background: rgba(255, 194, 71, 0.15);
+  color: var(--accent-yellow);
+  border-color: rgba(255, 194, 71, 0.3);
+}
+
+.pill-error {
+  background: rgba(255, 107, 122, 0.15);
+  color: var(--accent-red);
+  border-color: rgba(255, 107, 122, 0.3);
+}
+
+/* ============================================
+   KPI / STATS
+============================================ */
+
+.kpi {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kpi .pill {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.12);
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.kpi .pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   FORMS MODERNES
+============================================ */
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  
+  font-size: 15px;
+  font-family: inherit;
+  
+  transition: all var(--transition-base);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(91, 158, 255, 0.15);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================
+   CHOICES / OPTIONS
+============================================ */
+
+.choice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.choice:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
+.choice.correct {
+  border-color: rgba(93, 214, 148, 0.6);
+  background: rgba(93, 214, 148, 0.1);
+  animation: successPulse 0.5s ease;
+}
+
+.choice.wrong {
+  border-color: rgba(255, 107, 122, 0.6);
+  background: rgba(255, 107, 122, 0.1);
+  animation: shake 0.5s ease;
+}
+
+@keyframes successPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* ============================================
+   TABLES PROFESSIONNELLES
+============================================ */
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+table.zebra {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+table.zebra th, table.zebra td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+}
+
+table.zebra th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+  backdrop-filter: blur(10px);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(91, 158, 255, 0.3);
+  z-index: 10;
+}
+
+table.zebra tbody tr {
+  transition: background var(--transition-fast);
+}
+
+table.zebra tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+table.zebra tbody tr:hover {
+  background: rgba(91, 158, 255, 0.08);
+  cursor: pointer;
+}
+
+/* ============================================
+   UTILITIES
+============================================ */
+
+.muted {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 20px 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+
+.footer {
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 48px;
+}
+
+.footer a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer a:hover {
+  color: var(--accent-blue-hover);
+  text-decoration: underline;
+}
+
+/* ============================================
+   ANIMATIONS GLOBALES
+============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+.slide-in {
+  animation: slideInRight 0.4s ease;
+}
+
+/* ============================================
+   SCROLLBAR PERSONNALISÉE
+============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================
+   LOADING STATES
+============================================ */
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--accent-blue);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RESPONSIVE TWEAKS
+============================================ */
+
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
+  .brand {
+    font-size: 18px;
+  }
+}
+
+/* ============================================
+   DARK MODE ENHANCEMENTS
+============================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* Déjà en dark mode par défaut */
+}
+
+/* ============================================
+   PRINT STYLES
+============================================ */
+
+@media print {
+  .topbar, .footer, .btn {
+    display: none !important;
+  }
+  
+  .card {
+    border: 1px solid #000;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+}
