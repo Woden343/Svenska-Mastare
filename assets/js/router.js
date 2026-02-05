@@ -1,7 +1,5 @@
 // assets/js/router.js
-// Router hash robuste: "#/path?key=value"
-// - Supporte "#", "#/", "#/review", "#/ref", etc.
-// - Force le dispatch même si le hash ne change pas
+// Hash Router robuste: "#/path?key=value"
 
 const Router = {
   routes: new Map(),
@@ -12,93 +10,50 @@ const Router = {
   },
 
   go(path, params = {}) {
-    const qs = this._toQuery(params);
-    const target = `#${path}${qs ? "?" + qs : ""}`;
+    const qs = new URLSearchParams(params).toString();
+    const target = `#${path}${qs ? `?${qs}` : ""}`;
 
-    // Si même hash, on force quand même le rendu
+    // Même hash -> force render
     if (location.hash === target) {
-      this._dispatch();
+      this.dispatch();
       return;
     }
 
     location.hash = target;
-
-    // Certains navigateurs (ou cas limites) ne déclenchent pas hashchange immédiatement
-    // => on force un dispatch au prochain tick
-    setTimeout(() => this._dispatch(), 0);
+    // sécurité (certains navigateurs)
+    setTimeout(() => this.dispatch(), 0);
   },
 
-  start(fallbackPath = "/") {
+  start(fallback = "/") {
     if (this.started) return;
     this.started = true;
 
-    window.addEventListener("hashchange", () => this._dispatch());
+    window.addEventListener("hashchange", () => this.dispatch());
 
-    // Si pas de hash, on le met
     if (!location.hash || location.hash === "#") {
-      location.hash = `#${fallbackPath}`;
+      location.hash = `#${fallback}`;
     }
 
-    // Premier rendu
-    this._dispatch();
+    this.dispatch();
   },
 
-  _dispatch() {
-    try {
-      const { path, params } = this._parse(location.hash);
-
-      // Normalisation : "" => "/", "#/" => "/"
-      const normalizedPath = (path && path !== "#") ? path : "/";
-
-      const handler =
-        this.routes.get(normalizedPath) ||
-        (normalizedPath === "" ? this.routes.get("/") : null);
-
-      if (!handler) {
-        const root = this.routes.get("/");
-        if (root) return root({});
-        return;
-      }
-
-      handler(params);
-    } catch (e) {
-      console.error("[Router] dispatch error:", e);
-      const mount = document.getElementById("app");
-      if (mount) {
-        mount.innerHTML = `
-          <section class="card">
-            <h2>Erreur Router</h2>
-            <p class="muted">Une erreur JS a empêché l’affichage.</p>
-            <pre style="white-space:pre-wrap; word-break:break-word; margin:0;">${String(e?.message || e)}</pre>
-          </section>
-        `;
-      }
-    }
-  },
-
-  _parse(hash) {
-    const raw = (hash || "").replace(/^#/, ""); // enlève "#"
+  parse() {
+    const raw = (location.hash || "").replace(/^#/, "");
     if (!raw) return { path: "/", params: {} };
 
     const [pathPart, queryPart] = raw.split("?");
-    const path = pathPart || "/"; // "#/": pathPart="/" OK ; "#": raw="" => plus haut
-    const params = this._fromQuery(queryPart || "");
+    const path = pathPart || "/";
+
+    const params = {};
+    const sp = new URLSearchParams(queryPart || "");
+    for (const [k, v] of sp.entries()) params[k] = v;
+
     return { path, params };
   },
 
-  _toQuery(params) {
-    const sp = new URLSearchParams();
-    Object.entries(params || {}).forEach(([k, v]) => {
-      if (v === undefined || v === null) return;
-      sp.set(k, String(v));
-    });
-    return sp.toString();
-  },
-
-  _fromQuery(qs) {
-    const sp = new URLSearchParams(qs);
-    const obj = {};
-    for (const [k, v] of sp.entries()) obj[k] = v;
-    return obj;
+  dispatch() {
+    const { path, params } = this.parse();
+    const handler = this.routes.get(path) || this.routes.get("/") || null;
+    if (handler) handler(params);
   }
 };
