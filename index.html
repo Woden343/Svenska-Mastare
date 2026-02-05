@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Svenska Mästare — Apprendre le suédois</title>
 
-  <meta name="description" content="Application locale pour apprendre le suédois (A1 → C2) : cours, exercices, révision SRS, références." />
+  <meta name="description" content="Apprendre le suédois (A1 → C2) : cours, exercices, révision SRS, références." />
   <meta name="theme-color" content="#0b0f14" />
 
   <link rel="stylesheet" href="assets/css/style.css" />
@@ -15,12 +15,12 @@
   <header class="topbar">
     <div class="brand">Svenska Mästare</div>
 
-    <!-- ✅ Nav en liens hash : ultra robuste -->
+    <!-- NAV en liens hash (robuste + GitHub Pages + local) -->
     <nav class="topnav" aria-label="Navigation principale">
-      <a id="nav-home" class="btn" href="#/">Accueil</a>
-      <a id="nav-review" class="btn" href="#/review">Révision</a>
-      <a id="nav-ref" class="btn" href="#/ref">Références</a>
-      <a id="nav-stats" class="btn" href="#/stats">Stats</a>
+      <a class="btn" href="#/">Accueil</a>
+      <a class="btn" href="#/review">Révision</a>
+      <a class="btn" href="#/ref">Références</a>
+      <a class="btn" href="#/stats">Stats</a>
     </nav>
   </header>
 
@@ -28,7 +28,7 @@
     <div id="app">
       <section class="card">
         <h2>Chargement…</h2>
-        <p class="muted">Si rien ne s’affiche, vérifie que les fichiers JS/CSS sont bien au bon endroit.</p>
+        <p class="muted">Si ça reste bloqué, vérifie l’arborescence des fichiers.</p>
       </section>
     </div>
   </main>
@@ -37,7 +37,7 @@
     <div>© Svenska Mästare — Apprentissage du suédois (A1 → C2)</div>
   </footer>
 
-  <!-- Scripts (ordre IMPORTANT) -->
+  <!-- Scripts (ordre important) -->
   <script src="assets/js/router.js"></script>
   <script src="assets/js/storage.js"></script>
   <script src="assets/js/srs.js"></script>
