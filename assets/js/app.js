@@ -24,9 +24,10 @@ const App = {
 
     // Charger A1 + A2 + B1 (et ignorer proprement un niveau manquant)
     await this.preloadLevels();
-
-    // Si aucun niveau chargé : preloadLevels() aura déjà affiché un message
     if (Object.keys(this.levels).length === 0) return;
+
+    // Build / refresh SRS cards from JSON
+    this.refreshSrsCards();
 
     Router.start("/");
   },
@@ -42,7 +43,6 @@ const App = {
       }
     }
 
-    // Sécurité : si aucun niveau n’est chargé, on affiche une erreur lisible
     if (Object.keys(this.levels).length === 0) {
       this.setView(`
         <section class="card">
@@ -53,7 +53,6 @@ const App = {
             <li><code>assets/data/a2.json</code></li>
             <li><code>assets/data/b1.json</code></li>
           </ul>
-          <p class="muted">Astuce : si tu es en local (double-clic sur index.html), certaines fonctions peuvent échouer selon le navigateur. Sur GitHub Pages, ça marche très bien.</p>
         </section>
       `);
       return;
@@ -61,7 +60,6 @@ const App = {
   },
 
   async loadLevel(level) {
-    // Map des niveaux → fichiers
     const map = {
       A1: "assets/data/a1.json",
       A2: "assets/data/a2.json",
@@ -76,12 +74,17 @@ const App = {
 
     const json = await res.json();
 
-    // Normalisation minimaliste (évite les crashs si un champ manque)
     return {
       level: json.level || level,
       title: json.title || "",
       modules: Array.isArray(json.modules) ? json.modules : []
     };
+  },
+
+  refreshSrsCards() {
+    // Build cards from JSON content, then upsert into Storage
+    const cards = SRS.buildCardsFromLevels(this.levels);
+    Storage.upsertCards(cards);
   },
 
   setView(html) {
@@ -95,8 +98,8 @@ const App = {
   viewHome() {
     const s = Storage.load();
     const doneCount = Object.keys(s.done).length;
+    const srsStats = Storage.getSrsStats();
 
-    // Cartes niveaux disponibles
     const cards = this.levelsOrder
       .map(lvl => this.getLevelData(lvl))
       .filter(Boolean)
@@ -123,6 +126,15 @@ const App = {
           <span class="pill">Leçons validées : <b>${doneCount}</b></span>
           <span class="pill">Bonnes réponses : <b>${s.stats.correct}</b></span>
           <span class="pill">Erreurs : <b>${s.stats.wrong}</b></span>
+        </div>
+        <hr />
+        <div class="kpi">
+          <span class="pill">Cartes SRS : <b>${srsStats.total}</b></span>
+          <span class="pill">À réviser : <b>${srsStats.due}</b></span>
+          <span class="pill">Limite/jour : <b>${srsStats.dailyLimit}</b></span>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn" onclick="Router.go('/review')">🎴 Révision SRS</button>
         </div>
       </section>
 
@@ -262,9 +274,6 @@ const App = {
     const host = document.getElementById("quiz");
     if (!host) return;
 
-    // Support ancien + nouveau format :
-    // - ancien : lesson.quiz = { ... }
-    // - nouveau : lesson.quiz = [ { ... }, { ... } ]
     const quizzes = Array.isArray(lesson.quiz) ? lesson.quiz : (lesson.quiz ? [lesson.quiz] : []);
 
     if (quizzes.length === 0) {
@@ -362,33 +371,14 @@ const App = {
   },
 
   viewReview() {
-    this.setView(`
-      <section class="card">
-        <h2>Révision</h2>
-        <p class="muted">Bientôt : flashcards + rappel espacée (SRS).</p>
-      </section>
-    `);
-  },
+    // Rebuild cards in case JSON changed
+    this.refreshSrsCards();
 
-  viewStats() {
-    const s = Storage.load();
-    const total = s.stats.correct + s.stats.wrong;
-    const rate = total ? Math.round((s.stats.correct / total) * 100) : 0;
+    const srsStats = Storage.getSrsStats();
+    const levelOptions = ["ALL", ...this.levelsOrder.filter(l => this.getLevelData(l))];
 
-    this.setView(`
-      <section class="card">
-        <h2>Stats</h2>
-        <div class="kpi">
-          <span class="pill">Total réponses : <b>${total}</b></span>
-          <span class="pill">Taux : <b>${rate}%</b></span>
-          <span class="pill">Bonnes : <b>${s.stats.correct}</b></span>
-          <span class="pill">Erreurs : <b>${s.stats.wrong}</b></span>
-        </div>
-        <hr />
-        <button class="btn" onclick="localStorage.removeItem(Storage.key); location.reload()">Réinitialiser</button>
-      </section>
-    `);
-  }
-};
+    // default filters
+    const selectedLevel = (window.__reviewLevel && levelOptions.includes(window.__reviewLevel)) ? window.__reviewLevel : "ALL";
+    window.__reviewLevel = selectedLevel;
 
-App.init();
+    const due = Storage.get
