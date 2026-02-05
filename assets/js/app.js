@@ -381,4 +381,201 @@ const App = {
     const selectedLevel = (window.__reviewLevel && levelOptions.includes(window.__reviewLevel)) ? window.__reviewLevel : "ALL";
     window.__reviewLevel = selectedLevel;
 
-    const due = Storage.get
+    const due = Storage.getDueCards({ level: selectedLevel, limit: srsStats.dailyLimit });
+
+    const levelSelect = `
+      <label class="muted" style="display:block; margin-bottom:6px;">Niveau</label>
+      <select id="revLevel" style="width:100%; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.04); color:var(--text); border:1px solid rgba(255,255,255,.10);">
+        ${levelOptions.map(l => `<option value="${l}" ${l === selectedLevel ? "selected" : ""}>${l === "ALL" ? "Tous" : l}</option>`).join("")}
+      </select>
+    `;
+
+    this.setView(`
+      <section class="card">
+        <h2>Révision SRS 🎴</h2>
+        <p class="muted">Cartes générées automatiquement depuis tes leçons (vocab + exemples). Fais un petit set chaque jour.</p>
+
+        <div class="kpi">
+          <span class="pill">Cartes : <b>${srsStats.total}</b></span>
+          <span class="pill">À réviser : <b>${srsStats.due}</b></span>
+          <span class="pill">En apprentissage : <b>${srsStats.learning}</b></span>
+          <span class="pill">Matures (≥21j) : <b>${srsStats.mature}</b></span>
+        </div>
+
+        <hr />
+
+        <div class="grid grid-2">
+          <div class="card">
+            ${levelSelect}
+            <div style="margin-top:10px;">
+              <label class="muted" style="display:block; margin-bottom:6px;">Limite / jour (5 → 50)</label>
+              <input id="dailyLimit" type="number" min="5" max="50" value="${srsStats.dailyLimit}" />
+              <button class="btn" style="margin-top:10px;" id="saveLimit">Enregistrer</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Session du jour</h3>
+            <p class="muted">Cartes dues (filtrées) : <b>${due.length}</b></p>
+            <button class="btn" id="startSrs" ${due.length ? "" : "disabled"}>Commencer</button>
+            <p class="muted" style="margin-top:10px;">Astuce : si tu n’as rien “à réviser”, repasse demain ou augmente la limite/jour.</p>
+          </div>
+        </div>
+
+        <div id="srsHost" style="margin-top:12px;"></div>
+
+        <div style="margin-top:12px;">
+          <button class="btn" onclick="Router.go('/')">← Retour</button>
+        </div>
+      </section>
+    `);
+
+    // handlers
+    document.getElementById("revLevel").onchange = (e) => {
+      window.__reviewLevel = e.target.value;
+      this.viewReview();
+    };
+
+    document.getElementById("saveLimit").onclick = () => {
+      const n = document.getElementById("dailyLimit").value;
+      Storage.setDailyLimit(n);
+      this.viewReview();
+    };
+
+    document.getElementById("startSrs").onclick = () => {
+      this.runSrsSession({ level: window.__reviewLevel || "ALL" });
+    };
+  },
+
+  runSrsSession({ level = "ALL" } = {}) {
+    const host = document.getElementById("srsHost");
+    if (!host) return;
+
+    const srsStats = Storage.getSrsStats();
+    const cards = Storage.getDueCards({ level, limit: srsStats.dailyLimit });
+
+    if (cards.length === 0) {
+      host.innerHTML = `<p class="muted">Aucune carte à réviser pour ce filtre.</p>`;
+      return;
+    }
+
+    let idx = 0;
+    let revealed = false;
+
+    const render = () => {
+      const c = cards[idx];
+      if (!c) return;
+
+      const front = SRS.escapeHtml(c.front);
+      const back = SRS.escapeHtml(c.back);
+
+      host.innerHTML = `
+        <div class="card" style="margin-top:12px;">
+          <div class="muted" style="margin-bottom:8px;">
+            Carte ${idx + 1} / ${cards.length}
+            • <span class="pill" style="margin-left:8px;">${c.level}</span>
+          </div>
+
+          <div style="margin-top:10px;">
+            <div class="muted">Recto</div>
+            <div style="font-size:18px; margin-top:6px;"><b>${front}</b></div>
+          </div>
+
+          <div id="backBox" style="margin-top:14px; display:${revealed ? "block" : "none"};">
+            <hr />
+            <div class="muted">Verso</div>
+            <div style="font-size:18px; margin-top:6px;"><b>${back}</b></div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+            <button class="btn" id="reveal">${revealed ? "Masquer" : "Voir la réponse"}</button>
+
+            <div style="flex:1;"></div>
+
+            <button class="btn" id="again" ${revealed ? "" : "disabled"}>🔁 Again</button>
+            <button class="btn" id="hard"  ${revealed ? "" : "disabled"}>😅 Hard</button>
+            <button class="btn" id="good"  ${revealed ? "" : "disabled"}>✅ Good</button>
+            <button class="btn" id="easy"  ${revealed ? "" : "disabled"}>🚀 Easy</button>
+          </div>
+
+          <p class="muted" style="margin-top:10px;">
+            Type : ${c.type}
+          </p>
+        </div>
+      `;
+
+      host.querySelector("#reveal").onclick = () => {
+        revealed = !revealed;
+        render();
+      };
+
+      const gradeAndNext = (grade) => {
+        Storage.gradeCard(c.id, grade);
+        // move to next
+        idx++;
+        revealed = false;
+
+        if (idx >= cards.length) {
+          const st = Storage.getSrsStats();
+          host.innerHTML = `
+            <div class="card" style="margin-top:12px;">
+              <h3>Session terminée ✅</h3>
+              <p class="muted">Bien joué. Reviens plus tard (ou demain) pour la suite.</p>
+              <div class="kpi">
+                <span class="pill">À réviser : <b>${st.due}</b></span>
+                <span class="pill">Cartes totales : <b>${st.total}</b></span>
+              </div>
+              <div style="margin-top:12px;">
+                <button class="btn" onclick="Router.go('/review')">↻ Retour Révision</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        render();
+      };
+
+      host.querySelector("#again").onclick = () => gradeAndNext("again");
+      host.querySelector("#hard").onclick  = () => gradeAndNext("hard");
+      host.querySelector("#good").onclick  = () => gradeAndNext("good");
+      host.querySelector("#easy").onclick  = () => gradeAndNext("easy");
+    };
+
+    render();
+  },
+
+  viewStats() {
+    const s = Storage.load();
+    const total = s.stats.correct + s.stats.wrong;
+    const rate = total ? Math.round((s.stats.correct / total) * 100) : 0;
+
+    const st = Storage.getSrsStats();
+
+    this.setView(`
+      <section class="card">
+        <h2>Stats</h2>
+        <div class="kpi">
+          <span class="pill">Total réponses : <b>${total}</b></span>
+          <span class="pill">Taux : <b>${rate}%</b></span>
+          <span class="pill">Bonnes : <b>${s.stats.correct}</b></span>
+          <span class="pill">Erreurs : <b>${s.stats.wrong}</b></span>
+        </div>
+
+        <hr />
+
+        <h3>SRS</h3>
+        <div class="kpi">
+          <span class="pill">Cartes : <b>${st.total}</b></span>
+          <span class="pill">À réviser : <b>${st.due}</b></span>
+          <span class="pill">Limite/jour : <b>${st.dailyLimit}</b></span>
+        </div>
+
+        <hr />
+        <button class="btn" onclick="localStorage.removeItem(Storage.key); location.reload()">Réinitialiser</button>
+      </section>
+    `);
+  }
+};
+
+App.init();
