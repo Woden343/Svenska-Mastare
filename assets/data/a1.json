@@ -84,9 +84,63 @@
               "sv": "Jag kan inte.",
               "fr": "Je ne peux pas.",
               "pron": "ya kan in-tè"
+            },
+            {
+              "sv": "Jag lär mig svenska.",
+              "fr": "J’apprends le suédois.",
+              "pron": "ya lèr mèy svèn-ska"
+            },
+            {
+              "sv": "Jag övar varje dag.",
+              "fr": "Je m’entraîne chaque jour.",
+              "pron": "ya œ-var vâr-ye dâg"
+            },
+            {
+              "sv": "Jag repeterar meningar.",
+              "fr": "Je répète des phrases.",
+              "pron": "ya rè-pè-té-rar mè-ning-ar"
+            },
+            {
+              "sv": "Jag gör övningarna.",
+              "fr": "Je fais les exercices.",
+              "pron": "ya yœr œv-ning-ar-na"
+            },
+            {
+              "sv": "Du förstår.",
+              "fr": "Tu comprends.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han förstår.",
+              "fr": "Tu comprends.",
+              "pron": "(à travailler)"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -96,32 +150,38 @@
       "lessons": [
         {
           "id": "a1_pron_1",
-          "title": "Alphabet suédois + å/ä/ö (repères FR)",
+          "title": "Alphabet suédois + å / ä / ö — bases de prononciation (francophones)",
           "content": [
+            "Objectif de la leçon :",
+            "• Découvrir l’alphabet suédois.",
+            "• Comprendre les lettres spéciales å / ä / ö (ce sont des lettres, pas des accents).",
+            "• Savoir les distinguer clairement à l’oral dès le niveau A1.",
             "",
-            "À retenir :",
-            "• Une règle simple + 2 exemples réutilisables.",
-            "• Apprends en phrases (pas en mots isolés).",
+            "Alphabet suédois :",
+            "a b c d e f g h i j k l m n o p q r s t u v w x y z å ä ö",
             "",
-            "Objectif : Alphabet suédois + å/ä/ö (repères FR)",
-            "Alphabet : a b c d e f g h i j k l m n o p q r s t u v w x y z å ä ö.",
-            "å, ä, ö sont des lettres à part (pas des accents).",
-            "Repères francophones (approx.) : å ≈ 'o' ouvert, ä ≈ 'è', ö ≈ 'eu'.",
-            "Piège FR : les voyelles suédoises sont souvent plus « nettes » que les voyelles françaises. Ose ouvrir/fermer davantage.",
-            "Accent tonique : souvent sur la première syllabe (très utile pour être compris).",
+            "Repères pour francophones (approximatifs) :",
+            "• å ≈ « o » ouvert (comme dans \"porte\")",
+            "• ä ≈ « è » (comme dans \"mère\")",
+            "• ö ≈ « eu » (comme dans \"peur\")",
             "",
-            "À retenir (A1) :",
-            "• ä et ö existent aussi en version “longue” et “courte” selon le mot.",
-            "• L’important : être cohérent et bien distinguer ä/ö/å.",
+            "Piège FR : le suédois demande des voyelles plus nettes que le français. Ose ouvrir/fermer davantage.",
             "",
-            "Mini-astuce : si tu hésites entre ä et e, prononce ä un peu plus ouvert (≈ « è »)."
+            "Principe clé (A1) : longueur vocalique",
+            "Une voyelle peut être longue ou courte, et ça peut changer le mot. Pour l’instant : vise surtout la clarté et la cohérence.",
+            "",
+            "Accent tonique :",
+            "Dans la majorité des mots, l’accent est sur la première syllabe. C’est très utile pour être compris.",
+            "",
+            "Erreurs fréquentes :",
+            "• remplacer ä par e (ou l’inverse)",
+            "• prononcer ö comme o",
+            "• prononcer å comme a",
+            "",
+            "Mini-astuce :",
+            "Si tu hésites entre ä et e, prononce ä un peu plus ouvert (≈ « è »)."
           ],
           "examples": [
-            {
-              "sv": "båt",
-              "fr": "bateau",
-              "pron": "bôt"
-            },
             {
               "sv": "här",
               "fr": "ici",
@@ -133,19 +193,29 @@
               "pron": "dèr"
             },
             {
+              "sv": "är",
+              "fr": "est / suis",
+              "pron": "èr"
+            },
+            {
+              "sv": "båt",
+              "fr": "bateau",
+              "pron": "bôt"
+            },
+            {
+              "sv": "får",
+              "fr": "mouton / reçoit",
+              "pron": "fôr"
+            },
+            {
               "sv": "söt",
-              "fr": "mignon/sucré",
+              "fr": "mignon / sucré",
               "pron": "sœut"
             },
             {
               "sv": "öl",
               "fr": "bière",
               "pron": "eul"
-            },
-            {
-              "sv": "Jag heter Alexandre.",
-              "fr": "Je m'appelle Alexandre.",
-              "pron": "ya hée-tèr a-lèx-ân-drè"
             },
             {
               "sv": "en ö",
@@ -155,12 +225,62 @@
             {
               "sv": "en å",
               "fr": "une rivière",
-              "pron": "èn o (ouvert)"
+              "pron": "èn o"
             },
             {
               "sv": "en älg",
               "fr": "un élan",
               "pron": "èn èlg"
+            },
+            {
+              "sv": "Jag heter Alexandre.",
+              "fr": "Je m'appelle Alexandre.",
+              "pron": "ya hée-ter a-lèx-an-drè"
+            },
+            {
+              "sv": "Jag är här.",
+              "fr": "Je suis ici.",
+              "pron": "ya èr hèr"
+            },
+            {
+              "sv": "Det är öl.",
+              "fr": "C’est de la bière.",
+              "pron": "dè èr eul"
+            }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Jag er här.",
+              "correct": "Jag är här.",
+              "note": "Ne remplace pas ä par e."
+            },
+            {
+              "wrong": "ol",
+              "correct": "öl",
+              "note": "ö est un son différent de o."
+            },
+            {
+              "wrong": "bat",
+              "correct": "båt",
+              "note": "å n’est pas a."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute (sans traduire) :",
+              "items": [
+                "här – där – är",
+                "öl – söt – ö",
+                "båt – får – å"
+              ]
+            },
+            {
+              "instruction": "Répète les phrases (rythme + accent sur la 1ère syllabe) :",
+              "items": [
+                "Jag är här.",
+                "Det är öl.",
+                "Jag heter Alexandre."
+              ]
             }
           ],
           "quiz": [
@@ -197,6 +317,11 @@
           ],
           "vocab": [
             {
+              "sv": "är",
+              "fr": "est / suis",
+              "pron": "èr"
+            },
+            {
               "sv": "heta",
               "fr": "s'appeler",
               "pron": "hée-ta"
@@ -211,6 +336,11 @@
               "fr": "un élan",
               "pron": "èn èlg"
             }
+          ],
+          "review": [
+            "å/ä/ö sont des lettres, pas des accents.",
+            "Vise des voyelles nettes : distingue ä / ö / å.",
+            "Accent souvent sur la première syllabe."
           ]
         },
         {
@@ -284,6 +414,36 @@
               "sv": "komma",
               "fr": "venir (o court)",
               "pron": "kom-ma"
+            },
+            {
+              "sv": "vit",
+              "fr": "blanc",
+              "pron": "viit"
+            },
+            {
+              "sv": "vitt",
+              "fr": "blanc (neutre)",
+              "pron": "vitt"
+            },
+            {
+              "sv": "tal",
+              "fr": "discours / nombre",
+              "pron": "taal"
+            },
+            {
+              "sv": "tall",
+              "fr": "pin (arbre)",
+              "pron": "tall"
+            },
+            {
+              "sv": "Jag säger tack.",
+              "fr": "Je dis merci.",
+              "pron": "ya sè-yer tak"
+            },
+            {
+              "sv": "Ett glas, tack.",
+              "fr": "Un verre, s'il vous plaît.",
+              "pron": "ètt glaas tak"
             }
           ],
           "quiz": [
@@ -342,6 +502,32 @@
               "fr": "venir",
               "pron": "kom-ma"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "tak",
+                "tack",
+                "glas",
+                "glass"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -379,7 +565,7 @@
             {
               "sv": "fyra",
               "fr": "quatre",
-              "pron": "fiira"
+              "pron": "fü-ra"
             },
             {
               "sv": "tycker",
@@ -390,6 +576,31 @@
               "sv": "Tack så mycket!",
               "fr": "Merci beaucoup !",
               "pron": "tack so mü-kèt"
+            },
+            {
+              "sv": "dyr",
+              "fr": "cher (prix)",
+              "pron": "dür"
+            },
+            {
+              "sv": "sy",
+              "fr": "coudre",
+              "pron": "sü"
+            },
+            {
+              "sv": "syster",
+              "fr": "sœur",
+              "pron": "süs-tèr"
+            },
+            {
+              "sv": "Jag tycker om det.",
+              "fr": "J’aime bien ça.",
+              "pron": "ya tü-ckèr om dè"
+            },
+            {
+              "sv": "Det är nytt.",
+              "fr": "C’est nouveau.",
+              "pron": "dè èr nü-tt"
             }
           ],
           "quiz": [
@@ -434,6 +645,32 @@
               "fr": "tissu",
               "pron": "tüg"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "ny",
+                "mycket",
+                "fyra",
+                "tycker"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -514,6 +751,31 @@
               "sv": "köra",
               "fr": "conduire",
               "pron": "chø-ra"
+            },
+            {
+              "sv": "själv",
+              "fr": "soi-même",
+              "pron": "shèlv"
+            },
+            {
+              "sv": "skjorta",
+              "fr": "chemise",
+              "pron": "shor-ta"
+            },
+            {
+              "sv": "sked",
+              "fr": "cuillère",
+              "pron": "shèd"
+            },
+            {
+              "sv": "Tjejen är här.",
+              "fr": "La fille est ici.",
+              "pron": "chèy-en èr hèr"
+            },
+            {
+              "sv": "Kan jag köpa kaffe?",
+              "fr": "Je peux acheter du café ?",
+              "pron": "kan ya chø-pa kafé"
             }
           ],
           "quiz": [
@@ -573,6 +835,32 @@
               "fr": "église",
               "pron": "chür-ka"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "sju",
+                "sjuk",
+                "tjugo",
+                "tjej"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -627,6 +915,26 @@
               "sv": "Jag bor i Stockholm.",
               "fr": "J'habite à Stockholm.",
               "pron": "ya bour i stôk-holm"
+            },
+            {
+              "sv": "Jag",
+              "fr": "je",
+              "pron": "ya"
+            },
+            {
+              "sv": "Jag är från Frankrike.",
+              "fr": "Je viens de France.",
+              "pron": "ya èr fron frân-kri-kè"
+            },
+            {
+              "sv": "Jag jobbar på Orly.",
+              "fr": "Je travaille à Orly.",
+              "pron": "ya yobb-ar po or-li"
+            },
+            {
+              "sv": "Jag gillar inte kaffe.",
+              "fr": "Je n’aime pas le café.",
+              "pron": "ya yil-lar in-tè kafé"
             }
           ],
           "quiz": [
@@ -660,7 +968,33 @@
               "answer": "bor"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag heter Alex.",
+                "Jag bor här.",
+                "Jag gillar kaffe.",
+                "Du kommer imorgon?"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -728,6 +1062,11 @@
               "sv": "Det är bra.",
               "fr": "Ça va.",
               "pron": "dè èr brâ"
+            },
+            {
+              "sv": "Hej!!",
+              "fr": "(répétition)",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -773,6 +1112,32 @@
               "fr": "bien",
               "pron": "brâ"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Hej!",
+                "God morgon!",
+                "God kväll!",
+                "Hej då!"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -842,6 +1207,11 @@
               "sv": "Förlåt! Jag förstår inte.",
               "fr": "Pardon ! Je ne comprends pas.",
               "pron": "fœr-lôt ! ya fœr-stor in-tè"
+            },
+            {
+              "sv": "Tack!!",
+              "fr": "(répétition)",
+              "pron": "(à travailler)"
             }
           ],
           "vocab": [
@@ -907,6 +1277,32 @@
               "q": "Complète : « Je ne comprends pas » = Jag ____ inte.",
               "answer": "förstår"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Tack!",
+                "Tack så mycket!",
+                "Tack ska du ha!",
+                "Varsågod."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -963,6 +1359,16 @@
               "sv": "Jag pratar lite svenska.",
               "fr": "Je parle un peu suédois.",
               "pron": "ya prâ-tar li-tè svèn-ska"
+            },
+            {
+              "sv": "Förlåt!!",
+              "fr": "(répétition)",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du heter Alexandre.",
+              "fr": "Tu m'appelle Alexandre.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -996,7 +1402,33 @@
               "answerIndex": 0
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Jag inte kan komma.",
+              "correct": "Jag kan inte komma.",
+              "note": "Avec un modal, inte vient juste après le modal."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Förlåt!",
+                "Ursäkta, var är toaletten?",
+                "Förlåt, jag förstår inte.",
+                "Jag heter Alexandre."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -1119,6 +1551,32 @@
               "fr": "aimer",
               "pron": "yil-la"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag heter Alex.",
+                "Du bor här.",
+                "Han jobbar idag.",
+                "Hon gillar kaffe."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -1175,6 +1633,16 @@
               "sv": "Han bor här.",
               "fr": "Il habite ici.",
               "pron": "han bour hèr"
+            },
+            {
+              "sv": "Du jobbar här.",
+              "fr": "Tu travaille ici.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han jobbar här.",
+              "fr": "Tu travaille ici.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -1213,7 +1681,33 @@
               "answer": "pratar"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag jobbar här.",
+                "Du pratar svenska.",
+                "Han bor i Sverige.",
+                "Jag pratar svenska."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_verbs_essential_1",
@@ -1344,6 +1838,32 @@
               "fr": "dire",
               "pron": "sè-ya"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag är trött.",
+                "Jag har en bil.",
+                "Jag gör mat.",
+                "Jag går hem."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -1406,6 +1926,11 @@
               "sv": "Jag kommer aldrig.",
               "fr": "Je ne viens jamais.",
               "pron": "ya kom-mèr âl-drig"
+            },
+            {
+              "sv": "Du bor inte här.",
+              "fr": "Tu n’habite pas ici.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -1455,6 +1980,32 @@
               "fr": "rien / aucun (neutre)",
               "pron": "in-yèt"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Jag inte kan komma.",
+              "correct": "Jag kan inte komma.",
+              "note": "Avec un modal, inte vient juste après le modal."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag bor inte här.",
+                "Jag är inte trött.",
+                "Jag kan inte komma.",
+                "Jag vill inte gå."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         }
       ]
@@ -1517,6 +2068,16 @@
               "sv": "Kommer du inte? — Jo!",
               "fr": "Tu ne viens pas ? — Si !",
               "pron": "kom-mèr dou in-tè — you"
+            },
+            {
+              "sv": "Bor du där?",
+              "fr": "Tu habites ici ?",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Kommer du imorgon?",
+              "fr": "Tu viens aujourd'hui ?",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -1566,6 +2127,32 @@
               "fr": "si (oui à une question négative)",
               "pron": "you"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Bor du här?",
+                "Är du trött?",
+                "Har du tid?",
+                "Gillar du kaffe?"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -1635,6 +2222,11 @@
               "sv": "Vad gör du nu?",
               "fr": "Que fais-tu maintenant ?",
               "pron": "vâd yœr dou nou"
+            },
+            {
+              "sv": "Varför är du där?",
+              "fr": "Pourquoi es-tu ici ?",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -1685,6 +2277,32 @@
               "fr": "quand",
               "pron": "nèr"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Jag inte kan komma.",
+              "correct": "Jag kan inte komma.",
+              "note": "Avec un modal, inte vient juste après le modal."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Vad heter du?",
+                "Vem är du?",
+                "Var bor du?",
+                "Hur mår du?"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -1740,6 +2358,16 @@
               "sv": "Jag vill ha två kaffe.",
               "fr": "Je veux deux cafés.",
               "pron": "ya vill hâ tvo kâf-fé"
+            },
+            {
+              "sv": "Du vill ha två kaffe.",
+              "fr": "Tu veux deux cafés.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han vill ha två kaffe.",
+              "fr": "Tu veux deux cafés.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -1782,7 +2410,33 @@
               "answer": "barn"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Hur mycket kostar det?",
+                "Hur mycket kaffe vill du ha?",
+                "Hur många böcker har du?",
+                "Hur många barn har ni?"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -1850,6 +2504,11 @@
               "sv": "Imorgon kommer han.",
               "fr": "Demain il vient.",
               "pron": "i-mor-gon kom-mèr han"
+            },
+            {
+              "sv": "Du jobbar idag.",
+              "fr": "Tu travaille aujourd’hui.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -1892,7 +2551,33 @@
               "answer": "kommer"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Idag jag jobbar.",
+              "correct": "Idag jobbar jag.",
+              "note": "Après un complément en tête, le verbe reste en 2 et le sujet passe après."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag jobbar idag.",
+                "Idag jobbar jag.",
+                "Nu kommer han.",
+                "I Paris bor jag."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_v2_2",
@@ -1943,6 +2628,31 @@
               "sv": "Men idag jobbar jag.",
               "fr": "Mais aujourd'hui je travaille.",
               "pron": "mèn i-dâg yôb-bar ya"
+            },
+            {
+              "sv": "Men imorgon jobbar jag.",
+              "fr": "Mais aujourd'hui je travaille.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Men nu jobbar jag.",
+              "fr": "Mais aujourd'hui je travaille.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Imorgon kan jag inte komma.",
+              "fr": "Demain je ne peux pas venir.",
+              "pron": "i-mor-gon kan ya in-tè komm-a"
+            },
+            {
+              "sv": "Här bor jag inte.",
+              "fr": "Ici, je n’habite pas.",
+              "pron": "hèr bour ya in-tè"
+            },
+            {
+              "sv": "Nu vill jag inte gå.",
+              "fr": "Là, je ne veux pas partir.",
+              "pron": "nou vill ya in-tè go"
             }
           ],
           "quiz": [
@@ -1992,6 +2702,32 @@
               "fr": "puis / ensuite",
               "pron": "sé-dan"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Idag jag jobbar.",
+              "correct": "Idag jobbar jag.",
+              "note": "Après un complément en tête, le verbe reste en 2 et le sujet passe après."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Idag jobbar jag inte.",
+                "Nu är jag inte hemma.",
+                "Idag kan jag inte komma.",
+                "Därför går jag hem."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         }
       ]
@@ -2108,7 +2844,68 @@
               "sv": "den nya bilen",
               "fr": "la nouvelle voiture",
               "pron": "dèn nü-a bi-lèn"
+            },
+            {
+              "sv": "en katt → katten",
+              "fr": "un chat → le chat",
+              "pron": "èn kat → kat-ten"
+            },
+            {
+              "sv": "ett barn → barnet",
+              "fr": "un enfant → l’enfant",
+              "pron": "ètt barn → bar-nèt"
+            },
+            {
+              "sv": "en stol → stolen",
+              "fr": "une chaise → la chaise",
+              "pron": "èn stoul → stou-len"
+            },
+            {
+              "sv": "ett rum → rummet",
+              "fr": "une pièce → la pièce",
+              "pron": "ètt roum → roum-mèt"
+            },
+            {
+              "sv": "Jag har en bil.",
+              "fr": "J’ai une voiture.",
+              "pron": "ya har èn biil"
+            },
+            {
+              "sv": "Jag har ett barn.",
+              "fr": "J’ai un enfant.",
+              "pron": "ya har ètt barn"
+            },
+            {
+              "sv": "Jag har en bok.",
+              "fr": "J’ai un livre.",
+              "pron": "(à travailler)"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "*bil (sans article)",
+              "correct": "en bil",
+              "note": "En A1, apprends toujours le nom avec en/ett."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "en bil → bilen",
+                "ett bord → bordet",
+                "den nya bilen",
+                "en katt → katten"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -2154,6 +2951,31 @@
               "sv": "stolen",
               "fr": "la chaise",
               "pron": "stou-lèn"
+            },
+            {
+              "sv": "boken!",
+              "fr": "(répétition)",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "en bok → boken",
+              "fr": "un livre → le livre",
+              "pron": "èn bouk → bou-ken"
+            },
+            {
+              "sv": "ett rum → rummet",
+              "fr": "une pièce → la pièce",
+              "pron": "ètt roum → roum-mèt"
+            },
+            {
+              "sv": "en taxi → taxin",
+              "fr": "un taxi → le taxi",
+              "pron": "èn tak-si → tak-sin"
+            },
+            {
+              "sv": "ett äpple → äpplet",
+              "fr": "une pomme → la pomme",
+              "pron": "ètt èp-plè → èp-plèt"
             }
           ],
           "quiz": [
@@ -2173,7 +2995,33 @@
               "answer": "rummet"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "boken",
+                "huset",
+                "bilen",
+                "rummet"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_plural_1",
@@ -2219,6 +3067,21 @@
               "sv": "ett barn → barn",
               "fr": "un enfant → des enfants",
               "pron": "ètt barn → barn"
+            },
+            {
+              "sv": "en bil → bilar",
+              "fr": "une voiture → des voitures",
+              "pron": "èn biil → bi-lar"
+            },
+            {
+              "sv": "ett rum → rum",
+              "fr": "une pièce → des pièces",
+              "pron": "ètt roum → roum"
+            },
+            {
+              "sv": "Jag har två bilar.",
+              "fr": "J’ai deux voitures.",
+              "pron": "ya har tvo bi-lar"
             }
           ],
           "quiz": [
@@ -2243,7 +3106,33 @@
               "answer": "äpplen"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "en stol → stolar",
+                "en flicka → flickor",
+                "en telefon → telefoner",
+                "ett äpple → äpplen"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_plural_2",
@@ -2269,6 +3158,36 @@
               "sv": "en man → män",
               "fr": "un homme → des hommes",
               "pron": "èn man → mèn"
+            },
+            {
+              "sv": "en fot → fötter",
+              "fr": "un pied → des pieds",
+              "pron": "èn fôt → feut-tèr"
+            },
+            {
+              "sv": "en tand → tänder",
+              "fr": "une dent → des dents",
+              "pron": "èn tand → tèn-dèr"
+            },
+            {
+              "sv": "ett barn → barn",
+              "fr": "un enfant → des enfants",
+              "pron": "ètt barn → barn"
+            },
+            {
+              "sv": "Jag har två böcker.",
+              "fr": "J’ai deux livres.",
+              "pron": "ya har tvo beu-ckèr"
+            },
+            {
+              "sv": "Du har två böcker.",
+              "fr": "Tu ai deux livres.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han har två böcker.",
+              "fr": "Tu ai deux livres.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -2293,7 +3212,31 @@
               "answerIndex": 1
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "en bok → böcker",
+                "en man → män"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_plural_def_1",
@@ -2330,6 +3273,36 @@
               "sv": "barnen",
               "fr": "les enfants",
               "pron": "bar-nèn"
+            },
+            {
+              "sv": "stolarna!",
+              "fr": "(répétition)",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "bilar → bilarna",
+              "fr": "des voitures → les voitures",
+              "pron": "bi-lar → bi-lar-na"
+            },
+            {
+              "sv": "hus → husen",
+              "fr": "des maisons → les maisons",
+              "pron": "hous → hou-sen"
+            },
+            {
+              "sv": "barn → barnen",
+              "fr": "des enfants → les enfants",
+              "pron": "barn → bar-nen"
+            },
+            {
+              "sv": "Jag ser bilarna.",
+              "fr": "Je vois les voitures.",
+              "pron": "ya ser bi-lar-na"
+            },
+            {
+              "sv": "Var är husen?",
+              "fr": "Où sont les maisons ?",
+              "pron": "var èr hou-sen"
             }
           ],
           "quiz": [
@@ -2354,7 +3327,33 @@
               "answer": "stolarna"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "stolarna",
+                "böckerna",
+                "husen",
+                "barnen"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -2398,6 +3397,26 @@
               "sv": "stora hus",
               "fr": "de grandes maisons",
               "pron": "stou-ra houss"
+            },
+            {
+              "sv": "två stora bilar",
+              "fr": "deux grandes voitures",
+              "pron": "tvo stou-ra bi-lar"
+            },
+            {
+              "sv": "Bilen är stor.",
+              "fr": "La voiture est grande.",
+              "pron": "bi-lèn èr stour"
+            },
+            {
+              "sv": "Huset är stort.",
+              "fr": "La maison est grande.",
+              "pron": "hou-sèt èr stourt"
+            },
+            {
+              "sv": "Bilarna är stora.",
+              "fr": "Les voitures sont grandes.",
+              "pron": "bi-lar-na èr stou-ra"
             }
           ],
           "quiz": [
@@ -2422,7 +3441,33 @@
               "answer": "stor"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "en stor bil",
+                "ett stort hus",
+                "stora bilar",
+                "stora hus"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_adj_2",
@@ -2455,6 +3500,36 @@
               "sv": "små hus",
               "fr": "de petites maisons",
               "pron": "smo houss"
+            },
+            {
+              "sv": "en liten katt",
+              "fr": "un petit chat",
+              "pron": "èn li-ten kat"
+            },
+            {
+              "sv": "ett litet barn",
+              "fr": "un petit enfant",
+              "pron": "ètt li-tèt barn"
+            },
+            {
+              "sv": "två små barn",
+              "fr": "deux petits enfants",
+              "pron": "tvo smo barn"
+            },
+            {
+              "sv": "Katten är liten.",
+              "fr": "Le chat est petit.",
+              "pron": "kat-ten èr li-ten"
+            },
+            {
+              "sv": "Barnet är litet.",
+              "fr": "L’enfant est petit.",
+              "pron": "bar-nèt èr li-tèt"
+            },
+            {
+              "sv": "Barnen är små.",
+              "fr": "Les enfants sont petits.",
+              "pron": "bar-nen èr smo"
             }
           ],
           "quiz": [
@@ -2479,7 +3554,32 @@
               "answer": "små"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "en liten bil",
+                "ett litet hus",
+                "små hus"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -2526,6 +3626,31 @@
               "sv": "mitt barn",
               "fr": "mon enfant",
               "pron": "mitt barn"
+            },
+            {
+              "sv": "min bil",
+              "fr": "ma voiture (en-ord)",
+              "pron": "min biil"
+            },
+            {
+              "sv": "mitt hus",
+              "fr": "ma maison (ett-ord)",
+              "pron": "mitt hous"
+            },
+            {
+              "sv": "Det är min bil.",
+              "fr": "C’est ma voiture.",
+              "pron": "dè èr min biil"
+            },
+            {
+              "sv": "Var är mitt pass?",
+              "fr": "Où est mon passeport ?",
+              "pron": "var èr mitt pass"
+            },
+            {
+              "sv": "Här är mina nycklar.",
+              "fr": "Voici mes clés.",
+              "pron": "hèr èr mi-na nü-cklar"
             }
           ],
           "quiz": [
@@ -2550,7 +3675,33 @@
               "answer": "mina"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "min bok",
+                "mitt hus",
+                "mina böcker",
+                "min bil"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_pos_2",
@@ -2585,6 +3736,31 @@
               "sv": "ditt barn",
               "fr": "ton enfant",
               "pron": "ditt barn"
+            },
+            {
+              "sv": "din bil",
+              "fr": "ta voiture",
+              "pron": "din biil"
+            },
+            {
+              "sv": "dina barn",
+              "fr": "tes enfants",
+              "pron": "di-na barn"
+            },
+            {
+              "sv": "Är det din bil?",
+              "fr": "C’est ta voiture ?",
+              "pron": "èr dè din biil"
+            },
+            {
+              "sv": "Var är ditt rum?",
+              "fr": "Où est ta chambre ?",
+              "pron": "var èr ditt roum"
+            },
+            {
+              "sv": "Jag gillar dina skor.",
+              "fr": "J’aime tes chaussures.",
+              "pron": "ya yil-lar di-na skour"
             }
           ],
           "quiz": [
@@ -2609,7 +3785,33 @@
               "answer": "din"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "din bok",
+                "ditt hus",
+                "dina böcker",
+                "ditt barn"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_pos_3",
@@ -2643,6 +3845,31 @@
               "sv": "De har sina barn.",
               "fr": "Ils ont leurs enfants.",
               "pron": "dom har si-na barn"
+            },
+            {
+              "sv": "Han tvättar sin bil.",
+              "fr": "Il lave sa voiture (à lui).",
+              "pron": "han tvèt-tar sin biil"
+            },
+            {
+              "sv": "Hon tar sitt pass.",
+              "fr": "Elle prend son passeport (à elle).",
+              "pron": "hon tar sitt pass"
+            },
+            {
+              "sv": "De hämtar sina barn.",
+              "fr": "Ils récupèrent leurs enfants (à eux).",
+              "pron": "dom hèm-tar si-na barn"
+            },
+            {
+              "sv": "Han tvättar hans bil.",
+              "fr": "Il lave sa voiture (celle d’un autre homme).",
+              "pron": "han tvèt-tar hans biil"
+            },
+            {
+              "sv": "Hon tar hennes väska.",
+              "fr": "Elle prend son sac (d’une autre femme).",
+              "pron": "hon tar hèn-nès vès-ka"
             }
           ],
           "quiz": [
@@ -2666,7 +3893,32 @@
               "answer": "sina"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Han har sin bil.",
+                "Hon har sitt hus.",
+                "De har sina barn."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -2776,7 +4028,86 @@
               "sv": "Jag har ett.",
               "fr": "J'ai 1.",
               "pron": "ya har"
+            },
+            {
+              "sv": "noll",
+              "fr": "zéro",
+              "pron": "noll"
+            },
+            {
+              "sv": "ett",
+              "fr": "un",
+              "pron": "ètt"
+            },
+            {
+              "sv": "två",
+              "fr": "deux",
+              "pron": "tvo"
+            },
+            {
+              "sv": "tre",
+              "fr": "trois",
+              "pron": "trê"
+            },
+            {
+              "sv": "fyra",
+              "fr": "quatre",
+              "pron": "fü-ra"
+            },
+            {
+              "sv": "fem",
+              "fr": "cinq",
+              "pron": "fèm"
+            },
+            {
+              "sv": "sex",
+              "fr": "six",
+              "pron": "sèks"
+            },
+            {
+              "sv": "sju",
+              "fr": "sept",
+              "pron": "shü"
+            },
+            {
+              "sv": "åtta",
+              "fr": "huit",
+              "pron": "ôt-ta"
+            },
+            {
+              "sv": "nio",
+              "fr": "neuf",
+              "pron": "ni-o"
+            },
+            {
+              "sv": "tio",
+              "fr": "dix",
+              "pron": "ti-o"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag gillar noll.",
+                "Jag har ett."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -2813,6 +4144,36 @@
               "sv": "hundra",
               "fr": "100",
               "pron": "houn-dra"
+            },
+            {
+              "sv": "tjugo!",
+              "fr": "(répétition)",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "elva",
+              "fr": "onze",
+              "pron": "èl-va"
+            },
+            {
+              "sv": "tolv",
+              "fr": "douze",
+              "pron": "tollv"
+            },
+            {
+              "sv": "tretton",
+              "fr": "treize",
+              "pron": "trè-tton"
+            },
+            {
+              "sv": "tjugo",
+              "fr": "vingt",
+              "pron": "tchou-go"
+            },
+            {
+              "sv": "trettio",
+              "fr": "trente",
+              "pron": "trèt-ti-o"
             }
           ],
           "quiz": [
@@ -2837,7 +4198,33 @@
               "answer": "trettio"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "tjugo",
+                "trettio",
+                "fyrtio",
+                "hundra"
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_time_1",
@@ -2868,6 +4255,36 @@
               "sv": "Klockan är fem.",
               "fr": "Il est cinq heures.",
               "pron": "klok-kan èr fèm"
+            },
+            {
+              "sv": "Klockan är två.",
+              "fr": "Il est deux heures.",
+              "pron": "klo-ckan èr tvo"
+            },
+            {
+              "sv": "Klockan är halv tre.",
+              "fr": "Il est deux heures et demie.",
+              "pron": "klo-ckan èr halv trê"
+            },
+            {
+              "sv": "Klockan är kvart över tre.",
+              "fr": "Il est trois heures et quart.",
+              "pron": "klo-ckan èr kvart ö-vèr trê"
+            },
+            {
+              "sv": "Klockan är kvart i tre.",
+              "fr": "Il est trois heures moins le quart.",
+              "pron": "klo-ckan èr kvart i trê"
+            },
+            {
+              "sv": "Klockan är fem över tre.",
+              "fr": "Il est trois heures cinq.",
+              "pron": "klo-ckan èr fém ö-vèr trê"
+            },
+            {
+              "sv": "Klockan är tio i fyra.",
+              "fr": "Il est quatre heures moins dix.",
+              "pron": "klo-ckan èr ti-o i fü-ra"
             }
           ],
           "quiz": [
@@ -2891,7 +4308,33 @@
               "answer": "klockan"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Vad är klockan?",
+                "Klockan är ett.",
+                "Klockan är fem.",
+                "Klockan är två."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -2933,6 +4376,26 @@
               "sv": "Boken är på bordet.",
               "fr": "Le livre est sur la table.",
               "pron": "bou-kèn èr po bour-dètt"
+            },
+            {
+              "sv": "Jag bor i Stockholm.",
+              "fr": "J’habite à Stockholm.",
+              "pron": "ya bour i stôk-holm"
+            },
+            {
+              "sv": "Vi är på Orly.",
+              "fr": "Nous sommes à Orly.",
+              "pron": "vi èr po or-li"
+            },
+            {
+              "sv": "Jag är i bilen.",
+              "fr": "Je suis dans la voiture.",
+              "pron": "ya èr i bi-lèn"
+            },
+            {
+              "sv": "Du bor i Sverige.",
+              "fr": "Tu habite en Suède.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -2956,7 +4419,33 @@
               "answer": "på"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag bor i Sverige.",
+                "Jag bor i Paris.",
+                "Jag är på jobbet.",
+                "Boken är på bordet."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_prep_2",
@@ -2993,6 +4482,26 @@
               "sv": "Vi går till jobbet.",
               "fr": "On va au travail.",
               "pron": "vi gour till yobbèt"
+            },
+            {
+              "sv": "Du går till skolan.",
+              "fr": "Tu vais à l’école.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han går till skolan.",
+              "fr": "Tu vais à l’école.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Hon går till skolan.",
+              "fr": "Tu vais à l’école.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du kommer från Frankrike.",
+              "fr": "Tu viens de France.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -3012,7 +4521,33 @@
               "answer": "med"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag går till skolan.",
+                "Jag kommer från Frankrike.",
+                "Jag är här med en vän.",
+                "Vi går till jobbet."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -3060,6 +4595,31 @@
               "sv": "Jag vill inte gå.",
               "fr": "Je ne veux pas y aller.",
               "pron": "ya vill innté go"
+            },
+            {
+              "sv": "Jag kan prata svenska.",
+              "fr": "Je peux parler suédois.",
+              "pron": "ya kan prâ-ta svèn-ska"
+            },
+            {
+              "sv": "Jag måste gå nu.",
+              "fr": "Je dois partir maintenant.",
+              "pron": "ya mås-tè go nou"
+            },
+            {
+              "sv": "Kan du hjälpa mig?",
+              "fr": "Tu peux m’aider ?",
+              "pron": "kan dou yèl-pa méy"
+            },
+            {
+              "sv": "Vill du komma?",
+              "fr": "Tu veux venir ?",
+              "pron": "vill dou komm-a"
+            },
+            {
+              "sv": "Jag kan inte komma idag.",
+              "fr": "Je ne peux pas venir aujourd’hui.",
+              "pron": "ya kan in-tè komm-a i-dâg"
             }
           ],
           "quiz": [
@@ -3083,7 +4643,33 @@
               "answer": "måste"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag kan komma.",
+                "Jag vill ha kaffe.",
+                "Jag måste gå.",
+                "Jag kan inte komma."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_future_1",
@@ -3119,6 +4705,26 @@
               "sv": "Idag ska jag jobba.",
               "fr": "Aujourd’hui, je vais travailler (V2).",
               "pron": "idag ska ya yobb-a"
+            },
+            {
+              "sv": "Vi ska köpa mat.",
+              "fr": "Nous allons acheter à manger.",
+              "pron": "vi ska chø-pa maat"
+            },
+            {
+              "sv": "Ska du komma?",
+              "fr": "Tu vas venir ?",
+              "pron": "ska dou komm-a"
+            },
+            {
+              "sv": "Du ska gå hem.",
+              "fr": "Tu vais rentrer.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han ska gå hem.",
+              "fr": "Tu vais rentrer.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -3142,7 +4748,33 @@
               "answer": "inte"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Jag inte kan komma.",
+              "correct": "Jag kan inte komma.",
+              "note": "Avec un modal, inte vient juste après le modal."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag ska gå hem.",
+                "Jag ska jobba imorgon.",
+                "Jag ska inte gå.",
+                "Idag ska jag jobba."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -3184,6 +4816,31 @@
               "sv": "Det finns kaffe.",
               "fr": "Il y a du café.",
               "pron": "dè finns kafé"
+            },
+            {
+              "sv": "Det är en bil.",
+              "fr": "C’est une voiture (description).",
+              "pron": "dè èr èn biil"
+            },
+            {
+              "sv": "Det finns en bil här.",
+              "fr": "Il y a une voiture ici (existence).",
+              "pron": "dè finns èn biil hèr"
+            },
+            {
+              "sv": "Det finns en toalett här.",
+              "fr": "Il y a des toilettes ici.",
+              "pron": "dè finns èn tou-a-lètt hèr"
+            },
+            {
+              "sv": "Det är en stor butik.",
+              "fr": "C’est un grand magasin.",
+              "pron": "dè èr èn stour bu-tik"
+            },
+            {
+              "sv": "Finns det kaffe?",
+              "fr": "Est-ce qu’il y a du café ?",
+              "pron": "finns dè kafé"
             }
           ],
           "quiz": [
@@ -3211,7 +4868,33 @@
               "answerIndex": 1
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Det är bra.",
+                "Det är en bil.",
+                "Det finns en butik här.",
+                "Det finns kaffe."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_expr_2",
@@ -3242,6 +4925,31 @@
               "sv": "Hon gillar mat.",
               "fr": "Elle aime la nourriture.",
               "pron": "houn yil-lar maat"
+            },
+            {
+              "sv": "Du gillar kaffe.",
+              "fr": "Tu aime le café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han gillar kaffe.",
+              "fr": "Tu aime le café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Hon gillar kaffe.",
+              "fr": "Tu aime le café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du gillar inte te.",
+              "fr": "Tu n’aime pas le thé.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han gillar inte te.",
+              "fr": "Tu n’aime pas le thé.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -3266,7 +4974,32 @@
               "answerIndex": 0
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag gillar kaffe.",
+                "Jag gillar inte te.",
+                "Hon gillar mat."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     },
@@ -3314,6 +5047,26 @@
               "sv": "Jag är 28 år.",
               "fr": "J’ai 28 ans.",
               "pron": "ya èr tjugoåtta or"
+            },
+            {
+              "sv": "Du heter Alex.",
+              "fr": "Tu m’appelle Alex.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han heter Alex.",
+              "fr": "Tu m’appelle Alex.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Hon heter Alex.",
+              "fr": "Tu m’appelle Alex.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du kommer från Frankrike.",
+              "fr": "Tu viens de France.",
+              "pron": "(à travailler)"
             }
           ],
           "quiz": [
@@ -3338,7 +5091,33 @@
               "answer": "bor"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag heter Alex.",
+                "Jag kommer från Frankrike.",
+                "Jag bor i Paris.",
+                "Jag är 28 år."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_dial_2",
@@ -3424,7 +5203,61 @@
               "sv": "Jag har te.",
               "fr": "J'ai thé.",
               "pron": "ya har"
+            },
+            {
+              "sv": "Jag har en kaffe.",
+              "fr": "J’ai un café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Det är en kaffe.",
+              "fr": "C’est un café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du gillar en kaffe.",
+              "fr": "J'aime un café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han gillar en kaffe.",
+              "fr": "J'aime un café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Hon gillar en kaffe.",
+              "fr": "J'aime un café.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du har te.",
+              "fr": "J'ai thé.",
+              "pron": "(à travailler)"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag gillar en kaffe.",
+                "Jag har te."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -3499,7 +5332,61 @@
               "sv": "Jag har toaletten.",
               "fr": "J'ai les toilettes (défini).",
               "pron": "ya har"
+            },
+            {
+              "sv": "Ursäkta, var är toaletten?",
+              "fr": "Excusez-moi, où sont les toilettes ?",
+              "pron": "ur-chèk-ta var èr tou-a-lèttèn"
+            },
+            {
+              "sv": "Gå rakt fram.",
+              "fr": "Allez tout droit.",
+              "pron": "go rakt fram"
+            },
+            {
+              "sv": "Sen till vänster.",
+              "fr": "Puis à gauche.",
+              "pron": "sèn till vèn-stèr"
+            },
+            {
+              "sv": "Tack så mycket!",
+              "fr": "Merci beaucoup !",
+              "pron": "tak so mü-kèt"
+            },
+            {
+              "sv": "Varsågod.",
+              "fr": "De rien.",
+              "pron": "var-so-goud"
+            },
+            {
+              "sv": "Du gillar toalett.",
+              "fr": "J'aime toilettes.",
+              "pron": "(à travailler)"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag gillar toalett.",
+                "Jag har toaletten."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         },
         {
@@ -3569,7 +5456,61 @@
               "sv": "Jag har imorgon.",
               "fr": "J'ai demain.",
               "pron": "ya har"
+            },
+            {
+              "sv": "Du gillar idag.",
+              "fr": "J'aime aujourd’hui.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Han gillar idag.",
+              "fr": "J'aime aujourd’hui.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Hon gillar idag.",
+              "fr": "J'aime aujourd’hui.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Jag gillar imorgon.",
+              "fr": "J'aime aujourd’hui.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Jag gillar nu.",
+              "fr": "J'aime aujourd’hui.",
+              "pron": "(à travailler)"
+            },
+            {
+              "sv": "Du har imorgon.",
+              "fr": "J'ai demain.",
+              "pron": "(à travailler)"
             }
+          ],
+          "common_mistakes": [
+            {
+              "wrong": "Idag jag jobbar.",
+              "correct": "Idag jobbar jag.",
+              "note": "Après un complément en tête, le verbe reste en 2 et le sujet passe après."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag gillar idag.",
+                "Jag har imorgon."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
           ]
         }
       ]
@@ -3624,7 +5565,31 @@
               "pron": "ya kan in-tè"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Idag jag jobbar.",
+              "correct": "Idag jobbar jag.",
+              "note": "Après un complément en tête, le verbe reste en 2 et le sujet passe après."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_rev_2",
@@ -3672,7 +5637,31 @@
               "pron": "ya kan in-tè"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Jag inte kan komma.",
+              "correct": "Jag kan inte komma.",
+              "note": "Avec un modal, inte vient juste après le modal."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_rev_3",
@@ -3725,7 +5714,31 @@
               "pron": "ya kan in-tè"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "*bil (sans article)",
+              "correct": "en bil",
+              "note": "En A1, apprends toujours le nom avec en/ett."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_rev_4",
@@ -3774,7 +5787,31 @@
               "pron": "ya kan in-tè"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_rev_5",
@@ -3822,7 +5859,31 @@
               "pron": "ya kan in-tè"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         },
         {
           "id": "a1_rev_6",
@@ -3870,7 +5931,31 @@
               "pron": "ya kan in-tè"
             }
           ],
-          "vocab": []
+          "vocab": [],
+          "common_mistakes": [
+            {
+              "wrong": "Apprendre le mot seul",
+              "correct": "Apprendre avec 1 phrase",
+              "note": "Le suédois se retient mieux avec une collocation."
+            }
+          ],
+          "mini_drills": [
+            {
+              "instruction": "Lis à voix haute, puis couvre le suédois et retrouve-le :",
+              "items": [
+                "Jag förstår.",
+                "Jag kan inte."
+              ]
+            }
+          ],
+          "review": [
+            "Je sais expliquer la règle en 1 phrase.",
+            "Je peux produire 3 phrases modèles sans lire."
+          ],
+          "tips": [
+            "Répète les exemples à voix haute : 5–10 fois, puis sans lire le français.",
+            "Garde 2–3 phrases « prêtes » que tu peux réutiliser en changeant un seul mot."
+          ]
         }
       ]
     }
