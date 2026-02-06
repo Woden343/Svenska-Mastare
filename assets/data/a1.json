@@ -2,12 +2,10 @@
   "level": "A1",
   "title": "Suédois A1 — Fondations",
   "modules": [
-
     {
       "id": "basics",
       "title": "Bases essentielles",
       "lessons": [
-
         {
           "id": "basics_1",
           "title": "Se présenter – vara (être)",
@@ -22,179 +20,192 @@
             "Jag är trött."
           ],
           "examples": [
-            {"sv":"Jag är Alexandre.","fr":"Je suis Alexandre.","pron":"ya èr alexandre"},
-            {"sv":"Jag är fransk.","fr":"Je suis français.","pron":"ya èr fransk"},
-            {"sv":"Jag är trött.","fr":"Je suis fatigué.","pron":"ya èr treutt"}
+            { "sv": "Jag är Alexandre.", "fr": "Je suis Alexandre.", "pron": "ya èr alexandre" },
+            { "sv": "Jag är fransk.", "fr": "Je suis français.", "pron": "ya èr fransk" },
+            { "sv": "Jag är trött.", "fr": "Je suis fatigué.", "pron": "ya èr treutt" }
           ],
-          "quiz":[{"type":"gap","q":"Complète : Jag ___ Alexandre.","answer":"är"}]
+          "quiz": [
+            { "type": "gap", "q": "Complète : Jag ___ Alexandre.", "answer": "är" }
+          ]
         },
-
         {
           "id": "basics_2",
           "title": "Où j’habite / où je suis",
-          "content":[
+          "content": [
             "🎯 Objectif : dire où tu es.",
             "",
             "Jag bor i = j’habite à",
             "Jag är i = je suis à"
           ],
-          "examples":[
-            {"sv":"Jag bor i Paris.","fr":"J’habite à Paris.","pron":"ya bour i pari"},
-            {"sv":"Jag är i Sverige.","fr":"Je suis en Suède.","pron":"ya èr i svèri-yè"}
+          "examples": [
+            { "sv": "Jag bor i Paris.", "fr": "J’habite à Paris.", "pron": "ya bour i pari" },
+            { "sv": "Jag är i Sverige.", "fr": "Je suis en Suède.", "pron": "ya èr i svèri-yè" }
           ],
-          "quiz":[{"type":"gap","q":"Complète : Jag ___ i Paris.","answer":"bor"}]
+          "quiz": [
+            { "type": "gap", "q": "Complète : Jag ___ i Paris.", "answer": "bor" }
+          ]
         },
-
         {
           "id": "basics_3",
           "title": "Présent simple",
-          "content":[
+          "content": [
             "🎯 Objectif : parler de ce que tu fais."
           ],
-          "examples":[
-            {"sv":"Jag jobbar.","fr":"Je travaille.","pron":"ya yobb-ar"},
-            {"sv":"Jag dricker kaffe.","fr":"Je bois du café.","pron":"ya drik-er kafé"},
-            {"sv":"Jag gillar kaffe.","fr":"J’aime le café.","pron":"ya yil-lar kafé"}
+          "examples": [
+            { "sv": "Jag jobbar.", "fr": "Je travaille.", "pron": "ya yobb-ar" },
+            { "sv": "Jag dricker kaffe.", "fr": "Je bois du café.", "pron": "ya drik-er kafé" },
+            { "sv": "Jag gillar kaffe.", "fr": "J’aime le café.", "pron": "ya yil-lar kafé" }
           ],
-          "quiz":[{"type":"gap","q":"Complète : Jag ___ kaffe.","answer":"dricker"}]
+          "quiz": [
+            { "type": "gap", "q": "Complète : Jag ___ kaffe.", "answer": "dricker" }
+          ]
         },
-
         {
           "id": "basics_4",
           "title": "Futur proche – ska",
-          "content":[
+          "content": [
             "🎯 Objectif : dire ce que tu vas faire."
           ],
-          "examples":[
-            {"sv":"Jag ska jobba.","fr":"Je vais travailler.","pron":"ya ska yobb-a"},
-            {"sv":"Jag ska dricka kaffe.","fr":"Je vais boire du café.","pron":"ya ska drik-a kafé"},
-            {"sv":"Jag ska komma.","fr":"Je vais venir.","pron":"ya ska komm-a"}
+          "examples": [
+            { "sv": "Jag ska jobba.", "fr": "Je vais travailler.", "pron": "ya ska yobb-a" },
+            { "sv": "Jag ska dricka kaffe.", "fr": "Je vais boire du café.", "pron": "ya ska drik-a kafé" },
+            { "sv": "Jag ska komma.", "fr": "Je vais venir.", "pron": "ya ska komm-a" }
           ],
-          "quiz":[{"type":"gap","q":"Complète : Jag ___ jobba.","answer":"ska"}]
+          "quiz": [
+            { "type": "gap", "q": "Complète : Jag ___ jobba.", "answer": "ska" }
+          ]
         },
-
         {
           "id": "basics_5",
           "title": "Négation + question",
-          "content":[
+          "content": [
             "🎯 Objectif : dire non et poser une question."
           ],
-          "examples":[
-            {"sv":"Jag jobbar inte.","fr":"Je ne travaille pas.","pron":"ya yobb-ar intè"},
-            {"sv":"Var är toaletten?","fr":"Où sont les toilettes ?","pron":"var èr toualettèn"},
-            {"sv":"Jag kan inte komma.","fr":"Je ne peux pas venir.","pron":"ya kan intè komm-a"}
+          "examples": [
+            { "sv": "Jag jobbar inte.", "fr": "Je ne travaille pas.", "pron": "ya yobb-ar intè" },
+            { "sv": "Var är toaletten?", "fr": "Où sont les toilettes ?", "pron": "var èr toualettèn" },
+            { "sv": "Jag kan inte komma.", "fr": "Je ne peux pas venir.", "pron": "ya kan intè komm-a" }
           ],
-          "quiz":[{"type":"gap","q":"Complète : Jag kan ___ komma.","answer":"inte"}]
+          "quiz": [
+            { "type": "gap", "q": "Complète : Jag kan ___ komma.", "answer": "inte" }
+          ]
         }
-
       ]
     },
-
     {
       "id": "pron",
       "title": "Prononciation A1",
       "lessons": [
-
         {
           "id": "pron_1",
           "title": "J / G doux",
-          "examples":[
-            {"sv":"Jag gillar kaffe.","fr":"J’aime le café.","pron":"ya yil-lar kafé"},
-            {"sv":"Jag jobbar.","fr":"Je travaille.","pron":"ya yobb-ar"}
+          "examples": [
+            { "sv": "Jag gillar kaffe.", "fr": "J’aime le café.", "pron": "ya yil-lar kafé" },
+            { "sv": "Jag jobbar.", "fr": "Je travaille.", "pron": "ya yobb-ar" }
           ],
-          "quiz":[{"type":"gap","q":"Complète : ___ jobbar.","answer":"Jag"}]
+          "quiz": [
+            { "type": "gap", "q": "Complète : ___ jobbar.", "answer": "Jag" }
+          ]
         },
-
         {
           "id": "pron_2",
           "title": "Y = ü",
-          "examples":[
-            {"sv":"mycket","fr":"beaucoup","pron":"mü-kèt"},
-            {"sv":"Jag är mycket trött.","fr":"Je suis très fatigué.","pron":"ya èr mü-kèt treutt"}
+          "examples": [
+            { "sv": "mycket", "fr": "beaucoup", "pron": "mü-kèt" },
+            { "sv": "Jag är mycket trött.", "fr": "Je suis très fatigué.", "pron": "ya èr mü-kèt treutt" }
           ],
-          "quiz":[{"type":"gap","q":"Jag är ___ trött.","answer":"mycket"}]
+          "quiz": [
+            { "type": "gap", "q": "Jag är ___ trött.", "answer": "mycket" }
+          ]
         },
-
         {
           "id": "pron_3",
           "title": "Å Ä Ö",
-          "examples":[
-            {"sv":"Jag går.","fr":"Je marche.","pron":"ya gor"},
-            {"sv":"öl","fr":"bière","pron":"eul"}
+          "examples": [
+            { "sv": "Jag går.", "fr": "Je marche.", "pron": "ya gor" },
+            { "sv": "öl", "fr": "bière", "pron": "eul" }
           ],
-          "quiz":[{"type":"gap","q":"Jag ___ här.","answer":"är"}]
+          "quiz": [
+            { "type": "gap", "q": "Jag ___ här.", "answer": "är" }
+          ]
         },
-
         {
           "id": "pron_4",
           "title": "Accent tonique",
-          "examples":[
-            {"sv":"kaffe","fr":"café","pron":"KA-fe"},
-            {"sv":"jobbar","fr":"travaille","pron":"YO-bar"}
+          "examples": [
+            { "sv": "kaffe", "fr": "café", "pron": "KA-fe" },
+            { "sv": "jobbar", "fr": "travaille", "pron": "YO-bar" }
           ],
-          "quiz":[{"type":"gap","q":"Jag ___ kaffe.","answer":"dricker"}]
+          "quiz": [
+            { "type": "gap", "q": "Jag ___ kaffe.", "answer": "dricker" }
+          ]
         },
-
         {
           "id": "pron_5",
           "title": "Consonnes doubles",
-          "examples":[
-            {"sv":"komma","fr":"venir","pron":"komm-a"},
-            {"sv":"mycket","fr":"beaucoup","pron":"mü-kett"}
+          "examples": [
+            { "sv": "komma", "fr": "venir", "pron": "komm-a" },
+            { "sv": "mycket", "fr": "beaucoup", "pron": "mü-kett" }
           ],
-          "quiz":[{"type":"gap","q":"Jag kan ___ komma.","answer":"inte"}]
+          "quiz": [
+            { "type": "gap", "q": "Jag kan ___ komma.", "answer": "inte" }
+          ]
         }
-
       ]
     },
-{
-  "id": "nouns",
-  "title": "Noms & articles",
-  "lessons": [
-
     {
-      "id": "nouns_1",
-      "title": "en / ett",
-      "examples":[
-        {"sv":"en bok","fr":"un livre","pron":"en bouk"},
-        {"sv":"ett hus","fr":"une maison","pron":"ett hous"},
-        {"sv":"Jag har en bok.","fr":"J’ai un livre.","pron":"ya har en bouk"}
-      ],
-      "quiz":[{"type":"gap","q":"Complète : ___ hus","answer":"ett"}]
-    },
-
-    {
-      "id": "nouns_2",
-      "title": "Forme définie",
-      "examples":[
-        {"sv":"boken","fr":"le livre","pron":"bouk-en"},
-        {"sv":"huset","fr":"la maison","pron":"hou-set"},
-        {"sv":"Jag läser boken.","fr":"Je lis le livre.","pron":"ya lè-sèr bouk-en"}
-      ],
-      "quiz":[{"type":"gap","q":"Complète : bok → ___","answer":"boken"}]
-    },
-
-    {
-      "id": "nouns_3",
-      "title": "Pluriel",
-      "examples":[
-        {"sv":"böcker","fr":"livres","pron":"beuk-er"},
-        {"sv":"hus","fr":"maisons","pron":"hous"},
-        {"sv":"Jag har böcker.","fr":"J’ai des livres.","pron":"ya har beuk-er"}
-      ],
-      "quiz":[{"type":"gap","q":"Complète : bok → ___","answer":"böcker"}]
-    },
-
-    {
-      "id": "nouns_4",
-      "title": "den här / det här",
-      "examples":[
-        {"sv":"den här boken","fr":"ce livre-ci","pron":"den hèèr bouk-en"},
-        {"sv":"det här huset","fr":"cette maison-ci","pron":"dett hèèr hou-set"},
-        {"sv":"Jag gillar den här boken.","fr":"J’aime ce livre.","pron":"ya yil-lar den hèèr bouk-en"}
-      ],
-      "quiz":[{"type":"gap","q":"Complète : ___ här boken","answer":"den"}]
+      "id": "nouns",
+      "title": "Noms & articles",
+      "lessons": [
+        {
+          "id": "nouns_1",
+          "title": "en / ett",
+          "examples": [
+            { "sv": "en bok", "fr": "un livre", "pron": "en bouk" },
+            { "sv": "ett hus", "fr": "une maison", "pron": "ett hous" },
+            { "sv": "Jag har en bok.", "fr": "J’ai un livre.", "pron": "ya har en bouk" }
+          ],
+          "quiz": [
+            { "type": "gap", "q": "Complète : ___ hus", "answer": "ett" }
+          ]
+        },
+        {
+          "id": "nouns_2",
+          "title": "Forme définie",
+          "examples": [
+            { "sv": "boken", "fr": "le livre", "pron": "bouk-en" },
+            { "sv": "huset", "fr": "la maison", "pron": "hou-set" },
+            { "sv": "Jag läser boken.", "fr": "Je lis le livre.", "pron": "ya lè-sèr bouk-en" }
+          ],
+          "quiz": [
+            { "type": "gap", "q": "Complète : bok → ___", "answer": "boken" }
+          ]
+        },
+        {
+          "id": "nouns_3",
+          "title": "Pluriel",
+          "examples": [
+            { "sv": "böcker", "fr": "livres", "pron": "beuk-er" },
+            { "sv": "hus", "fr": "maisons", "pron": "hous" },
+            { "sv": "Jag har böcker.", "fr": "J’ai des livres.", "pron": "ya har beuk-er" }
+          ],
+          "quiz": [
+            { "type": "gap", "q": "Complète : bok → ___", "answer": "böcker" }
+          ]
+        },
+        {
+          "id": "nouns_4",
+          "title": "den här / det här",
+          "examples": [
+            { "sv": "den här boken", "fr": "ce livre-ci", "pron": "den hèèr bouk-en" },
+            { "sv": "det här huset", "fr": "cette maison-ci", "pron": "dett hèèr hou-set" },
+            { "sv": "Jag gillar den här boken.", "fr": "J’aime ce livre.", "pron": "ya yil-lar den hèèr bouk-en" }
+          ],
+          "quiz": [
+            { "type": "gap", "q": "Complète : ___ här boken", "answer": "den" }
+          ]
+        }
+      ]
     }
-
   ]
 }
