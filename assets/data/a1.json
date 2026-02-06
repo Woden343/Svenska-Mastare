@@ -894,7 +894,262 @@
       ]
     }
   ]
+},
+{
+  "id": "work_pro",
+  "title": "Travail & présentation pro — A1 utile",
+  "lessons": [
+    {
+      "id": "wp_1",
+      "title": "Se présenter au travail (je travaille comme…, je travaille à…)",
+      "content": [
+        "🎯 Objectif : te présenter en contexte pro.",
+        "",
+        "Structures :",
+        "• Jag jobbar på ... = Je travaille à ... (lieu/entreprise).",
+        "• Jag jobbar som ... = Je travaille comme ... (poste).",
+        "• Jag jobbar med ... = Je travaille avec/sur ... (domaine).",
+        "",
+        "Mini-dialogue :",
+        "A: Hej! Vad jobbar du med?",
+        "B: Jag jobbar med parfym och skönhet.",
+        "A: Jobbar du på flygplatsen?",
+        "B: Ja, jag jobbar på Orly."
+      ],
+      "vocab": [
+        { "sv": "jobbar", "fr": "travaille", "pron": "yobb-ar" },
+        { "sv": "som", "fr": "comme (métier)", "pron": "som" },
+        { "sv": "på", "fr": "à/sur (lieu)", "pron": "po" },
+        { "sv": "med", "fr": "avec/sur", "pron": "mèd" },
+        { "sv": "flygplats", "fr": "aéroport", "pron": "flyg-plats" },
+        { "sv": "parfym", "fr": "parfum", "pron": "par-füm" },
+        { "sv": "skönhet", "fr": "beauté", "pron": "chö-nèt" }
+      ],
+      "examples": [
+        { "sv": "Jag jobbar på flygplatsen.", "fr": "Je travaille à l’aéroport.", "pron": "ya yobb-ar po flyg-plats-en" },
+        { "sv": "Jag jobbar som säljare.", "fr": "Je travaille comme vendeur.", "pron": "ya yobb-ar som sèl-ya-rè" },
+        { "sv": "Jag jobbar med parfym.", "fr": "Je travaille sur le parfum.", "pron": "ya yobb-ar mèd par-füm" },
+        { "sv": "Vad jobbar du med?", "fr": "Tu travailles dans quoi ?", "pron": "vad yobb-ar dou mèd" }
+      ],
+      "mini_drills": [
+        { "instruction": "Substitution : remplace 'parfym' par 'skönhet' / 'kaffe' / 'sverige' (jeu).", "items": ["Jag jobbar med parfym."] },
+        { "instruction": "Triple : fais 3 phrases : på / som / med (oral).", "items": ["Jag jobbar på ...", "Jag jobbar som ...", "Jag jobbar med ..."] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : Jag jobbar ___ flygplatsen.", "answer": "på" },
+        { "type": "gap", "q": "Complète : Jag jobbar ___ säljare.", "answer": "som" },
+        { "type": "gap", "q": "Complète : Vad jobbar du ___?", "answer": "med" }
+      ]
+    },
+    {
+      "id": "wp_2",
+      "title": "Horaires & disponibilité (jag börjar, jag slutar, jag är ledig)",
+      "content": [
+        "🎯 Objectif : parler de ton service (simple).",
+        "",
+        "Structures :",
+        "• Jag börjar klockan ... = Je commence à ...",
+        "• Jag slutar klockan ... = Je finis à ...",
+        "• Jag är ledig idag. = Je suis off aujourd’hui.",
+        "• Jag kan (inte) = je peux (pas).",
+        "",
+        "Mini-dialogue :",
+        "A: Kan du idag?",
+        "B: Nej, jag jobbar. Jag slutar klockan fem.",
+        "A: Okej, kanske imorgon?"
+      ],
+      "vocab": [
+        { "sv": "börjar", "fr": "commence", "pron": "bör-yar" },
+        { "sv": "slutar", "fr": "finit", "pron": "slou-tar" },
+        { "sv": "ledig", "fr": "libre / off", "pron": "le-dig" },
+        { "sv": "klockan", "fr": "l’heure", "pron": "klock-an" },
+        { "sv": "idag", "fr": "aujourd’hui", "pron": "i-dag" },
+        { "sv": "imorgon", "fr": "demain", "pron": "i-mor-ron" }
+      ],
+      "examples": [
+        { "sv": "Jag börjar klockan åtta.", "fr": "Je commence à huit heures.", "pron": "ya bör-yar klock-an ot-ta" },
+        { "sv": "Jag slutar klockan fem.", "fr": "Je finis à cinq heures.", "pron": "ya slou-tar klock-an fém" },
+        { "sv": "Jag är ledig idag.", "fr": "Je suis off aujourd’hui.", "pron": "ya èr le-dig i-dag" },
+        { "sv": "Kan du imorgon?", "fr": "Tu peux demain ?", "pron": "kan dou i-mor-ron" }
+      ],
+      "mini_drills": [
+        { "instruction": "Substitution : change les chiffres (8, 9, 10 / 4, 5, 6).", "items": ["Jag börjar klockan åtta.", "Jag slutar klockan fem."] },
+        { "instruction": "Négation : Kan du idag? → Nej, jag kan inte.", "items": ["Kan du idag?"] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : Jag ___ klockan åtta.", "answer": "börjar" },
+        { "type": "gap", "q": "Complète : Jag ___ klockan fem.", "answer": "slutar" },
+        { "type": "gap", "q": "Complète : Jag är ___ idag.", "answer": "ledig" }
+      ]
+    },
+    {
+      "id": "wp_3",
+      "title": "Actions terrain (jag hjälper, jag visar, jag letar)",
+      "content": [
+        "🎯 Objectif : phrases terrain (retail/accueil) A1.",
+        "",
+        "Structures utiles :",
+        "• Jag hjälper dig. = Je vous aide.",
+        "• Jag visar dig. = Je vous montre.",
+        "• Jag letar. = Je cherche.",
+        "• Vänta lite. = Attendez un peu."
+      ],
+      "vocab": [
+        { "sv": "hjälper", "fr": "aide", "pron": "yèl-per" },
+        { "sv": "visar", "fr": "montre", "pron": "vi-sar" },
+        { "sv": "letar", "fr": "cherche", "pron": "le-tar" },
+        { "sv": "vänta", "fr": "attendre", "pron": "vèn-ta" },
+        { "sv": "lite", "fr": "un peu", "pron": "li-tè" }
+      ],
+      "examples": [
+        { "sv": "Jag hjälper dig.", "fr": "Je vous aide.", "pron": "ya yèl-per dèï" },
+        { "sv": "Jag visar dig.", "fr": "Je vous montre.", "pron": "ya vi-sar dèï" },
+        { "sv": "Jag letar.", "fr": "Je cherche.", "pron": "ya le-tar" },
+        { "sv": "Vänta lite.", "fr": "Attendez un peu.", "pron": "vèn-ta li-tè" }
+      ],
+      "mini_drills": [
+        { "instruction": "Chaîne : Jag letar → Jag letar inte → Vänta lite (oral).", "items": ["Jag letar."] },
+        { "instruction": "Politesse : ajoute 'snälla' (au début).", "items": ["Vänta lite."] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : Jag ___ dig.", "answer": "hjälper" },
+        { "type": "gap", "q": "Complète : Vänta ___.", "answer": "lite" }
+      ]
+    },
+    {
+      "id": "wp_4",
+      "title": "Problèmes & solutions (det finns, det är slut, jag vet inte)",
+      "content": [
+        "🎯 Objectif : gérer un problème client A1.",
+        "",
+        "Structures :",
+        "• Det finns ... = Il y a ...",
+        "• Det är slut. = C’est fini / en rupture.",
+        "• Jag vet inte. = Je ne sais pas.",
+        "• Jag kan kolla. = Je peux vérifier."
+      ],
+      "vocab": [
+        { "sv": "det finns", "fr": "il y a", "pron": "dett finns" },
+        { "sv": "slut", "fr": "fini / rupture", "pron": "slout" },
+        { "sv": "kolla", "fr": "vérifier", "pron": "kol-la" }
+      ],
+      "examples": [
+        { "sv": "Det finns en annan.", "fr": "Il y en a un autre.", "pron": "dett finns en an-nan" },
+        { "sv": "Det är slut.", "fr": "C’est en rupture.", "pron": "dett èr slout" },
+        { "sv": "Jag vet inte.", "fr": "Je ne sais pas.", "pron": "ya vét intè" },
+        { "sv": "Jag kan kolla.", "fr": "Je peux vérifier.", "pron": "ya kan kol-la" }
+      ],
+      "mini_drills": [
+        { "instruction": "Réponses : Det finns ... / Det är slut / Jag vet inte / Jag kan kolla (x8).", "items": ["Finns det ...?"] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : Det ___ en annan.", "answer": "finns" },
+        { "type": "gap", "q": "Complète : Jag kan ___ .", "answer": "kolla" }
+      ]
+    }
+  ]
+}
+,
+{
+  "id": "mini_stories",
+  "title": "Mini-stories A1 — compréhension + répétition",
+  "lessons": [
+    {
+      "id": "ms_1",
+      "title": "Story 1 : Café rapide",
+      "content": [
+        "🎯 Objectif : comprendre un mini-échange et le rejouer.",
+        "",
+        "Texte :",
+        "Alex går till ett café.",
+        "Han vill ha en kaffe.",
+        "Det kostar tio kronor.",
+        "Alex betalar med kort.",
+        "",
+        "Mission :",
+        "1) Lis à voix haute (x2).",
+        "2) Rejoue le dialogue avec tes mots (A1)."
+      ],
+      "examples": [
+        { "sv": "Alex går till ett café.", "fr": "Alex va à un café.", "pron": "alex gor till ett ka-fé" },
+        { "sv": "Han vill ha en kaffe.", "fr": "Il veut un café.", "pron": "han vill ha en ka-fe" },
+        { "sv": "Det kostar tio kronor.", "fr": "Ça coûte dix couronnes.", "pron": "dett kos-tar ti-o krou-nor" },
+        { "sv": "Alex betalar med kort.", "fr": "Alex paie par carte.", "pron": "alex be-ta-lar mèd kort" }
+      ],
+      "mini_drills": [
+        { "instruction": "Transformation : remplace 'kaffe' par 'vatten' et relis.", "items": ["Han vill ha en kaffe."] },
+        { "instruction": "Questions/réponses (oral) : Vad vill han ha? → En kaffe.", "items": ["Vad vill han ha?"] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : Han ___ ha en kaffe.", "answer": "vill" },
+        { "type": "gap", "q": "Complète : Det ___ tio kronor.", "answer": "kostar" },
+        { "type": "gap", "q": "Complète : Alex betalar med ___.", "answer": "kort" }
+      ]
+    },
+    {
+      "id": "ms_2",
+      "title": "Story 2 : À l’aéroport",
+      "content": [
+        "🎯 Objectif : comprendre une situation terrain.",
+        "",
+        "Texte :",
+        "En kund frågar: Var är toaletten?",
+        "Alex säger: Där borta.",
+        "Kunden säger: Tack!",
+        "Alex säger: Varsågod."
+      ],
+      "vocab": [
+        { "sv": "kund", "fr": "client", "pron": "kound" },
+        { "sv": "frågar", "fr": "demande", "pron": "fro-gar" },
+        { "sv": "säger", "fr": "dit", "pron": "sè-yer" },
+        { "sv": "varsågod", "fr": "de rien / je vous en prie", "pron": "var-so-god" }
+      ],
+      "examples": [
+        { "sv": "Var är toaletten?", "fr": "Où sont les toilettes ?", "pron": "var èr tou-a-lètt-en" },
+        { "sv": "Där borta.", "fr": "Là-bas.", "pron": "dèr bor-ta" },
+        { "sv": "Tack!", "fr": "Merci !", "pron": "takk" },
+        { "sv": "Varsågod.", "fr": "De rien.", "pron": "var-so-god" }
+      ],
+      "mini_drills": [
+        { "instruction": "Roleplay : joue client puis vendeur (x3).", "items": ["Var är toaletten? → Där borta."] },
+        { "instruction": "Substitution : remplace toaletten par utgången / stationen.", "items": ["Var är toaletten?"] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : ___ är toaletten?", "answer": "Var" },
+        { "type": "gap", "q": "Complète : Alex säger: ___ borta.", "answer": "Där" },
+        { "type": "gap", "q": "Complète : Tack! — ___ .", "answer": "Varsågod" }
+      ]
+    },
+    {
+      "id": "ms_3",
+      "title": "Story 3 : Horaires",
+      "content": [
+        "🎯 Objectif : parler d’horaires et disponibilité.",
+        "",
+        "Texte :",
+        "Sara jobbar idag.",
+        "Hon börjar klockan åtta.",
+        "Hon slutar klockan fem.",
+        "Imorgon är hon ledig."
+      ],
+      "examples": [
+        { "sv": "Sara jobbar idag.", "fr": "Sara travaille aujourd’hui.", "pron": "sa-ra yobb-ar i-dag" },
+        { "sv": "Hon börjar klockan åtta.", "fr": "Elle commence à huit heures.", "pron": "hon bör-yar klock-an ot-ta" },
+        { "sv": "Hon slutar klockan fem.", "fr": "Elle finit à cinq heures.", "pron": "hon slou-tar klock-an fém" },
+        { "sv": "Imorgon är hon ledig.", "fr": "Demain elle est off.", "pron": "i-mor-ron èr hon le-dig" }
+      ],
+      "mini_drills": [
+        { "instruction": "Transformation : change 'åtta' et 'fem' (x6).", "items": ["Hon börjar klockan åtta.", "Hon slutar klockan fem."] }
+      ],
+      "quiz": [
+        { "type": "gap", "q": "Complète : Hon ___ klockan åtta.", "answer": "börjar" },
+        { "type": "gap", "q": "Complète : Hon ___ klockan fem.", "answer": "slutar" },
+        { "type": "gap", "q": "Complète : Imorgon är hon ___.", "answer": "ledig" }
+      ]
+    }
+  ]
 }
   ]
 }
+
 
