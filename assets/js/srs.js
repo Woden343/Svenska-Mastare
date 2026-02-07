@@ -8,221 +8,111 @@ const SRS = {
    * @returns {Array} Liste de cartes {id, front, back, level, type}
    */
   buildCardsFromLevels(levels) {
-    if (!levels || typeof levels !== 'object') {
-      console.warn('[SRS] Aucun niveau fourni');
+    if (!levels || typeof levels !== "object") {
+      console.warn("[SRS] Aucun niveau fourni");
       return [];
     }
 
     const cards = [];
     const seen = new Set();
 
-    const addCard = (id, front, back, level, type = 'vocab') => {
+    const addCard = (id, front, back, level, type = "vocab") => {
       if (!id || !front || !back || seen.has(id)) return;
-      
+
       seen.add(id);
       cards.push({
         id,
-        front: front.trim(),
-        back: back.trim(),
+        front: String(front).trim(),
+        back: String(back).trim(),
         level,
-        type
+        type,
       });
     };
 
-    // ✅ Parcourir tous les niveaux
     for (const lvl of Object.keys(levels)) {
       const L = levels[lvl];
       if (!L || !L.modules) continue;
 
-      // Extraire toutes les leçons de tous les modules
-      const lessons = (L.modules || []).flatMap(m => m.lessons || []);
+      const lessons = (L.modules || []).flatMap((m) => m.lessons || []);
 
       for (const les of lessons) {
         if (!les.id) continue;
 
-        // 1) ✅ VOCABULAIRE : sv → fr (avec pron si disponible)
-        for (const w of (les.vocab || [])) {
+        // 1) VOCAB : sv -> fr (+ pron optionnel)
+        for (const w of les.vocab || []) {
           const sv = (w.sv || "").trim();
           const fr = (w.fr || "").trim();
           const pron = (w.pron || "").trim();
 
           if (sv && fr) {
             const front = pron ? `${sv}\n${pron}` : sv;
-            addCard(
-              `${lvl}:${les.id}:vocab:${sv}`,
-              front,
-              fr,
-              lvl,
-              'vocab'
-            );
+            addCard(`${lvl}:${les.id}:vocab:${sv}`, front, fr, lvl, "vocab");
           }
         }
 
-        // 2) ✅ EXEMPLES : phrase sv → phrase fr
-        for (const e of (les.examples || [])) {
+        // 2) EXEMPLES : phrase sv -> phrase fr (+ pron optionnel)
+        for (const e of les.examples || []) {
           const sv = (e.sv || "").trim();
           const fr = (e.fr || "").trim();
           const pron = (e.pron || "").trim();
 
           if (sv && fr) {
-            // Limiter l'ID pour éviter clés trop longues
-            const shortSv = sv.slice(0, 80).replace(/[^a-zA-Z0-9åäöÅÄÖ]/g, '_');
+            const shortSv = sv.slice(0, 24).replace(/\s+/g, "_");
             const front = pron ? `${sv}\n${pron}` : sv;
-            
-            addCard(
-              `${lvl}:${les.id}:ex:${shortSv}`,
-              front,
-              fr,
-              lvl,
-              'example'
-            );
+            addCard(`${lvl}:${les.id}:ex:${shortSv}`, front, fr, lvl, "example");
           }
         }
 
-        // 3) ✅ QUIZ : questions → réponses (NOUVEAU)
-        if (les.quiz && Array.isArray(les.quiz)) {
-          for (let i = 0; i < les.quiz.length; i++) {
-            const q = les.quiz[i];
-            
-            if (q.type === 'mcq' && q.q && q.choices && q.answerIndex != null) {
-              const question = q.q.trim();
-              const answer = q.choices[q.answerIndex]?.trim();
-              
-              if (question && answer) {
-                addCard(
-                  `${lvl}:${les.id}:quiz:mcq:${i}`,
-                  question,
-                  answer,
-                  lvl,
-                  'quiz'
-                );
-              }
-            } else if (q.type === 'gap' && q.q && q.answer) {
-              const question = q.q.trim();
-              const answer = q.answer.trim();
-              
-              if (question && answer) {
-                addCard(
-                  `${lvl}:${les.id}:quiz:gap:${i}`,
-                  question,
-                  answer,
-                  lvl,
-                  'quiz'
-                );
-              }
-            }
+        // 3) QUIZ : question -> answer
+        for (const q of les.quiz || []) {
+          const qq = (q.q || "").trim();
+          const ans = (q.answer || "").trim();
+          if (qq && ans) {
+            const shortQ = qq.slice(0, 24).replace(/\s+/g, "_");
+            addCard(`${lvl}:${les.id}:quiz:${shortQ}`, qq, ans, lvl, "quiz");
           }
         }
       }
     }
 
     console.log(`[SRS] ${cards.length} cartes générées depuis ${Object.keys(levels).length} niveaux`);
-    
-    // ✅ Afficher statistiques par type
-    const byType = {};
-    for (const c of cards) {
-      byType[c.type] = (byType[c.type] || 0) + 1;
-    }
-    console.log('[SRS] Répartition:', byType);
-    
     return cards;
   },
 
-  /**
-   * ✅ Filtre les cartes par niveau
-   * @param {Array} cards - Liste de cartes
-   * @param {String} level - Niveau (A1, A2, B1, B2, etc.)
-   * @returns {Array} Cartes filtrées
-   */
-  filterByLevel(cards, level) {
-    if (!Array.isArray(cards)) return [];
-    if (!level) return cards;
-    
-    return cards.filter(c => c.level === level);
-  },
-
-  /**
-   * ✅ Filtre les cartes par type
-   * @param {Array} cards - Liste de cartes
-   * @param {String} type - Type (vocab, example, quiz)
-   * @returns {Array} Cartes filtrées
-   */
-  filterByType(cards, type) {
-    if (!Array.isArray(cards)) return [];
-    if (!type) return cards;
-    
-    return cards.filter(c => c.type === type);
-  },
-
-  /**
-   * ✅ Mélange aléatoirement un tableau (Fisher-Yates)
-   * @param {Array} array - Tableau à mélanger
-   * @returns {Array} Tableau mélangé
-   */
-  shuffle(array) {
-    if (!Array.isArray(array)) return [];
-    
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
+  // Helpers éventuels (si tu les utilises ailleurs)
+  shuffle(arr) {
+    if (!Array.isArray(arr)) return [];
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      [a[i], a[j]] = [a[j], a[i]];
     }
-    return shuffled;
+    return a;
   },
 
-  /**
-   * ✅ Sélectionne N cartes aléatoires
-   * @param {Array} cards - Liste de cartes
-   * @param {Number} count - Nombre de cartes à sélectionner
-   * @returns {Array} Cartes sélectionnées
-   */
-  pickRandom(cards, count) {
+  pickRandom(cards, count = 20) {
     if (!Array.isArray(cards) || cards.length === 0) return [];
-    
     const shuffled = this.shuffle(cards);
     return shuffled.slice(0, count);
   },
 
-  /**
-   * ✅ Statistiques détaillées sur les cartes
-   * @param {Array} cards - Liste de cartes
-   * @returns {Object} Stats par niveau et type
-   */
   getStats(cards) {
     if (!Array.isArray(cards)) return {};
-
-    const stats = {
-      total: cards.length,
-      byLevel: {},
-      byType: {}
-    };
+    const stats = { total: cards.length, byLevel: {}, byType: {} };
 
     for (const card of cards) {
-      // Par niveau
-      if (card.level) {
-        stats.byLevel[card.level] = (stats.byLevel[card.level] || 0) + 1;
-      }
-      
-      // Par type
-      if (card.type) {
-        stats.byType[card.type] = (stats.byType[card.type] || 0) + 1;
-      }
+      if (card.level) stats.byLevel[card.level] = (stats.byLevel[card.level] || 0) + 1;
+      if (card.type) stats.byType[card.type] = (stats.byType[card.type] || 0) + 1;
     }
-
     return stats;
   },
 
-  /**
-   * ✅ Trouve les cartes d'une leçon spécifique
-   * @param {Array} cards - Liste de cartes
-   * @param {String} level - Niveau (A1, A2, etc.)
-   * @param {String} lessonId - ID de la leçon
-   * @returns {Array} Cartes de cette leçon
-   */
   getCardsForLesson(cards, level, lessonId) {
     if (!Array.isArray(cards)) return [];
-    
     const prefix = `${level}:${lessonId}:`;
-    return cards.filter(c => c.id && c.id.startsWith(prefix));
-  }
+    return cards.filter((c) => c.id && c.id.startsWith(prefix));
+  },
 };
+
+// ✅ IMPORTANT : expose SRS au global (sinon window.SRS est undefined)
+window.SRS = SRS;
