@@ -10,447 +10,163 @@
       "lessons": [
 
         {
-          "id": "a1_premium_01",
-          "title": "Se présenter — être, venir de, habiter",
-          "content": [
-            "🎯 Objectif : te présenter naturellement.",
-            "",
-            "À la fin de cette leçon tu sais :",
-            "• dire ton nom",
-            "• dire d’où tu viens",
-            "• dire où tu habites",
-            "• poser ces questions à quelqu’un"
-          ],
-          "examples": [
-            { "sv": "Jag heter Alexandre.", "fr": "Je m’appelle Alexandre.", "pron": "ya hé-ter alexandre" },
-            { "sv": "Jag kommer från Frankrike.", "fr": "Je viens de France.", "pron": "ya komm-er fron fran-krikè" },
-            { "sv": "Jag bor i Paris.", "fr": "J’habite à Paris.", "pron": "ya bour i pari" }
-          ],
-          "mini_drills": [
-            {
-              "instruction": "Substitution : remplace Paris par ta ville.",
-              "items": ["Jag bor i Paris."]
-            }
-          ],
-          "quiz": [
-            { "type": "gap", "q": "Complète : Jag ___ Alexandre.", "answer": "heter" },
-            { "type": "gap", "q": "Complète : Jag ___ från Frankrike.", "answer": "kommer" },
-            { "type": "gap", "q": "Complète : Jag ___ i Paris.", "answer": "bor" }
-          ]
-        },
-{
-  "id": "a1_premium_02",
-  "title": "Dire ce que tu fais — présent simple + question",
+          {
+  "id": "a1_premium_01",
+  "title": "Se présenter — nom, origine, lieu",
   "content": [
-    "🎯 Objectif : dire ton action et demander celle de l’autre.",
+    "🎯 Objectif : te présenter naturellement.",
     "",
-    "=== Situation ===",
-    "A: Hej! Vad gör du?",
-    "B: Jag jobbar. Och du?",
-    "A: Jag dricker kaffe.",
+    "À la fin de cette leçon tu sais :",
+    "• dire ton prénom",
+    "• dire d’où tu viens",
+    "• dire où tu habites",
+    "• poser ces questions à quelqu’un",
     "",
-    "=== Décomposition ===",
-    "Vad gör du? = Que fais-tu ?",
-    "Jag jobbar. = Je travaille.",
-    "Jag dricker kaffe. = Je bois du café.",
+    "==============================",
+    "SITUATION — Rencontre informelle",
     "",
-    "=== Points clés ===",
-    "• Vad + verbe + sujet = question",
-    "• Jag + verbe = affirmation",
+    "Dialogue :",
+    "A: Hej! Är du ny här?",
+    "B: Ja, lite. Jag heter Alexandre.",
+    "A: Trevligt! Var kommer du ifrån?",
+    "B: Jag kommer från Frankrike.",
+    "A: Okej. Var bor du nu?",
+    "B: Jag bor i Paris.",
+    "A: Jaha. Jag heter Sara. Jag bor också i Paris.",
     "",
-    "=== Tableau système (présent) ===",
-    "jag jobbar / du jobbar",
-    "jag dricker / du dricker",
+    "==============================",
+    "DÉCOMPOSITION",
     "",
-    "=== Production ===",
-    "Dis 5 phrases : Jag jobbar / Jag dricker / Jag äter / Jag gillar / Jag går"
+    "Hej! = Salut !",
+    "Är du ny här? = Tu es nouveau ici ?",
+    "Jag heter Alexandre. = Je m’appelle Alexandre.",
+    "Var kommer du ifrån? = Tu viens d’où ?",
+    "Jag kommer från Frankrike. = Je viens de France.",
+    "Var bor du nu? = Tu habites où maintenant ?",
+    "Jag bor i Paris. = J’habite à Paris.",
+    "Jag bor också i Paris. = J’habite aussi à Paris.",
+    "",
+    "==============================",
+    "STRUCTURES CLÉS",
+    "",
+    "Jag heter + prénom",
+    "Jag kommer från + pays",
+    "Jag bor i + ville",
+    "",
+    "Questions :",
+    "Var kommer du ifrån?",
+    "Var bor du?",
+    "",
+    "==============================",
+    "ORDRE DES MOTS (A1)",
+    "",
+    "Sujet + verbe + complément",
+    "",
+    "Jag heter Alexandre.",
+    "Jag kommer från Frankrike.",
+    "Jag bor i Paris.",
+    "",
+    "==============================",
+    "TABLEAU SYSTÈME — vara / komma / bo",
+    "",
+    "Jag är / kommer / bor",
+    "Du är / kommer / bor",
+    "Han är / kommer / bor",
+    "Hon är / kommer / bor",
+    "",
+    "==============================",
+    "DRILLS — SUBSTITUTION (oral)",
+    "",
+    "Jag heter Alexandre.",
+    "→ Maria",
+    "→ David",
+    "→ Sara",
+    "",
+    "Jag kommer från Frankrike.",
+    "→ Sverige",
+    "→ Spanien",
+    "→ Italien",
+    "",
+    "Jag bor i Paris.",
+    "→ Stockholm",
+    "→ Lyon",
+    "→ hemma",
+    "",
+    "==============================",
+    "DRILLS — TRANSFORMATION",
+    "",
+    "Affirmation → Question",
+    "",
+    "Du bor i Paris.",
+    "→ Var bor du?",
+    "",
+    "Du kommer från Frankrike.",
+    "→ Var kommer du ifrån?",
+    "",
+    "==============================",
+    "DRILLS — CHAÎNE ORALE",
+    "",
+    "Dis sans t’arrêter :",
+    "Jag heter … Jag kommer från … Jag bor i …",
+    "",
+    "==============================",
+    "MINI-STORY",
+    "",
+    "Alex är ny.",
+    "Han heter Alex.",
+    "Han kommer från Frankrike.",
+    "Nu bor han i Paris.",
+    "Sara bor också i Paris.",
+    "De pratar tillsammans.",
+    "",
+    "==============================",
+    "PRODUCTION GUIDÉE",
+    "",
+    "Présente-toi en 3 phrases :",
+    "Jag heter …",
+    "Jag kommer från …",
+    "Jag bor i …"
   ],
   "vocab": [
-    { "sv": "vad", "fr": "quoi/que", "pron": "vad" },
-    { "sv": "gör", "fr": "fait", "pron": "yeuor" },
-    { "sv": "jobbar", "fr": "travaille", "pron": "yobb-ar" },
-    { "sv": "dricker", "fr": "bois", "pron": "drik-er" },
-    { "sv": "kaffe", "fr": "café", "pron": "KA-fe" },
-    { "sv": "och", "fr": "et", "pron": "ok" }
+    { "sv": "hej", "fr": "salut", "pron": "héï" },
+    { "sv": "heter", "fr": "s’appelle", "pron": "hé-ter" },
+    { "sv": "kommer", "fr": "viens", "pron": "komm-er" },
+    { "sv": "från", "fr": "de", "pron": "fron" },
+    { "sv": "bor", "fr": "habite", "pron": "bour" },
+    { "sv": "nu", "fr": "maintenant", "pron": "nou" },
+    { "sv": "också", "fr": "aussi", "pron": "ok-so" },
+    { "sv": "trevligt", "fr": "enchanté", "pron": "trè-vligt" }
   ],
   "examples": [
-    { "sv": "Vad gör du?", "fr": "Que fais-tu ?", "pron": "vad yeuor dou" },
-    { "sv": "Jag jobbar.", "fr": "Je travaille.", "pron": "ya yobb-ar" },
-    { "sv": "Jag dricker kaffe.", "fr": "Je bois du café.", "pron": "ya drik-er ka-fe" },
-    { "sv": "Och du?", "fr": "Et toi ?", "pron": "ok dou" }
+    { "sv": "Jag heter Alexandre.", "fr": "Je m’appelle Alexandre.", "pron": "ya hé-ter alexandre" },
+    { "sv": "Jag kommer från Frankrike.", "fr": "Je viens de France.", "pron": "ya komm-er fron fran-krikè" },
+    { "sv": "Jag bor i Paris.", "fr": "J’habite à Paris.", "pron": "ya bour i pari" },
+    { "sv": "Var kommer du ifrån?", "fr": "Tu viens d’où ?", "pron": "var komm-er dou i-fron" },
+    { "sv": "Var bor du?", "fr": "Tu habites où ?", "pron": "var bour dou" }
   ],
   "mini_drills": [
     {
-      "instruction": "Substitution : remplace 'kaffe' par vatten / te / mjölk.",
-      "items": ["Jag dricker kaffe."]
+      "instruction": "Substitution : remplace Paris par ta ville.",
+      "items": ["Jag bor i Paris."]
     },
     {
-      "instruction": "Question : transforme 'Jag jobbar.' → Vad gör du?",
-      "items": ["Jag jobbar."]
-    }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "Vad ___ du?", "answer": "gör" },
-    { "type": "gap", "q": "Jag ___ kaffe.", "answer": "dricker" },
-    { "type": "gap", "q": "Och ___?", "answer": "du" }
-  ]
-}
-,
-{
-  "id": "a1_premium_03",
-  "title": "Aller / intention — ska + till",
-  "content": [
-    "🎯 Objectif : dire où tu vas.",
-    "",
-    "=== Situation ===",
-    "A: Vart ska du?",
-    "B: Jag ska till centrum.",
-    "A: Idag eller imorgon?",
-    "B: Imorgon.",
-    "",
-    "=== Décomposition ===",
-    "Vart ska du? = Tu vas où ?",
-    "Jag ska till centrum. = Je vais au centre.",
-    "",
-    "=== Points clés ===",
-    "• futur proche : ska + infinitif",
-    "• destination : till + lieu",
-    "",
-    "=== Production ===",
-    "Dis 5 phrases : Imorgon ska jag till ..."
-  ],
-  "vocab": [
-    { "sv": "vart", "fr": "où (destination)", "pron": "vart" },
-    { "sv": "ska", "fr": "vais", "pron": "ska" },
-    { "sv": "till", "fr": "à/vers", "pron": "till" },
-    { "sv": "centrum", "fr": "centre", "pron": "sen-troum" },
-    { "sv": "idag", "fr": "aujourd’hui", "pron": "i-dag" },
-    { "sv": "imorgon", "fr": "demain", "pron": "i-mor-ron" }
-  ],
-  "examples": [
-    { "sv": "Vart ska du?", "fr": "Tu vas où ?", "pron": "vart ska dou" },
-    { "sv": "Jag ska till centrum.", "fr": "Je vais au centre.", "pron": "ya ska till sen-troum" },
-    { "sv": "Imorgon ska jag till hotellet.", "fr": "Demain je vais à l’hôtel.", "pron": "i-mor-ron ska ya till ho-tell-et" }
-  ],
-  "mini_drills": [
-    {
-      "instruction": "Substitution : centrum → stationen / hotellet / flygplatsen.",
-      "items": ["Jag ska till centrum."]
-    }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "Jag ___ till centrum.", "answer": "ska" },
-    { "type": "gap", "q": "Jag ska ___ centrum.", "answer": "till" },
-    { "type": "gap", "q": "___ ska jag till hotellet.", "answer": "Imorgon" }
-  ]
-}
-,
-{
-  "id": "a1_premium_04",
-  "title": "Dire non / capacité — kan + inte",
-  "content": [
-    "🎯 Objectif : dire que tu ne peux pas.",
-    "",
-    "=== Situation ===",
-    "A: Kan du komma idag?",
-    "B: Nej, jag kan inte. Jag jobbar.",
-    "A: Imorgon då?",
-    "B: Ja, imorgon kan jag.",
-    "",
-    "=== Décomposition ===",
-    "Kan du komma? = Tu peux venir ?",
-    "Jag kan inte. = Je ne peux pas.",
-    "",
-    "=== Points clés ===",
-    "• kan = pouvoir",
-    "• inte = ne...pas",
-    "",
-    "=== Production ===",
-    "Dis 6 phrases : Jag kan / Jag kan inte ..."
-  ],
-  "vocab": [
-    { "sv": "kan", "fr": "peux", "pron": "kan" },
-    { "sv": "inte", "fr": "ne...pas", "pron": "intè" },
-    { "sv": "komma", "fr": "venir", "pron": "komm-a" },
-    { "sv": "idag", "fr": "aujourd’hui", "pron": "i-dag" },
-    { "sv": "imorgon", "fr": "demain", "pron": "i-mor-ron" }
-  ],
-  "examples": [
-    { "sv": "Kan du komma idag?", "fr": "Tu peux venir aujourd’hui ?", "pron": "kan dou komm-a i-dag" },
-    { "sv": "Jag kan inte.", "fr": "Je ne peux pas.", "pron": "ya kan intè" },
-    { "sv": "Imorgon kan jag.", "fr": "Demain je peux.", "pron": "i-mor-ron kan ya" }
-  ],
-  "mini_drills": [
-    {
-      "instruction": "Transformation : Kan du komma? → Nej, jag kan inte.",
-      "items": ["Kan du komma idag?"]
+      "instruction": "Transformation : transforme en question.",
+      "items": ["Du bor i Paris."]
     },
     {
-      "instruction": "Substitution : komma → jobba / äta / dricka.",
-      "items": ["Jag kan inte komma."]
+      "instruction": "Chaîne orale complète.",
+      "items": ["Jag heter … Jag kommer från … Jag bor i …"]
     }
   ],
   "quiz": [
-    { "type": "gap", "q": "Jag kan ___ .", "answer": "inte" },
-    { "type": "gap", "q": "Kan du ___ idag?", "answer": "komma" },
-    { "type": "gap", "q": "Imorgon ___ jag.", "answer": "kan" }
-  ]
-},
-{
-  "id": "a1_premium_05",
-  "title": "Café & restaurant — commander",
-  "content": [
-    "🎯 Objectif : commander quelque chose simplement.",
-    "",
-    "=== Situation ===",
-    "A: Hej! Vad vill du ha?",
-    "B: Jag vill ha en kaffe, tack.",
-    "A: Något mer?",
-    "B: Nej tack.",
-    "",
-    "=== Décomposition ===",
-    "Jag vill ha = je veux / je voudrais",
-    "Något mer? = autre chose ?",
-    "",
-    "=== Production ===",
-    "Dis 5 commandes : Jag vill ha ..."
-  ],
-  "vocab": [
-    { "sv": "vill ha", "fr": "veux / voudrais", "pron": "vill ha" },
-    { "sv": "något", "fr": "quelque chose", "pron": "no-gott" },
-    { "sv": "mer", "fr": "plus", "pron": "mèr" },
-    { "sv": "tack", "fr": "merci", "pron": "takk" }
-  ],
-  "examples": [
-    { "sv": "Jag vill ha en kaffe.", "fr": "Je voudrais un café.", "pron": "ya vill ha en ka-fe" },
-    { "sv": "Något mer?", "fr": "Autre chose ?", "pron": "no-gott mèr" },
-    { "sv": "Nej tack.", "fr": "Non merci.", "pron": "néï takk" }
-  ],
-  "mini_drills": [
-    {
-      "instruction": "Substitution : kaffe → te / vatten / juice.",
-      "items": ["Jag vill ha en kaffe."]
-    }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "Jag ___ ha en kaffe.", "answer": "vill" },
-    { "type": "gap", "q": "Något ___?", "answer": "mer" }
-  ]
-}
-,
-{
-  "id": "a1_premium_06",
-  "title": "Demander un lieu — Var är…?",
-  "content": [
-    "🎯 Objectif : demander où se trouve quelque chose.",
-    "",
-    "=== Situation ===",
-    "A: Var är toaletten?",
-    "B: Där borta.",
-    "",
-    "=== Décomposition ===",
-    "Var är X? = Où est X ?",
-    "Där borta = là-bas",
-    "",
-    "=== Production ===",
-    "Pose 5 questions : Var är ...?"
-  ],
-  "vocab": [
-    { "sv": "var", "fr": "où", "pron": "var" },
-    { "sv": "där", "fr": "là", "pron": "dèr" },
-    { "sv": "borta", "fr": "là-bas", "pron": "bor-ta" },
-    { "sv": "toalett", "fr": "toilettes", "pron": "tou-a-lètt" }
-  ],
-  "examples": [
-    { "sv": "Var är toaletten?", "fr": "Où sont les toilettes ?", "pron": "var èr tou-a-lètt-en" },
-    { "sv": "Där borta.", "fr": "Là-bas.", "pron": "dèr bor-ta" }
-  ],
-  "mini_drills": [
-    {
-      "instruction": "Substitution : toaletten → stationen / centrum / hotellet.",
-      "items": ["Var är toaletten?"]
-    }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "___ är toaletten?", "answer": "Var" }
-  ]
-}
-,
-{
-  "id": "a1_premium_07",
-  "title": "Temps — aujourd’hui, demain, heures",
-  "content": [
-    "🎯 Objectif : parler du temps.",
-    "",
-    "=== Situation ===",
-    "Jag jobbar idag.",
-    "Imorgon är jag ledig.",
-    "Jag börjar klockan åtta.",
-    "",
-    "=== Production ===",
-    "Dis 4 phrases avec idag / imorgon / klockan."
-  ],
-  "vocab": [
-    { "sv": "idag", "fr": "aujourd’hui", "pron": "i-dag" },
-    { "sv": "imorgon", "fr": "demain", "pron": "i-mor-ron" },
-    { "sv": "klockan", "fr": "à (heure)", "pron": "klok-kan" },
-    { "sv": "börjar", "fr": "commence", "pron": "bör-yar" }
-  ],
-  "examples": [
-    { "sv": "Jag jobbar idag.", "fr": "Je travaille aujourd’hui.", "pron": "ya yobb-ar i-dag" },
-    { "sv": "Imorgon är jag ledig.", "fr": "Demain je suis off.", "pron": "i-mor-ron èr ya le-dig" },
-    { "sv": "Jag börjar klockan åtta.", "fr": "Je commence à huit heures.", "pron": "ya bör-yar klok-kan ot-ta" }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "Jag ___ idag.", "answer": "jobbar" },
-    { "type": "gap", "q": "Imorgon ___ jag ledig.", "answer": "är" }
-  ]
-},
-{
-  "id": "a1_premium_08",
-  "title": "Météo & émotions",
-  "content": [
-    "🎯 Objectif : dire comment tu te sens et le temps qu’il fait.",
-    "",
-    "=== Situation ===",
-    "Det är kallt.",
-    "Jag är trött.",
-    "",
-    "=== Production ===",
-    "Dis 4 phrases : Det är ... / Jag är ..."
-  ],
-  "vocab": [
-    { "sv": "kallt", "fr": "froid", "pron": "kallt" },
-    { "sv": "varmt", "fr": "chaud", "pron": "varmt" },
-    { "sv": "trött", "fr": "fatigué", "pron": "treutt" },
-    { "sv": "glad", "fr": "content", "pron": "glad" }
-  ],
-  "examples": [
-    { "sv": "Det är kallt.", "fr": "Il fait froid.", "pron": "dett èr kallt" },
-    { "sv": "Jag är trött.", "fr": "Je suis fatigué.", "pron": "ya èr treutt" },
-    { "sv": "Jag är glad.", "fr": "Je suis content.", "pron": "ya èr glad" }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "Det ___ kallt.", "answer": "är" },
-    { "type": "gap", "q": "Jag är ___ .", "answer": "trött" }
-      ]
-    },
-{
-  "id": "a1_premium_09",
-  "title": "Noms — en / ett",
-  "content": [
-    "🎯 Objectif : utiliser le bon article.",
-    "",
-    "=== Règle A1 ===",
-    "en = genre commun",
-    "ett = genre neutre",
-    "",
-    "Exemples :",
-    "en bok (un livre)",
-    "ett hus (une maison)",
-    "",
-    "=== Production ===",
-    "Dis 6 objets avec en / ett."
-  ],
-  "vocab": [
-    { "sv": "bok", "fr": "livre", "pron": "bouk" },
-    { "sv": "hus", "fr": "maison", "pron": "hous" },
-    { "sv": "bil", "fr": "voiture", "pron": "bil" },
-    { "sv": "bord", "fr": "table", "pron": "bourd" }
-  ],
-  "examples": [
-    { "sv": "en bok", "fr": "un livre", "pron": "en bouk" },
-    { "sv": "ett hus", "fr": "une maison", "pron": "ett hous" },
-    { "sv": "Jag har en bil.", "fr": "J’ai une voiture.", "pron": "ya har en bil" }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "___ hus", "answer": "ett" },
-    { "type": "gap", "q": "___ bok", "answer": "en" }
-  ]
-}
-,
-{
-  "id": "a1_premium_10",
-  "title": "Forme définie — boken / huset",
-  "content": [
-    "🎯 Objectif : dire 'le' / 'la'.",
-    "",
-    "=== Règle A1 ===",
-    "en bok → boken",
-    "ett hus → huset",
-    "",
-    "=== Production ===",
-    "Transforme 4 noms en forme définie."
-  ],
-  "examples": [
-    { "sv": "boken", "fr": "le livre", "pron": "bouk-en" },
-    { "sv": "huset", "fr": "la maison", "pron": "hou-set" },
-    { "sv": "Jag läser boken.", "fr": "Je lis le livre.", "pron": "ya lè-sèr bouk-en" }
-  ],
-  "mini_drills": [
-    {
-      "instruction": "Transformation : en bok → boken / ett hus → huset.",
-      "items": ["en bok", "ett hus"]
-    }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "bok → ___", "answer": "boken" },
-    { "type": "gap", "q": "hus → ___", "answer": "huset" }
-  ]
-}
-,
-{
-  "id": "a1_premium_11",
-  "title": "Pluriel simple",
-  "content": [
-    "🎯 Objectif : parler de plusieurs objets.",
-    "",
-    "=== Règle A1 ===",
-    "bok → böcker",
-    "hus → hus",
-    "",
-    "=== Production ===",
-    "Dis 4 phrases avec plusieurs objets."
-  ],
-  "examples": [
-    { "sv": "böcker", "fr": "livres", "pron": "beuk-er" },
-    { "sv": "hus", "fr": "maisons", "pron": "hous" },
-    { "sv": "Jag har böcker.", "fr": "J’ai des livres.", "pron": "ya har beuk-er" }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "bok → ___", "answer": "böcker" },
-    { "type": "gap", "q": "Jag har ___ .", "answer": "böcker" }
-  ]
-}
-,
-{
-  "id": "a1_premium_12",
-  "title": "Adjectifs — stor / stort",
-  "content": [
-    "🎯 Objectif : décrire avec un adjectif.",
-    "",
-    "=== Règle A1 ===",
-    "en-ord → stor bok",
-    "ett-ord → stort hus",
-    "",
-    "=== Production ===",
-    "Décris 4 objets."
-  ],
-  "examples": [
-    { "sv": "en stor bok", "fr": "un grand livre", "pron": "en stor bouk" },
-    { "sv": "ett stort hus", "fr": "une grande maison", "pron": "ett stort hous" },
-    { "sv": "Jag har ett stort hus.", "fr": "J’ai une grande maison.", "pron": "ya har ett stort hous" }
-  ],
-  "quiz": [
-    { "type": "gap", "q": "ett ___ hus", "answer": "stort" },
-    { "type": "gap", "q": "en ___ bok", "answer": "stor" }
+    { "type": "gap", "q": "Complète : Jag ___ Alexandre.", "answer": "heter" },
+    { "type": "gap", "q": "Complète : Jag ___ från Frankrike.", "answer": "kommer" },
+    { "type": "gap", "q": "Complète : Jag ___ i Paris.", "answer": "bor" },
+    { "type": "gap", "q": "Complète : Var ___ du?", "answer": "bor" },
+    { "type": "gap", "q": "Complète : Var ___ du ifrån?", "answer": "kommer" }
   ]
 }
 
-  ]
-}
-  ]
-}
 
 
 
