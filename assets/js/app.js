@@ -1,4 +1,4 @@
-// assets/js/app.js — VERSION COMPLÈTE (Theme-ready: Paper + Ink + Highlighter)
+// assets/js/app.js — NORDIC MINIMAL (stable + clean layout)
 
 const App = {
   mount: null,
@@ -27,7 +27,7 @@ const App = {
       return;
     }
 
-    // Inject tiny brand dot if present
+    // Brand dot (optional)
     const brand = document.getElementById("nav-home");
     if (brand && !brand.querySelector(".brand-badge")) {
       const dot = document.createElement("span");
@@ -148,7 +148,7 @@ const App = {
       <div class="stack">
         <div class="hero">
           <h1>Svenska Mästare Pro</h1>
-          <p class="muted">Apprentissage clair, esthétique “carnet”, et SRS intégré.</p>
+          <p class="muted">Minimal, clair, et efficace — avec révision SRS.</p>
           <div class="hero-actions">
             <button class="btn primary" data-go="/review">Révision SRS ${due ? `<span class="badge warn">${due}</span>` : ""}</button>
             <button class="btn" data-go="/stats">Statistiques</button>
@@ -314,13 +314,13 @@ const App = {
     });
   },
 
-  // ===== CONTENT RENDERER =====
+  // ===== CONTENT RENDERER (Dialogue + Décomposition) =====
   renderContent(lines) {
     if (!Array.isArray(lines)) return "";
     const raw = lines
       .map(x => String(x ?? "").trim())
       .filter(Boolean)
-      .filter(x => !/^[=\-_*]{6,}$/.test(x)); // ignore separators
+      .filter(x => !/^[=\-_*]{6,}$/.test(x));
 
     if (!raw.length) return "";
 
@@ -362,7 +362,7 @@ const App = {
       for (let i = 0; i < matches.length; i++) {
         const cur = matches[i];
         const next = matches[i + 1];
-        const start = cur.idx + 2; // "A:"
+        const start = cur.idx + 2;
         const end = next ? next.idx : t.length;
         const body = t.slice(start, end).trim();
         if (body) parts.push({ speaker: cur.speaker, text: body });
@@ -382,7 +382,7 @@ const App = {
     const blocks = [];
     let paragraph = [];
     let list = [];
-    let mode = "normal"; // normal | dialogue | breakdown
+    let mode = "normal";
     let breakdownRows = [];
     let dialogueTurns = [];
 
@@ -412,13 +412,10 @@ const App = {
 
       if (isHeading(line)) {
         flushList(); flushParagraph(); flushDialogue(); flushBreakdown();
-
         blocks.push({ type: "h", text: line.replace(/:$/, "") });
-
         if (n.includes("dialogue")) mode = "dialogue";
         else if (n.includes("decomposition")) mode = "breakdown";
         else mode = "normal";
-
         continue;
       }
 
@@ -465,12 +462,7 @@ const App = {
 
       if (b.type === "lead") {
         const t = b.text.replace(/^\s*Objectif\s*:\s*/i, "").trim();
-        return `
-          <div class="lead">
-            <div class="k">Objectif</div>
-            <p>${this.esc(t)}</p>
-          </div>
-        `;
+        return `<div class="lead"><div class="k">Objectif</div><p>${this.esc(t)}</p></div>`;
       }
 
       if (b.type === "ul") {
@@ -480,12 +472,7 @@ const App = {
       if (b.type === "callout") {
         const cleaned = b.text.replace(/^\s*(Astuce|Note|À retenir|A retenir|Attention)\s*[:\-]\s*/i, "").trim();
         const label = (/^\s*attention/i.test(norm(b.text))) ? "Attention" : "À retenir";
-        return `
-          <div class="callout">
-            <div class="label">${this.esc(label)}</div>
-            <p>${this.esc(cleaned)}</p>
-          </div>
-        `;
+        return `<div class="callout"><div class="label">${this.esc(label)}</div><p>${this.esc(cleaned)}</p></div>`;
       }
 
       if (b.type === "dialogue") {
@@ -506,7 +493,6 @@ const App = {
             </div>
           `;
         }).join("");
-
         return `<div class="dialogue">${bubbles}</div>`;
       }
 
@@ -527,9 +513,7 @@ const App = {
     return `
       <div class="card">
         <div class="section-title"><span class="chip"></span><h2>Contenu</h2></div>
-        <div class="article">
-          ${renderBlocks}
-        </div>
+        <div class="article">${renderBlocks}</div>
       </div>
     `;
   },
@@ -537,7 +521,6 @@ const App = {
   // ===== Exemples =====
   renderExamples(examples) {
     if (!Array.isArray(examples) || !examples.length) return "";
-
     return `
       <div class="card">
         <div class="section-title"><span class="chip"></span><h2>Exemples</h2></div>
@@ -554,7 +537,6 @@ const App = {
     `;
   },
 
-  // ===== Vocab / Drills / Quiz =====
   renderVocab(vocab) {
     if (!Array.isArray(vocab) || !vocab.length) return "";
     return `
@@ -566,9 +548,9 @@ const App = {
             <tbody>
               ${vocab.map(v => `
                 <tr>
-                  <td style="font-weight:900;">${this.esc(v.sv || "")}</td>
+                  <td style="font-weight:850;">${this.esc(v.sv || "")}</td>
                   <td>${this.esc(v.fr || "")}</td>
-                  <td class="muted" style="font-family:var(--mono);">${this.esc(v.pron || "")}</td>
+                  <td class="muted" style="font-family: var(--mono);">${this.esc(v.pron || "")}</td>
                   <td class="muted">${this.esc(v.note || "")}</td>
                 </tr>
               `).join("")}
@@ -586,8 +568,8 @@ const App = {
         <div class="section-title"><span class="chip"></span><h2>Mini-drills</h2></div>
         <div class="stack">
           ${drills.map(d => `
-            <div class="card" style="box-shadow:none; border-radius:18px; padding:14px; border-color: rgba(255,255,255,0.10); background: rgba(255,255,255,0.045);">
-              <div style="font-weight:900;">${this.esc(d.instruction || "")}</div>
+            <div class="card" style="box-shadow:none; padding:14px;">
+              <div style="font-weight:850;">${this.esc(d.instruction || "")}</div>
               ${Array.isArray(d.items) && d.items.length
                 ? `<ul style="margin-top:10px;">${d.items.map(it => `<li>${this.esc(it)}</li>`).join("")}</ul>`
                 : `<div class="muted" style="margin-top:10px;">Aucun item.</div>`}
@@ -607,8 +589,8 @@ const App = {
           ${quiz.map((q, i) => {
             const id = `ans_${Math.random().toString(16).slice(2)}_${i}`;
             return `
-              <div class="card" style="box-shadow:none; border-radius:18px; padding:14px; border-color: rgba(255,255,255,0.10); background: rgba(255,255,255,0.045);">
-                <div style="font-weight:900;">${this.esc(q.q || "")}</div>
+              <div class="card" style="box-shadow:none; padding:14px;">
+                <div style="font-weight:850;">${this.esc(q.q || "")}</div>
                 <button class="btn" style="margin-top:10px;" data-reveal="${id}">Afficher la réponse</button>
                 <div id="${id}" class="muted" style="display:none; margin-top:10px;">
                   ✅ ${this.esc(q.answer || "")}
@@ -710,7 +692,7 @@ const App = {
     document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/ref"));
   },
 
-  // ===== REF+ (best effort) =====
+  // ===== REF+ =====
   viewRefPlus() {
     const fp = this.refPlus || {};
 
@@ -805,7 +787,7 @@ const App = {
 
           <div class="card">
             <h2>Démarrer quand même</h2>
-            <p class="muted">Apprends des nouvelles cartes ou lance une session aléatoire.</p>
+            <p class="muted">Nouvelles cartes ou session aléatoire.</p>
             <div class="row">
               <button class="btn primary" id="startNewBtn">Nouvelles (${freshCount})</button>
               <button class="btn" id="startRandomBtn">Aléatoire</button>
@@ -856,7 +838,7 @@ const App = {
           </div>
 
           <div class="card">
-            <div style="font-weight:900; letter-spacing:.2px;">${this.esc(c.front || "")}</div>
+            <div style="font-weight:850; letter-spacing:.2px;">${this.esc(c.front || "")}</div>
             ${showBack ? `<div style="margin-top:10px;">${this.esc(c.back || "")}</div>` : `<div class="muted" style="margin-top:10px;">Clique sur “Afficher”</div>`}
             <div class="row" style="margin-top:14px;">
               <button class="btn" id="toggleBtn">${showBack ? "Cacher" : "Afficher"}</button>
@@ -868,9 +850,9 @@ const App = {
               <h2>Auto-évaluation</h2>
               <div class="row" style="gap:10px;">
                 <button class="btn danger" data-grade="0">0 — Oublié</button>
-                <button class="btn" data-grade="1" style="border-color: rgba(251,191,36,0.32); background: rgba(251,191,36,0.10);">1 — Difficile</button>
+                <button class="btn" data-grade="1" style="border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.10);">1 — Difficile</button>
                 <button class="btn" data-grade="2">2 — OK</button>
-                <button class="btn" data-grade="3" style="border-color: rgba(34,197,94,0.30); background: rgba(34,197,94,0.10);">3 — Facile</button>
+                <button class="btn" data-grade="3" style="border-color: rgba(22,163,74,0.30); background: rgba(22,163,74,0.10);">3 — Facile</button>
               </div>
             </div>
           ` : ""}
