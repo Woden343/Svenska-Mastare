@@ -20,9 +20,8 @@ const App = {
 
   async init() {
   console.log("[App] Démarrage...");
-  
-  // ✅ Initialiser mount
-  this.mount = document.getElementById("app");
+
+  this.mount = document.getElementById("app"); // ✅ Maintenant ça marche
   if (!this.mount) {
     console.error("[App] Element #app introuvable");
     alert("Erreur : Element #app introuvable dans le DOM");
@@ -30,123 +29,96 @@ const App = {
   }
   console.log("[App] Mount trouvé:", this.mount);
 
-  // ✅ Navigation
-  const navHome = document.getElementById("navHome");
-  const navRef = document.getElementById("navRef");
-  const navRefPlus = document.getElementById("navRefPlus");
-  const navReview = document.getElementById("navReview");
-  const navStats = document.getElementById("navStats");
+  // ✅ Navigation (IDs alignés avec index.html)
+  const navHomeBrand = document.getElementById("nav-home");
+  const navHomeBtn   = document.getElementById("nav-home-btn");
+  const navRef       = document.getElementById("nav-ref");
+  const navReview    = document.getElementById("nav-review");
+  const navStats     = document.getElementById("nav-stats");
 
-  if (navHome) navHome.addEventListener("click", () => Router.go("/"));
-  if (navRef) navRef.addEventListener("click", () => Router.go("/ref"));
-  if (navRefPlus) navRefPlus.addEventListener("click", () => Router.go("/ref-plus", {}));
-  if (navReview) navReview.addEventListener("click", () => Router.go("/review"));
-  if (navStats) navStats.addEventListener("click", () => Router.go("/stats"));
+  if (navHomeBrand) navHomeBrand.addEventListener("click", () => Router.go("/"));
+  if (navHomeBtn)   navHomeBtn.addEventListener("click", () => Router.go("/"));
+  if (navRef)       navRef.addEventListener("click", () => Router.go("/ref"));
+  if (navReview)    navReview.addEventListener("click", () => Router.go("/review"));
+  if (navStats)     navStats.addEventListener("click", () => Router.go("/stats"));
 
   console.log("[App] Navigation configurée");
 
-  // ✅ Router
-  Router.on("/", () => this.viewHome());
-  Router.on("/level", (p) => this.viewLevel(p.level));
-  Router.on("/lesson", (p) => this.viewLesson(p.level, p.lessonId));
-  Router.on("/ref", () => this.viewRef());
-  Router.on("/ref-lesson", (p) => this.viewRefLesson(p.moduleId, p.lessonId));
-  Router.on("/ref-plus", (p) => this.viewRefPlus(p));
-  Router.on("/review", () => this.viewReview());
-  Router.on("/stats", () => this.viewStats());
-
+  // ✅ Routes
+  Router.add("/", () => this.viewHome());
+  Router.add("/level", (params) => this.viewLevel(params));
+  Router.add("/lesson", (params) => this.viewLesson(params));
+  Router.add("/ref", () => this.viewRef());
+  Router.add("/ref-plus", () => this.viewRefPlus());
+  Router.add("/review", () => this.viewReview());
+  Router.add("/stats", () => this.viewStats());
   console.log("[App] Routes configurées");
 
-  // ✅ Load data avec meilleure gestion d'erreurs
+  // ✅ Chargement JSON
   try {
-    await this.loadAllData();
+    const [a1, a2, b1, b2] = await Promise.all([
+      fetch("assets/data/a1.json").then(r => r.json()),
+      fetch("assets/data/a2.json").then(r => r.json()).catch(() => ({})),
+      fetch("assets/data/b1.json").then(r => r.json()).catch(() => ({})),
+      fetch("assets/data/b2.json").then(r => r.json()).catch(() => ({})),
+    ]);
+
+    if (a1 && Object.keys(a1).length) this.levels.A1 = a1;
+    if (a2 && Object.keys(a2).length) this.levels.A2 = a2;
+    if (b1 && Object.keys(b1).length) this.levels.B1 = b1;
+    if (b2 && Object.keys(b2).length) this.levels.B2 = b2;
+
+    console.log("[App] Niveau A1 chargé:", this.levels.A1);
+    console.log("[App] Niveau A2 chargé:", this.levels.A2);
+    console.log("[App] Niveau B1 chargé:", this.levels.B1);
+    console.log("[App] Niveau B2 chargé:", this.levels.B2);
+
+    const ref = await fetch("assets/data/ref.json").then(r => r.json());
+    this.ref = ref || this.ref;
+    console.log("[App] Références chargées:", this.ref);
+
+    const refPlus = await fetch("assets/data/ref_plus.json").then(r => r.json());
+    this.refPlus = refPlus || this.refPlus;
+    console.log("[App] Référence+ chargée:", this.refPlus);
+
     console.log("[App] Données chargées");
+
+    // ✅ SRS init (génération cartes + stockage)
+    try {
+      const cards = SRS.generateCards(this.levels, this.ref, this.refPlus);
+      AppStorage.upsertCards(cards);
+      console.log("[App] SRS initialisé");
+    } catch (e) {
+      console.error("[App] Erreur SRS:", e);
+    }
+
   } catch (e) {
-    console.error("[App] Erreur critique lors du chargement:", e);
-    this.setView(`
-      <section class="card">
-        <h2>❌ Erreur de chargement</h2>
-        <p class="muted">Impossible de charger les données de formation.</p>
-        <pre style="background:rgba(255,0,0,0.1); padding:12px; border-radius:8px; overflow:auto;">${e.message}</pre>
-        <p style="margin-top:12px;"><b>Vérifiez que :</b></p>
-        <ul>
-          <li>Le dossier <code>assets/data/</code> existe</li>
-          <li>Le fichier <code>a1.json</code> est présent</li>
-          <li>Les fichiers JSON sont valides (pas d'erreur de syntaxe)</li>
-        </ul>
-        <button class="btn" onclick="location.reload()">🔄 Recharger</button>
-      </section>
-    `);
+    console.error("[App] Erreur chargement JSON:", e);
+    this.mount.innerHTML = `
+      <div class="card error">
+        <h2>Erreur de chargement</h2>
+        <p>Impossible de charger les fichiers JSON (niveau/références).</p>
+        <p class="muted">${String(e)}</p>
+      </div>`;
     return;
   }
 
-  // ✅ Build SRS cards
-  try {
-    const cards = SRS.buildCardsFromLevels(this.levels);
-    Storage.upsertCards(cards);
-    console.log("[App] SRS initialisé:", cards.length, "cartes");
-  } catch (e) {
-    console.error("[App] Erreur SRS:", e);
-  }
-
-  // ✅ Start router
   console.log("[App] Démarrage du router...");
-  Router.start("/");
+  Router.start();
   console.log("[App] Application prête !");
 },
 
-  // ✅ Chargement avec bon chemin
-  async loadAllData() {
-    for (const lvl of this.levelsOrder) {
-      try {
-        this.levels[lvl] = await this.loadJson(`assets/data/${lvl.toLowerCase()}.json`);
-        console.log(`[App] Niveau ${lvl} chargé:`, this.levels[lvl]);
-      } catch (e) {
-        console.warn(`[App] Niveau ${lvl} non chargé:`, e.message);
-      }
-    }
-
-    try {
-      this.ref = await this.loadJson("assets/data/ref.json");
-      console.log("[App] Références chargées:", this.ref);
-    } catch (e) {
-      console.warn("[App] ref.json non chargé:", e.message);
-    }
-
-    try {
-      const json = await this.loadJson("assets/data/ref_plus.json");
-      this.refPlus = {
-        title: json.title || "Référence+ (tableaux)",
-        themes: Array.isArray(json.themes) ? json.themes : [],
-        verbs: Array.isArray(json.verbs) ? json.verbs : [],
-        vocab: Array.isArray(json.vocab) ? json.vocab : [],
-        particles: Array.isArray(json.particles) ? json.particles : [],
-        articles: Array.isArray(json.articles) ? json.articles : [],
-        articles_guide: Array.isArray(json.articles_guide) ? json.articles_guide : []
-      };
-      console.log("[App] Référence+ chargée:", this.refPlus);
-    } catch (e) {
-      console.warn("[App] ref_plus.json non chargé:", e.message);
-    }
-  },
-
-  async loadJson(path) {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${path}`);
-    return await res.json();
-  },
-
-  // ========== HELPERS ==========
+  // =======================
+  // Helpers UI
+  // =======================
 
   setView(html) {
-    if (this.mount) {
-      this.mount.innerHTML = html;
-    }
+    if (!this.mount) return;
+    this.mount.innerHTML = html;
   },
 
-  escapeHtml(str) {
-    return (str ?? "")
-      .toString()
+  esc(s) {
+    return String(s ?? "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -154,560 +126,546 @@ const App = {
       .replaceAll("'", "&#039;");
   },
 
-  renderLessonContent(lines) {
-    let html = "";
-    let open = false;
-
-    const isSeparator = (t) => /^=+$/.test((t || "").trim()) || (t || "").startsWith("====");
-    const isHeading = (t) => {
-      const s = (t || "").trim();
-      return (
-        s.startsWith("SITUATION") ||
-        s.startsWith("DÉCOMPOSITION") ||
-        s.startsWith("🧑‍🏫") ||
-        s.startsWith("STRUCTURES") ||
-        s.startsWith("ORDRE") ||
-        s.startsWith("POINT") ||
-        s.startsWith("TABLEAU") ||
-        s.startsWith("DRILLS") ||
-        s.startsWith("MINI-STORY") ||
-        s.startsWith("PRODUCTION") ||
-        s.startsWith("🎯") ||
-        s.startsWith("✅") ||
-        s.startsWith("⚡") ||
-        s.startsWith("📚") ||
-        s.startsWith("🔑") ||
-        s.startsWith("✓") ||
-        s.startsWith("📖") ||
-        s.startsWith("🔤") ||
-        s.startsWith("📌") ||
-        s.startsWith("1️⃣") ||
-        s.startsWith("2️⃣") ||
-        s.startsWith("3️⃣") ||
-        s.startsWith("4️⃣") ||
-        s.startsWith("5️⃣") ||
-        s.startsWith("6️⃣") ||
-        s.startsWith("⚠️") ||
-        s.startsWith("💡")
-      );
-    };
-
-    const looksSwedish = (t) => {
-      const s = (t || "").trim();
-      if (!s) return false;
-      if (/[åäöÅÄÖ]/.test(s)) return true;
-      if (/^(Jag|Du|Han|Hon|Vi|Ni|De|Det|Den|Vad|Vart|Var|Kan|Ska|Imorgon|Idag|Okej|Ja|Nej)\b/.test(s)) return true;
-      if (s.includes("?")) return true;
-      return false;
-    };
-
-    for (const raw of (lines || [])) {
-      const l = (raw ?? "").toString();
-
-      if (isSeparator(l)) {
-        if (open) html += "</div>";
-        open = true;
-        html += `<div class="lesson-block">`;
-        continue;
-      }
-
-      if (!open) {
-        open = true;
-        html += `<div class="lesson-block">`;
-      }
-
-      if (l.trim() === "") {
-        html += `<div class="lesson-spacer"></div>`;
-        continue;
-      }
-
-      if (isHeading(l)) {
-        html += `<div class="lesson-heading">${this.escapeHtml(l)}</div>`;
-        continue;
-      }
-
-      // Dialogue A: / B:
-      const dlg = l.match(/^([AB]):\s*(.*)$/);
-      if (dlg) {
-        const who = dlg[1];
-        const txt = dlg[2] || "";
-        html += `
-          <div class="lesson-dialogue">
-            <span class="dlg-who dlg-${who}">${who}</span>
-            <span class="dlg-text">${this.escapeHtml(txt)}</span>
-          </div>
-        `;
-        continue;
-      }
-
-      // Phonétique : ( ... )
-      const trimmed = l.trim();
-      if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
-        const phon = trimmed.slice(1, -1);
-        html += `<div class="lesson-phon">${this.escapeHtml(phon)}</div>`;
-        continue;
-      }
-
-      if (looksSwedish(l)) {
-        html += `<div class="lesson-sv">${this.escapeHtml(l)}</div>`;
-      } else {
-        html += `<p>${this.escapeHtml(l)}</p>`;
-      }
-    }
-
-    if (open) html += "</div>";
-    return html;
+  badge(txt, cls = "") {
+    return `<span class="badge ${cls}">${this.esc(txt)}</span>`;
   },
 
-  renderTable(headers, rows) {
-    const thead = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>`;
-    const tbody = `<tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
-    return `<div class="table-wrap"><table>${thead}${tbody}</table></div>`;
-  },
-
-  // ========== VIEWS ==========
-
+  // =======================
+  // HOME
+  // =======================
   viewHome() {
-    const cards = this.levelsOrder
-      .filter((lvl) => this.levels[lvl])
-      .map((lvl) => {
+    const levelsCards = this.levelsOrder
+      .filter(lvl => this.levels[lvl] && this.levels[lvl].modules && this.levels[lvl].modules.length)
+      .map(lvl => {
         const L = this.levels[lvl];
+        const modulesCount = (L.modules || []).length;
+        const lessonsCount = (L.modules || []).reduce((acc, m) => acc + ((m.lessons || []).length), 0);
+
         return `
-          <div class="item" onclick="Router.go('/level',{level:'${lvl}'})">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+          <div class="card">
+            <div class="row between">
               <div>
-                <div class="pill">${lvl}</div>
-                <div style="margin-top:10px; font-weight:800; font-size:1.05rem;">${this.escapeHtml(L.title || lvl)}</div>
-                <div class="muted" style="margin-top:6px;">${this.escapeHtml(L.description || "")}</div>
+                <h2>${this.esc(lvl)} — ${this.esc(L.title || "")}</h2>
+                <p class="muted">${modulesCount} modules • ${lessonsCount} leçons</p>
               </div>
-              <div class="muted">→</div>
+              <button class="btn" data-go="/level" data-level="${this.esc(lvl)}">Ouvrir</button>
             </div>
           </div>
         `;
       })
       .join("");
 
-    this.setView(`
-      <section class="card">
-        <div class="brand">
+    const srsStats = AppStorage.getSrsStats();
+    const due = srsStats.due || 0;
+
+    const html = `
+      <div class="stack">
+        <div class="hero">
           <h1>Svenska Mästare Pro</h1>
-          <div class="sub">Apprentissage structuré • drills • SRS</div>
+          <p class="muted">Apprentissage du suédois • Leçons • Vocabulaire • SRS</p>
+          <div class="hero-actions">
+            <button class="btn primary" data-go="/review">Révision SRS ${due ? this.badge(due, "warn") : ""}</button>
+            <button class="btn" data-go="/stats">Statistiques</button>
+          </div>
         </div>
 
-        <h2 style="margin-top:18px;">Niveaux</h2>
-        <div class="list">${cards || `<div class="muted">Aucun niveau trouvé.</div>`}</div>
-
-        <hr />
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-ghost" onclick="Router.go('/ref')">📌 Références</button>
-          <button class="btn btn-ghost" onclick="Router.go('/ref-plus',{})">📚 Référence+</button>
-          <button class="btn btn-ghost" onclick="Router.go('/review')">🧠 Révision (SRS)</button>
-          <button class="btn btn-ghost" onclick="Router.go('/stats')">📈 Stats</button>
+        <div class="grid">
+          ${levelsCards || `<div class="card"><p>Aucun niveau chargé.</p></div>`}
         </div>
-      </section>
-    `);
+
+        <div class="grid grid-2">
+          <div class="card">
+            <h2>Références</h2>
+            <p class="muted">Grammaire, conjugaison, articles, structures…</p>
+            <button class="btn" data-go="/ref">Ouvrir</button>
+          </div>
+          <div class="card">
+            <h2>Référence+</h2>
+            <p class="muted">Tableaux, listes, synthèses (thèmes, verbes, vocabulaire…)</p>
+            <button class="btn" data-go="/ref-plus">Ouvrir</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.setView(html);
+
+    this.mount.querySelectorAll("[data-go]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const go = btn.getAttribute("data-go");
+        const level = btn.getAttribute("data-level");
+        if (go === "/level") Router.go("/level", { level });
+        else Router.go(go, {});
+      });
+    });
   },
 
-  viewLevel(level) {
-    const L = this.levels[level];
+  // =======================
+  // LEVEL VIEW
+  // =======================
+  viewLevel(params) {
+    const levelKey = params && params.level ? params.level : "A1";
+    const L = this.levels[levelKey];
+
     if (!L) {
-      return this.setView(`
-        <section class="card">
+      this.setView(`
+        <div class="card error">
           <h2>Niveau introuvable</h2>
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </section>
+          <p>Le niveau ${this.esc(levelKey)} n’a pas été chargé.</p>
+          <button class="btn" data-go="/">Retour</button>
+        </div>
       `);
+      this.mount.querySelector("[data-go]")?.addEventListener("click", () => Router.go("/"));
+      return;
     }
 
-    const modules = (L.modules || [])
-      .map((m) => {
-        const lessons = (m.lessons || [])
-          .map((ls) => {
-            const done = Storage.isDone(`${L.level}:${ls.id}`);
-            return `
-              <div class="item" onclick="Router.go('/lesson',{level:'${L.level}',lessonId:'${ls.id}'})">
-                <div style="display:flex; justify-content:space-between; gap:12px;">
-                  <div>
-                    <div style="font-weight:800;">${this.escapeHtml(ls.title || ls.id)}</div>
-                    <div class="muted" style="margin-top:6px;">${done ? "✅ Fait" : "⏳ À faire"}</div>
-                  </div>
-                  <div class="muted">→</div>
-                </div>
-              </div>
-            `;
-          })
-          .join("");
-
+    const modulesHtml = (L.modules || []).map((m, mi) => {
+      const lessons = (m.lessons || []).map((ls, li) => {
+        const key = `${levelKey}:${ls.id}`;
+        const done = AppStorage.isDone(key);
         return `
-          <div style="margin-top:18px;">
-            <div class="pill">${this.escapeHtml(m.id || "")}</div>
-            <h2 style="margin:10px 0 6px;">${this.escapeHtml(m.title || "Module")}</h2>
-            <div class="list">${lessons || `<div class="muted">Aucune leçon.</div>`}</div>
+          <div class="lesson-row ${done ? "done" : ""}">
+            <div class="lesson-info">
+              <div class="lesson-title">${this.esc(ls.title)}</div>
+              <div class="muted">${this.esc(ls.type || "")}</div>
+            </div>
+            <div class="lesson-actions">
+              ${done ? this.badge("Terminé", "ok") : this.badge("À faire", "muted")}
+              <button class="btn" data-go="/lesson" data-level="${this.esc(levelKey)}" data-lesson="${this.esc(ls.id)}">Ouvrir</button>
+            </div>
           </div>
         `;
-      })
-      .join("");
+      }).join("");
+
+      return `
+        <div class="card">
+          <h2>${this.esc(m.title)}</h2>
+          <div class="stack">${lessons || `<p class="muted">Aucune leçon dans ce module.</p>`}</div>
+        </div>
+      `;
+    }).join("");
 
     this.setView(`
-      <section class="card">
-        <span class="pill">${this.escapeHtml(L.level)}</span>
-        <h2 style="margin-top:10px;">${this.escapeHtml(L.title || "Niveau")}</h2>
-        <div class="muted">${this.escapeHtml(L.description || "")}</div>
-
-        ${modules}
-
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
+      <div class="stack">
+        <div class="row between">
+          <div>
+            <h1>${this.esc(levelKey)} — ${this.esc(L.title || "")}</h1>
+            <p class="muted">${this.esc(L.description || "")}</p>
+          </div>
+          <button class="btn" data-go="/">Accueil</button>
         </div>
-      </section>
+        ${modulesHtml || `<div class="card"><p>Aucun module.</p></div>`}
+      </div>
     `);
+
+    this.mount.querySelector("[data-go='/']")?.addEventListener("click", () => Router.go("/"));
+
+    this.mount.querySelectorAll("[data-go='/lesson']").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const level = btn.getAttribute("data-level");
+        const lesson = btn.getAttribute("data-lesson");
+        Router.go("/lesson", { level, lesson });
+      });
+    });
   },
 
-  viewLesson(level, lessonId) {
-    const L = this.levels[level];
-    if (!L) return this.setView(`<section class="card"><h2>Leçon introuvable</h2></section>`);
+  // =======================
+  // LESSON VIEW
+  // =======================
+  viewLesson(params) {
+    const levelKey = params?.level;
+    const lessonId = params?.lesson;
 
-    const lesson = (L.modules || []).flatMap(m => (m.lessons || [])).find(x => x.id === lessonId);
-    if (!lesson) {
-      return this.setView(`
-        <section class="card">
-          <h2>Leçon introuvable</h2>
-          <button class="btn" onclick="Router.go('/level',{level:'${L.level}'})">← Retour</button>
-        </section>
-      `);
+    const L = this.levels[levelKey];
+    if (!L) {
+      this.setView(`<div class="card error"><h2>Erreur</h2><p>Niveau introuvable.</p></div>`);
+      return;
     }
 
-    const contentHtml = this.renderLessonContent(lesson.content || []);
-    const examplesHtml = (lesson.examples || []).map(e => `
-      <div class="choice" style="cursor:default;">
-        <div>
-          <b>${this.escapeHtml(e.sv || "")}</b>
-          <div class="muted">${this.escapeHtml(e.fr || "")}${e.pron ? ` • <i>${this.escapeHtml(e.pron)}</i>` : ""}</div>
+    let lesson = null;
+    let moduleTitle = "";
+
+    for (const m of (L.modules || [])) {
+      const found = (m.lessons || []).find(ls => String(ls.id) === String(lessonId));
+      if (found) {
+        lesson = found;
+        moduleTitle = m.title || "";
+        break;
+      }
+    }
+
+    if (!lesson) {
+      this.setView(`<div class="card error"><h2>Erreur</h2><p>Leçon introuvable.</p></div>`);
+      return;
+    }
+
+    const key = `${levelKey}:${lesson.id}`;
+
+    // Rendu des “cards” contenus
+    const contentHtml = (lesson.cards || []).map(c => this.renderCard(c)).join("");
+
+    const html = `
+      <div class="stack">
+        <div class="row between">
+          <div>
+            <h1>${this.esc(lesson.title)}</h1>
+            <p class="muted">${this.esc(levelKey)} • ${this.esc(moduleTitle)} • ${this.esc(lesson.type || "")}</p>
+          </div>
+          <div class="row">
+            <button class="btn" data-go="/level" data-level="${this.esc(levelKey)}">Retour</button>
+            <button class="btn primary" id="markDoneBtn">Marquer comme terminé</button>
+          </div>
         </div>
+
+        ${contentHtml || `<div class="card"><p class="muted">Aucun contenu.</p></div>`}
       </div>
-    `).join("");
-    const vocabHtml = (lesson.vocab || []).map(w => `
-      <div class="choice" style="cursor:default;">
-        <div style="min-width:130px;"><b>${this.escapeHtml(w.sv || "")}</b></div>
-        <div class="muted">${this.escapeHtml(w.fr || "")}${w.pron ? ` • <i>${this.escapeHtml(w.pron)}</i>` : ""}</div>
+    `;
+
+    this.setView(html);
+
+    this.mount.querySelector("[data-go='/level']")?.addEventListener("click", () => {
+      Router.go("/level", { level: levelKey });
+    });
+
+    this.mount.querySelector("#markDoneBtn")?.addEventListener("click", () => {
+      AppStorage.markDone(key);
+      alert("✅ Leçon marquée comme terminée !");
+      Router.go("/level", { level: levelKey });
+    });
+  },
+
+  renderCard(card) {
+    if (!card || !card.type) return "";
+
+    const type = card.type;
+
+    // Text block
+    if (type === "text") {
+      return `
+        <div class="card">
+          ${card.title ? `<h2>${this.esc(card.title)}</h2>` : ""}
+          ${card.text ? `<p>${this.esc(card.text)}</p>` : ""}
+        </div>
+      `;
+    }
+
+    // Example
+    if (type === "example") {
+      return `
+        <div class="card">
+          ${card.title ? `<h2>${this.esc(card.title)}</h2>` : "<h2>Exemple</h2>"}
+          ${card.swedish ? `<div class="sw">${this.esc(card.swedish)}</div>` : ""}
+          ${card.french ? `<div class="fr muted">${this.esc(card.french)}</div>` : ""}
+          ${card.note ? `<p class="muted">${this.esc(card.note)}</p>` : ""}
+        </div>
+      `;
+    }
+
+    // Vocab list
+    if (type === "vocab") {
+      const rows = (card.items || []).map(it => `
+        <tr>
+          <td class="sw">${this.esc(it.sv || "")}</td>
+          <td>${this.esc(it.fr || "")}</td>
+          <td class="muted">${this.esc(it.note || "")}</td>
+        </tr>
+      `).join("");
+
+      return `
+        <div class="card">
+          ${card.title ? `<h2>${this.esc(card.title)}</h2>` : "<h2>Vocabulaire</h2>"}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Suédois</th><th>Français</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                ${rows || `<tr><td colspan="3" class="muted">Aucun vocabulaire.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // Quiz (QCM simple)
+    if (type === "quiz") {
+      const q = card.question || "";
+      const opts = card.options || [];
+      const answer = card.answer;
+
+      const id = `q_${Math.random().toString(16).slice(2)}`;
+      const optionsHtml = opts.map((o, i) => `
+        <label class="option">
+          <input type="radio" name="${id}" value="${this.esc(o)}">
+          <span>${this.esc(o)}</span>
+        </label>
+      `).join("");
+
+      return `
+        <div class="card">
+          ${card.title ? `<h2>${this.esc(card.title)}</h2>` : "<h2>Quiz</h2>"}
+          <p>${this.esc(q)}</p>
+          <div class="stack">${optionsHtml}</div>
+          <button class="btn" data-quiz-check="${id}" data-quiz-answer="${this.esc(answer)}">Vérifier</button>
+          <p class="muted" id="${id}_res"></p>
+        </div>
+      `;
+    }
+
+    // Default fallback
+    return `
+      <div class="card">
+        <h2>${this.esc(card.title || "Carte")}</h2>
+        <pre>${this.esc(JSON.stringify(card, null, 2))}</pre>
+      </div>
+    `;
+  },
+
+  // =======================
+  // REF VIEW
+  // =======================
+  viewRef() {
+    const mods = (this.ref.modules || []).map(m => `
+      <div class="card">
+        <h2>${this.esc(m.title || "")}</h2>
+        ${(m.cards || []).map(c => this.renderCard(c)).join("")}
       </div>
     `).join("");
 
     this.setView(`
-      <section class="card">
-        <span class="pill">${this.escapeHtml(L.level)}</span>
-        <h2 style="margin-top:10px;">${this.escapeHtml(lesson.title || "Leçon")}</h2>
-
-        ${contentHtml}
-
-        ${(lesson.examples && lesson.examples.length) ? `<hr /><h3>Exemples</h3>${examplesHtml}` : ""}
-        ${(lesson.vocab && lesson.vocab.length) ? `<hr /><h3>Vocabulaire</h3>${vocabHtml}` : ""}
-
-        <hr />
-        <h3>Exercices</h3>
-        <div id="quiz"></div>
-
-        <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-          <button class="btn" onclick="Storage.markDone('${L.level}:${lesson.id}'); Router.go('/level',{level:'${L.level}'})">✔ Marquer comme faite</button>
-          <button class="btn btn-ghost" onclick="Router.go('/review')">🧠 Réviser (SRS)</button>
-          <button class="btn btn-ghost" onclick="Router.go('/level',{level:'${L.level}'})">← Retour</button>
+      <div class="stack">
+        <div class="row between">
+          <div>
+            <h1>${this.esc(this.ref.title || "Références")}</h1>
+            <p class="muted">Fiches de grammaire et d'usage</p>
+          </div>
+          <button class="btn" data-go="/">Accueil</button>
         </div>
-      </section>
+        ${mods || `<div class="card"><p class="muted">Aucune référence.</p></div>`}
+      </div>
     `);
 
-    this.renderQuiz(lesson);
+    this.mount.querySelector("[data-go='/']")?.addEventListener("click", () => Router.go("/"));
   },
 
-  renderQuiz(lesson) {
-    const host = document.getElementById("quiz");
-    if (!host) return;
-    host.innerHTML = "";
+  // =======================
+  // REF+ VIEW
+  // =======================
+  viewRefPlus() {
+    const fp = this.refPlus || {};
 
-    const quiz = lesson.quiz || [];
-    if (!quiz.length) {
-      host.innerHTML = `<div class="muted">Aucun exercice pour cette leçon.</div>`;
+    const section = (title, items, renderFn) => `
+      <div class="card">
+        <h2>${this.esc(title)}</h2>
+        ${renderFn(items)}
+      </div>
+    `;
+
+    const listRender = (items) => {
+      if (!items || !items.length) return `<p class="muted">Aucun élément.</p>`;
+      return `<ul class="list">${items.map(x => `<li>${this.esc(x)}</li>`).join("")}</ul>`;
+    };
+
+    const tableRender = (rows) => {
+      if (!rows || !rows.length) return `<p class="muted">Aucun tableau.</p>`;
+      const head = Object.keys(rows[0] || {});
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead><tr>${head.map(h => `<th>${this.esc(h)}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${rows.map(r => `<tr>${head.map(h => `<td>${this.esc(r[h] ?? "")}</td>`).join("")}</tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    };
+
+    this.setView(`
+      <div class="stack">
+        <div class="row between">
+          <div>
+            <h1>${this.esc(fp.title || "Référence+")}</h1>
+            <p class="muted">Tableaux & listes pratiques</p>
+          </div>
+          <button class="btn" data-go="/">Accueil</button>
+        </div>
+
+        ${section("Thèmes", fp.themes || [], listRender)}
+        ${section("Verbes", fp.verbs || [], listRender)}
+        ${section("Vocabulaire", fp.vocab || [], listRender)}
+        ${section("Particules", fp.particles || [], listRender)}
+        ${section("Articles", fp.articles || [], tableRender)}
+        ${section("Guide des articles", fp.articles_guide || [], tableRender)}
+      </div>
+    `);
+
+    this.mount.querySelector("[data-go='/']")?.addEventListener("click", () => Router.go("/"));
+  },
+
+  // =======================
+  // REVIEW (SRS)
+  // =======================
+  viewReview() {
+    const due = AppStorage.getDueCards(30);
+
+    if (!due.length) {
+      this.setView(`
+        <div class="stack">
+          <div class="row between">
+            <div>
+              <h1>Révision SRS</h1>
+              <p class="muted">Aucune carte à réviser pour le moment.</p>
+            </div>
+            <button class="btn" data-go="/">Accueil</button>
+          </div>
+
+          <div class="card">
+            <p>✅ Tu es à jour !</p>
+          </div>
+        </div>
+      `);
+      this.mount.querySelector("[data-go='/']")?.addEventListener("click", () => Router.go("/"));
       return;
     }
 
     let idx = 0;
-    const answered = new Array(quiz.length).fill(false);
-
-    const renderOne = () => {
-      const q = quiz[idx];
-      host.innerHTML = `
-        <div class="card" style="margin-top:10px;">
-          <div class="muted" style="margin-bottom:8px;">Exercice ${idx + 1} / ${quiz.length}</div>
-          <div id="qbox"></div>
-          <p id="fb" class="muted" style="margin-top:10px;"></p>
-          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-            <button class="btn" id="prev" ${idx === 0 ? "disabled" : ""}>← Précédent</button>
-            <button class="btn" id="next">${idx === quiz.length - 1 ? "Terminer" : "Suivant →"}</button>
-          </div>
-        </div>
-      `;
-
-      const qbox = host.querySelector("#qbox");
-      const fb = host.querySelector("#fb");
-      const lock = () => answered[idx];
-      const setFeedback = (ok, extra = "") => {
-        fb.textContent = ok ? `✅ Correct. ${extra}` : `❌ Non. ${extra}`;
-      };
-
-      if (q.type === "mcq") {
-        qbox.innerHTML = `
-          <p><b>${this.escapeHtml(q.q || "")}</b></p>
-          <div class="grid">
-            ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${this.escapeHtml(c)}</div>`).join("")}
-          </div>
-        `;
-        const nodes = qbox.querySelectorAll(".choice");
-        nodes.forEach(node => {
-          node.onclick = () => {
-            if (lock()) return;
-            const i = Number(node.dataset.i);
-            const ok = i === q.answerIndex;
-            Storage.addResult(ok);
-            answered[idx] = true;
-            nodes.forEach(n => n.classList.remove("correct", "wrong"));
-            node.classList.add(ok ? "correct" : "wrong");
-            const answer = (q.choices && q.choices[q.answerIndex] != null) ? q.choices[q.answerIndex] : "";
-            setFeedback(ok, ok ? "" : `Réponse : ${answer}`);
-          };
-        });
-      } else if (q.type === "gap") {
-        qbox.innerHTML = `
-          <p><b>${this.escapeHtml(q.q || "")}</b></p>
-          <input id="gap" placeholder="Ta réponse..." style="width:100%; padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(0,0,0,.25); color:white;" />
-          <button class="btn" style="margin-top:10px;" id="check">Vérifier</button>
-        `;
-        const input = qbox.querySelector("#gap");
-        const btn = qbox.querySelector("#check");
-        btn.onclick = () => {
-          if (lock()) return;
-          const val = (input.value || "").trim().toLowerCase();
-          const expected = (q.answer || "").trim().toLowerCase();
-          const ok = val === expected;
-          Storage.addResult(ok);
-          answered[idx] = true;
-          setFeedback(ok, ok ? "" : `Attendu : ${q.answer || ""}`);
-        };
-      } else {
-        qbox.innerHTML = `<p class="muted">Type de quiz non géré.</p>`;
-      }
-
-      host.querySelector("#prev").onclick = () => { if (idx > 0) { idx--; renderOne(); } };
-      host.querySelector("#next").onclick = () => {
-        if (idx < quiz.length - 1) { idx++; renderOne(); }
-        else { fb.textContent = "✅ Série terminée."; }
-      };
-    };
-
-    renderOne();
-  },
-
-  viewRef() {
-    const modules = (this.ref.modules || [])
-      .map(
-        (m) => `
-      <div style="margin-top:16px;">
-        <div class="pill">${this.escapeHtml(m.id || "")}</div>
-        <h2 style="margin-top:10px;">${this.escapeHtml(m.title || "Référence")}</h2>
-        <div class="list">
-          ${(m.lessons || [])
-            .map(
-              (ls) => `
-            <div class="item" onclick="Router.go('/ref-lesson',{moduleId:'${m.id}',lessonId:'${ls.id}'})">
-              <div style="display:flex; justify-content:space-between; gap:12px;">
-                <div style="font-weight:800;">${this.escapeHtml(ls.title || ls.id)}</div>
-                <div class="muted">→</div>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-      </div>
-    `
-      )
-      .join("");
-
-    this.setView(`
-      <section class="card">
-        <h2>${this.escapeHtml(this.ref.title || "Références")}</h2>
-        ${modules || `<div class="muted">Aucune référence.</div>`}
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </div>
-      </section>
-    `);
-  },
-
-  viewRefLesson(moduleId, lessonId) {
-    const mod = (this.ref.modules || []).find(x => x.id === moduleId);
-    const lesson = mod?.lessons?.find(x => x.id === lessonId);
-
-    if (!mod || !lesson) {
-      return this.setView(`
-        <section class="card">
-          <h2>Fiche introuvable</h2>
-          <button class="btn" onclick="Router.go('/ref')">← Retour</button>
-        </section>
-      `);
-    }
-
-    const contentHtml = this.renderLessonContent(lesson.content || []);
-    const examplesHtml = (lesson.examples || []).map(e => `
-      <div class="choice" style="cursor:default;">
-        <div><b>${this.escapeHtml(e.sv || "")}</b><div class="muted">${this.escapeHtml(e.fr || "")}${e.pron ? ` • <i>${this.escapeHtml(e.pron)}</i>` : ""}</div></div>
-      </div>
-    `).join("");
-    const vocabHtml = (lesson.vocab || []).map(w => `
-      <div class="choice" style="cursor:default;">
-        <div style="min-width:130px;"><b>${this.escapeHtml(w.sv || "")}</b></div>
-        <div class="muted">${this.escapeHtml(w.fr || "")}${w.pron ? ` • <i>${this.escapeHtml(w.pron)}</i>` : ""}</div>
-      </div>
-    `).join("");
-
-    this.setView(`
-      <section class="card">
-        <h2>${this.escapeHtml(lesson.title || "Fiche")}</h2>
-
-        ${contentHtml}
-
-        ${(lesson.examples && lesson.examples.length) ? `<hr /><h3>Exemples</h3>${examplesHtml}` : ""}
-        ${(lesson.vocab && lesson.vocab.length) ? `<hr /><h3>Vocabulaire</h3>${vocabHtml}` : ""}
-
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/ref')">← Retour</button>
-        </div>
-      </section>
-    `);
-  },
-
-  viewRefPlus() {
-    this.setView(`
-      <section class="card">
-        <h2>${this.escapeHtml(this.refPlus.title || "Référence+ (tableaux)")}</h2>
-        <div class="muted">Référence+ chargée. (Rendu à compléter.)</div>
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </div>
-      </section>
-    `);
-  },
-
-  viewReview() {
-    const due = Storage.getDueCards(30);
-    const stats = Storage.getSrsStats();
-
-    if (due.length === 0) {
-      return this.setView(`
-        <section class="card">
-          <h2>🎉 Révision SRS</h2>
-          <p class="muted">Aucune carte à réviser pour le moment !</p>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
-            <div class="pill">Total cartes : <b>${stats.total}</b></div>
-            <div class="pill">Dues : <b>${stats.due}</b></div>
-          </div>
-          <button class="btn" onclick="Router.go('/')" style="margin-top:12px;">← Retour</button>
-        </section>
-      `);
-    }
-
-    let idx = 0;
-    let showAnswer = false;
+    let showBack = false;
 
     const render = () => {
       const c = due[idx];
-      
-      const html = `
-        <section class="card">
-          <div class="muted" style="margin-bottom:8px;">Carte ${idx + 1} / ${due.length}</div>
-          <div id="srs-card" style="min-height:150px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px; text-align:center;">
-            <div style="font-size:24px; margin-bottom:12px;">${this.escapeHtml(c.front)}</div>
-            ${showAnswer ? `<hr style="margin:20px 0;"><div style="font-size:18px; color:var(--accent-blue);">${this.escapeHtml(c.back)}</div>` : ""}
+      this.setView(`
+        <div class="stack">
+          <div class="row between">
+            <div>
+              <h1>Révision SRS</h1>
+              <p class="muted">Carte ${idx + 1}/${due.length}</p>
+            </div>
+            <button class="btn" data-go="/">Accueil</button>
           </div>
-          <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; justify-content:center;">
-            ${!showAnswer ? `
-              <button class="btn btn-primary" id="show-answer">Afficher la réponse</button>
-            ` : `
-              <button class="btn" id="grade-0">❌ Oublié</button>
-              <button class="btn" id="grade-1">😐 Difficile</button>
-              <button class="btn btn-primary" id="grade-2">✅ Bon</button>
-              <button class="btn btn-success" id="grade-3">🎯 Facile</button>
-            `}
+
+          <div class="card srs-card">
+            <div class="srs-front">${this.esc(c.front || "")}</div>
+            ${showBack ? `<div class="srs-back">${this.esc(c.back || "")}</div>` : `<div class="muted">Clique sur “Afficher”</div>`}
+            <div class="row gap">
+              <button class="btn" id="toggleBtn">${showBack ? "Cacher" : "Afficher"}</button>
+            </div>
           </div>
-        </section>
-      `;
 
-      this.setView(html);
+          ${showBack ? `
+            <div class="card">
+              <h2>Auto-évaluation</h2>
+              <div class="row wrap gap">
+                <button class="btn bad" data-grade="0">0 — Oublié</button>
+                <button class="btn warn" data-grade="1">1 — Difficile</button>
+                <button class="btn" data-grade="2">2 — OK</button>
+                <button class="btn good" data-grade="3">3 — Facile</button>
+              </div>
+            </div>
+          ` : ""}
+        </div>
+      `);
 
-      if (!showAnswer) {
-        document.getElementById("show-answer").onclick = () => {
-          showAnswer = true;
-          render();
-        };
-      } else {
-        for (let g = 0; g <= 3; g++) {
-          const btn = document.getElementById(`grade-${g}`);
-          if (btn) {
-            btn.onclick = () => {
-              Storage.gradeCard(c.id, g);
-              showAnswer = false;
-              idx++;
-              if (idx < due.length) {
-                render();
-              } else {
-                this.setView(`
-                  <section class="card">
-                    <h2>🎉 Session terminée !</h2>
-                    <p class="muted">Vous avez révisé ${due.length} carte(s).</p>
-                    <button class="btn btn-primary" onclick="Router.go('/')">← Retour à l'accueil</button>
-                  </section>
-                `);
-              }
-            };
-          }
-        }
-      }
+      this.mount.querySelector("[data-go='/']")?.addEventListener("click", () => Router.go("/"));
+      this.mount.querySelector("#toggleBtn")?.addEventListener("click", () => {
+        showBack = !showBack;
+        render();
+      });
+
+      this.mount.querySelectorAll("[data-grade]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const grade = Number(btn.getAttribute("data-grade"));
+          AppStorage.gradeCard(c.id, grade);
+          AppStorage.addResult(grade >= 2);
+
+          idx++;
+          showBack = false;
+
+          if (idx >= due.length) Router.go("/stats");
+          else render();
+        });
+      });
     };
 
     render();
   },
 
+  // =======================
+  // STATS
+  // =======================
   viewStats() {
-    const s = Storage.load();
-    const total = (s.stats?.correct ?? 0) + (s.stats?.wrong ?? 0);
-    const rate = total ? Math.round(((s.stats?.correct ?? 0) / total) * 100) : 0;
-    const srsStats = Storage.getSrsStats();
+    const s = AppStorage.load();
+    const st = s.stats || { correct: 0, wrong: 0, streak: 0, lastStudyDate: null };
+    const srs = AppStorage.getSrsStats();
 
     this.setView(`
-      <section class="card">
-        <h2>📊 Statistiques</h2>
-        
-        <h3 style="margin-top:20px;">Exercices</h3>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-          <div class="pill">Total réponses : <b>${total}</b></div>
-          <div class="pill">Taux réussite : <b>${rate}%</b></div>
-          <div class="pill" style="background:rgba(34,197,94,.2);">Bonnes : <b>${s.stats?.correct ?? 0}</b></div>
-          <div class="pill" style="background:rgba(239,68,68,.2);">Erreurs : <b>${s.stats?.wrong ?? 0}</b></div>
+      <div class="stack">
+        <div class="row between">
+          <div>
+            <h1>Statistiques</h1>
+            <p class="muted">Suivi de progression & SRS</p>
+          </div>
+          <button class="btn" data-go="/">Accueil</button>
         </div>
 
-        <h3 style="margin-top:20px;">Révision SRS</h3>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-          <div class="pill">Total cartes : <b>${srsStats.total}</b></div>
-          <div class="pill" style="background:rgba(251,191,36,.2);">Dues : <b>${srsStats.due}</b></div>
-          <div class="pill">Nouvelles : <b>${srsStats.newCards || 0}</b></div>
-          <div class="pill" style="background:rgba(34,197,94,.2);">Maîtrisées : <b>${srsStats.mature || 0}</b></div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h2>Résultats</h2>
+            <p>✅ Bonnes réponses : <b>${st.correct || 0}</b></p>
+            <p>❌ Mauvaises réponses : <b>${st.wrong || 0}</b></p>
+            <p>🔥 Streak : <b>${st.streak || 0}</b> jour(s)</p>
+            <p class="muted">Dernière étude : ${this.esc(st.lastStudyDate || "—")}</p>
+          </div>
+
+          <div class="card">
+            <h2>SRS</h2>
+            <p>Total cartes : <b>${srs.total}</b></p>
+            <p>À réviser : <b>${srs.due}</b></p>
+            <p>Nouvelles : <b>${srs.newCards}</b></p>
+            <p>En apprentissage : <b>${srs.learning}</b></p>
+            <p>Matures : <b>${srs.mature}</b></p>
+          </div>
         </div>
 
-        <hr />
-        <button class="btn" onclick="Storage.reset()">⚠️ Réinitialiser les données</button>
-        <button class="btn btn-ghost" onclick="Router.go('/')" style="margin-left:10px;">← Retour</button>
-      </section>
+        <div class="card">
+          <h2>Actions</h2>
+          <div class="row wrap gap">
+            <button class="btn primary" data-go="/review">Réviser maintenant</button>
+            <button class="btn bad" id="resetBtn">Réinitialiser</button>
+          </div>
+          <p class="muted">⚠️ La réinitialisation efface toutes les données (progression + SRS).</p>
+        </div>
+      </div>
     `);
+
+    this.mount.querySelector("[data-go='/']")?.addEventListener("click", () => Router.go("/"));
+    this.mount.querySelector("[data-go='/review']")?.addEventListener("click", () => Router.go("/review"));
+    this.mount.querySelector("#resetBtn")?.addEventListener("click", () => AppStorage.reset());
   }
 };
 
-// ✅ Auto-init
+// Quiz handler (delegation)
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-quiz-check]");
+  if (!btn) return;
+
+  const id = btn.getAttribute("data-quiz-check");
+  const ans = btn.getAttribute("data-quiz-answer");
+
+  const sel = document.querySelector(`input[name="${id}"]:checked`);
+  const res = document.getElementById(`${id}_res`);
+
+  if (!sel) {
+    if (res) res.textContent = "Choisis une option.";
+    return;
+  }
+
+  const ok = sel.value === ans;
+  if (res) res.textContent = ok ? "✅ Correct !" : `❌ Faux. Réponse : ${ans}`;
+
+  AppStorage.addResult(ok);
+});
+
+// Boot
 window.addEventListener("DOMContentLoaded", () => App.init());
