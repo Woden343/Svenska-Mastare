@@ -1,4 +1,4 @@
-// assets/js/app.js — VERSION COMPLÈTE (UI PRO + SRS "FORCER SESSION")
+// assets/js/app.js — VERSION COMPLÈTE (UI PRO + CONTENU "ARTICLE" + SRS FORCÉ)
 
 const App = {
   mount: null,
@@ -30,16 +30,16 @@ const App = {
 
     // Nav (IDs = index.html)
     const navHomeBrand = document.getElementById("nav-home");
-    const navHomeBtn   = document.getElementById("nav-home-btn");
-    const navRef       = document.getElementById("nav-ref");
-    const navReview    = document.getElementById("nav-review");
-    const navStats     = document.getElementById("nav-stats");
+    const navHomeBtn = document.getElementById("nav-home-btn");
+    const navRef = document.getElementById("nav-ref");
+    const navReview = document.getElementById("nav-review");
+    const navStats = document.getElementById("nav-stats");
 
     if (navHomeBrand) navHomeBrand.addEventListener("click", () => Router.go("/"));
-    if (navHomeBtn)   navHomeBtn.addEventListener("click", () => Router.go("/"));
-    if (navRef)       navRef.addEventListener("click", () => Router.go("/ref"));
-    if (navReview)    navReview.addEventListener("click", () => Router.go("/review"));
-    if (navStats)     navStats.addEventListener("click", () => Router.go("/stats"));
+    if (navHomeBtn) navHomeBtn.addEventListener("click", () => Router.go("/"));
+    if (navRef) navRef.addEventListener("click", () => Router.go("/ref"));
+    if (navReview) navReview.addEventListener("click", () => Router.go("/review"));
+    if (navStats) navStats.addEventListener("click", () => Router.go("/stats"));
 
     // Routes
     Router.add("/", () => this.viewHome());
@@ -54,10 +54,10 @@ const App = {
     // Load JSON
     try {
       const [a1, a2, b1, b2] = await Promise.all([
-        fetch("assets/data/a1.json").then(r => r.json()),
-        fetch("assets/data/a2.json").then(r => r.json()).catch(() => ({})),
-        fetch("assets/data/b1.json").then(r => r.json()).catch(() => ({})),
-        fetch("assets/data/b2.json").then(r => r.json()).catch(() => ({})),
+        fetch("assets/data/a1.json").then((r) => r.json()),
+        fetch("assets/data/a2.json").then((r) => r.json()).catch(() => ({})),
+        fetch("assets/data/b1.json").then((r) => r.json()).catch(() => ({})),
+        fetch("assets/data/b2.json").then((r) => r.json()).catch(() => ({})),
       ]);
 
       if (a1 && a1.modules) this.levels.A1 = a1;
@@ -65,10 +65,10 @@ const App = {
       if (b1 && b1.modules) this.levels.B1 = b1;
       if (b2 && b2.modules) this.levels.B2 = b2;
 
-      const ref = await fetch("assets/data/ref.json").then(r => r.json());
+      const ref = await fetch("assets/data/ref.json").then((r) => r.json());
       if (ref && ref.modules) this.ref = ref;
 
-      const refPlus = await fetch("assets/data/ref_plus.json").then(r => r.json());
+      const refPlus = await fetch("assets/data/ref_plus.json").then((r) => r.json());
       if (refPlus) this.refPlus = refPlus;
 
       // SRS init
@@ -83,7 +83,6 @@ const App = {
       } catch (e) {
         console.error("[App] Erreur SRS:", e);
       }
-
     } catch (e) {
       console.error("[App] Erreur chargement JSON:", e);
       this.setView(`
@@ -103,7 +102,9 @@ const App = {
   },
 
   // ===== helpers =====
-  setView(html) { this.mount.innerHTML = html; },
+  setView(html) {
+    this.mount.innerHTML = html;
+  },
 
   esc(s) {
     return String(s ?? "")
@@ -117,8 +118,8 @@ const App = {
   // ===== HOME =====
   viewHome() {
     const levelsCards = this.levelsOrder
-      .filter(lvl => this.levels[lvl]?.modules?.length)
-      .map(lvl => {
+      .filter((lvl) => this.levels[lvl]?.modules?.length)
+      .map((lvl) => {
         const L = this.levels[lvl];
         const modulesCount = L.modules.length;
         const lessonsCount = L.modules.reduce((acc, m) => acc + ((m.lessons || []).length), 0);
@@ -134,7 +135,8 @@ const App = {
             </div>
           </div>
         `;
-      }).join("");
+      })
+      .join("");
 
     const srsStats = AppStorage.getSrsStats();
     const due = srsStats.due || 0;
@@ -169,7 +171,7 @@ const App = {
       </div>
     `);
 
-    this.mount.querySelectorAll("[data-go]").forEach(btn => {
+    this.mount.querySelectorAll("[data-go]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const go = btn.getAttribute("data-go");
         const level = btn.getAttribute("data-level");
@@ -195,32 +197,36 @@ const App = {
       return;
     }
 
-    const modulesHtml = (L.modules || []).map(m => {
-      const lessons = (m.lessons || []).map(ls => {
-        const key = `${levelKey}:${ls.id}`;
-        const done = AppStorage.isDone(key);
+    const modulesHtml = (L.modules || [])
+      .map((m) => {
+        const lessons = (m.lessons || [])
+          .map((ls) => {
+            const key = `${levelKey}:${ls.id}`;
+            const done = AppStorage.isDone(key);
+
+            return `
+              <div class="lesson-row ${done ? "done" : ""}">
+                <div class="lesson-info">
+                  <div class="lesson-title">${this.esc(ls.title)}</div>
+                  <div class="muted">${this.esc(ls.type || "")}</div>
+                </div>
+                <div class="lesson-actions">
+                  ${done ? `<span class="badge ok">Terminé</span>` : `<span class="badge">À faire</span>`}
+                  <button class="btn" data-go="/lesson" data-level="${this.esc(levelKey)}" data-lesson="${this.esc(ls.id)}">Ouvrir</button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
 
         return `
-          <div class="lesson-row ${done ? "done" : ""}">
-            <div class="lesson-info">
-              <div class="lesson-title">${this.esc(ls.title)}</div>
-              <div class="muted">${this.esc(ls.type || "")}</div>
-            </div>
-            <div class="lesson-actions">
-              ${done ? `<span class="badge ok">Terminé</span>` : `<span class="badge">À faire</span>`}
-              <button class="btn" data-go="/lesson" data-level="${this.esc(levelKey)}" data-lesson="${this.esc(ls.id)}">Ouvrir</button>
-            </div>
+          <div class="card">
+            <h2>${this.esc(m.title || "")}</h2>
+            <div class="stack">${lessons || `<p class="muted">Aucune leçon.</p>`}</div>
           </div>
         `;
-      }).join("");
-
-      return `
-        <div class="card">
-          <h2>${this.esc(m.title || "")}</h2>
-          <div class="stack">${lessons || `<p class="muted">Aucune leçon.</p>`}</div>
-        </div>
-      `;
-    }).join("");
+      })
+      .join("");
 
     this.setView(`
       <div class="stack">
@@ -239,11 +245,11 @@ const App = {
 
     document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/"));
 
-    this.mount.querySelectorAll("[data-go='/lesson']").forEach(btn => {
+    this.mount.querySelectorAll("[data-go='/lesson']").forEach((btn) => {
       btn.addEventListener("click", () => {
         Router.go("/lesson", {
           level: btn.getAttribute("data-level"),
-          lesson: btn.getAttribute("data-lesson")
+          lesson: btn.getAttribute("data-lesson"),
         });
       });
     });
@@ -255,15 +261,26 @@ const App = {
     const lessonId = params?.lesson;
 
     const L = this.levels[levelKey];
-    if (!L) { this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Niveau introuvable.</p></div>`); return; }
+    if (!L) {
+      this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Niveau introuvable.</p></div>`);
+      return;
+    }
 
     let lesson = null;
     let moduleTitle = "";
-    for (const m of (L.modules || [])) {
-      const found = (m.lessons || []).find(ls => String(ls.id) === String(lessonId));
-      if (found) { lesson = found; moduleTitle = m.title || ""; break; }
+    for (const m of L.modules || []) {
+      const found = (m.lessons || []).find((ls) => String(ls.id) === String(lessonId));
+      if (found) {
+        lesson = found;
+        moduleTitle = m.title || "";
+        break;
+      }
     }
-    if (!lesson) { this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Leçon introuvable.</p></div>`); return; }
+
+    if (!lesson) {
+      this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Leçon introuvable.</p></div>`);
+      return;
+    }
 
     const key = `${levelKey}:${lesson.id}`;
 
@@ -300,33 +317,120 @@ const App = {
     });
 
     // Quiz reveal
-    this.mount.querySelectorAll("[data-reveal]").forEach(btn => {
+    this.mount.querySelectorAll("[data-reveal]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-reveal");
         const el = document.getElementById(id);
         if (!el) return;
-        el.style.display = (el.style.display === "none" ? "block" : "none");
+        el.style.display = el.style.display === "none" ? "block" : "none";
       });
     });
   },
 
-  // ===== Rendering: Contenu (amélioré) =====
+  // ===== CONTENU (ARTICLE) =====
   renderContent(lines) {
     if (!Array.isArray(lines)) return "";
-    const clean = lines.map(x => String(x ?? "")).filter(x => x.trim().length);
-    if (!clean.length) return "";
+    const raw = lines
+      .map((x) => String(x ?? "").trim())
+      .filter(Boolean);
+
+    if (!raw.length) return "";
+
+    // Heuristiques
+    const isHeading = (s) => {
+      if (!s) return false;
+      const letters = s.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g, "");
+      const upperRatio = letters ? (letters.replace(/[^A-ZÀ-ÖØ-Þ]/g, "").length / letters.length) : 0;
+      return s.endsWith(":") || (s.length <= 34 && upperRatio >= 0.75);
+    };
+
+    const isListItem = (s) => /^[-•]\s+/.test(s);
+
+    const isCallout = (s) => {
+      const low = s.toLowerCase();
+      return (
+        low.startsWith("astuce") ||
+        low.startsWith("note") ||
+        low.startsWith("à retenir") ||
+        low.startsWith("attention") ||
+        s.includes("→") ||
+        s.includes("=>") ||
+        s.includes("=")
+      );
+    };
+
+    const blocks = [];
+    let paragraph = [];
+    let list = [];
+
+    const flushParagraph = () => {
+      if (!paragraph.length) return;
+      blocks.push({ type: "p", text: paragraph.join(" ") });
+      paragraph = [];
+    };
+
+    const flushList = () => {
+      if (!list.length) return;
+      blocks.push({ type: "ul", items: list.slice() });
+      list = [];
+    };
+
+    for (const line of raw) {
+      if (isHeading(line)) {
+        flushList();
+        flushParagraph();
+        blocks.push({ type: "h", text: line.replace(/:$/, "") });
+        continue;
+      }
+
+      if (isListItem(line)) {
+        flushParagraph();
+        list.push(line.replace(/^[-•]\s+/, ""));
+        continue;
+      }
+
+      if (isCallout(line)) {
+        flushList();
+        flushParagraph();
+        blocks.push({ type: "callout", text: line });
+        continue;
+      }
+
+      flushList();
+      paragraph.push(line);
+    }
+
+    flushList();
+    flushParagraph();
+
+    const rendered = blocks
+      .map((b) => {
+        if (b.type === "h") return `<h3>${this.esc(b.text)}</h3>`;
+        if (b.type === "ul") return `<ul>${b.items.map((it) => `<li>${this.esc(it)}</li>`).join("")}</ul>`;
+        if (b.type === "callout") {
+          return `
+            <div class="callout">
+              <div class="label">À retenir</div>
+              <p>${this.esc(b.text)}</p>
+            </div>
+          `;
+        }
+        if (b.type === "p") return `<p>${this.esc(b.text)}</p>`;
+        return "";
+      })
+      .join("\n");
 
     return `
       <div class="card">
         <div class="section-title"><span class="chip"></span><h2>Contenu</h2></div>
-        <div class="prose">
-          ${clean.map(t => `<div class="line">${this.esc(t)}</div>`).join("")}
+        <div class="article">
+          ${rendered}
         </div>
       </div>
     `;
   },
 
-  // ===== Rendering: Exemples (amélioré) =====
+  // ===== Exemples (comme avant, déjà propre) =====
   renderExamples(examples) {
     if (!Array.isArray(examples) || !examples.length) return "";
 
@@ -334,19 +438,23 @@ const App = {
       <div class="card">
         <div class="section-title"><span class="chip"></span><h2>Exemples</h2></div>
         <div class="examples">
-          ${examples.map(ex => `
+          ${examples
+            .map(
+              (ex) => `
             <div class="example">
               <div class="sv">${this.esc(ex.sv || "")}</div>
               ${ex.pron ? `<div class="pron">${this.esc(ex.pron)}</div>` : ""}
               ${ex.fr ? `<div class="fr">${this.esc(ex.fr)}</div>` : ""}
             </div>
-          `).join("")}
+          `
+            )
+            .join("")}
         </div>
       </div>
     `;
   },
 
-  // ===== Vocab / Drills / Quiz (déjà “ok”, juste harmonisé par le CSS) =====
+  // ===== Vocab / Drills / Quiz =====
   renderVocab(vocab) {
     if (!Array.isArray(vocab) || !vocab.length) return "";
     return `
@@ -356,14 +464,18 @@ const App = {
           <table>
             <thead><tr><th>SV</th><th>FR</th><th>Pron</th><th>Note</th></tr></thead>
             <tbody>
-              ${vocab.map(v => `
+              ${vocab
+                .map(
+                  (v) => `
                 <tr>
                   <td class="sw">${this.esc(v.sv || "")}</td>
                   <td>${this.esc(v.fr || "")}</td>
                   <td class="muted">${this.esc(v.pron || "")}</td>
                   <td class="muted">${this.esc(v.note || "")}</td>
                 </tr>
-              `).join("")}
+              `
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -377,14 +489,20 @@ const App = {
       <div class="card">
         <div class="section-title"><span class="chip"></span><h2>Mini-drills</h2></div>
         <div class="stack">
-          ${drills.map(d => `
+          ${drills
+            .map(
+              (d) => `
             <div class="card" style="box-shadow:none; border-radius:16px; padding:14px;">
               <div><b>${this.esc(d.instruction || "")}</b></div>
-              ${Array.isArray(d.items) && d.items.length
-                ? `<ul>${d.items.map(it => `<li>${this.esc(it)}</li>`).join("")}</ul>`
-                : `<div class="muted">Aucun item.</div>`}
+              ${
+                Array.isArray(d.items) && d.items.length
+                  ? `<ul>${d.items.map((it) => `<li>${this.esc(it)}</li>`).join("")}</ul>`
+                  : `<div class="muted">Aucun item.</div>`
+              }
             </div>
-          `).join("")}
+          `
+            )
+            .join("")}
         </div>
       </div>
     `;
@@ -396,45 +514,53 @@ const App = {
       <div class="card">
         <div class="section-title"><span class="chip"></span><h2>Quiz</h2></div>
         <div class="stack">
-          ${quiz.map((q, i) => {
-            const id = `ans_${Math.random().toString(16).slice(2)}_${i}`;
-            return `
-              <div class="card" style="box-shadow:none; border-radius:16px; padding:14px;">
-                <div><b>${this.esc(q.q || "")}</b></div>
-                <button class="btn" style="margin-top:10px;" data-reveal="${id}">Afficher la réponse</button>
-                <div id="${id}" class="muted" style="display:none; margin-top:10px;">
-                  ✅ ${this.esc(q.answer || "")}
+          ${quiz
+            .map((q, i) => {
+              const id = `ans_${Math.random().toString(16).slice(2)}_${i}`;
+              return `
+                <div class="card" style="box-shadow:none; border-radius:16px; padding:14px;">
+                  <div><b>${this.esc(q.q || "")}</b></div>
+                  <button class="btn" style="margin-top:10px;" data-reveal="${id}">Afficher la réponse</button>
+                  <div id="${id}" class="muted" style="display:none; margin-top:10px;">
+                    ✅ ${this.esc(q.answer || "")}
+                  </div>
                 </div>
-              </div>
-            `;
-          }).join("")}
+              `;
+            })
+            .join("")}
         </div>
       </div>
     `;
   },
 
-  // ===== REF / REF LESSON (inchangé fonctionnel) =====
+  // ===== REF =====
   viewRef() {
-    const mods = (this.ref.modules || []).map(m => {
-      const lessons = (m.lessons || []).map(ls => `
-        <div class="lesson-row">
-          <div class="lesson-info">
-            <div class="lesson-title">${this.esc(ls.title || "")}</div>
-            <div class="muted">${this.esc(ls.type || "")}</div>
+    const mods = (this.ref.modules || [])
+      .map((m) => {
+        const lessons = (m.lessons || [])
+          .map(
+            (ls) => `
+          <div class="lesson-row">
+            <div class="lesson-info">
+              <div class="lesson-title">${this.esc(ls.title || "")}</div>
+              <div class="muted">${this.esc(ls.type || "")}</div>
+            </div>
+            <div class="lesson-actions">
+              <button class="btn" data-go="/ref-lesson" data-module="${this.esc(m.id)}" data-lesson="${this.esc(ls.id)}">Ouvrir</button>
+            </div>
           </div>
-          <div class="lesson-actions">
-            <button class="btn" data-go="/ref-lesson" data-module="${this.esc(m.id)}" data-lesson="${this.esc(ls.id)}">Ouvrir</button>
-          </div>
-        </div>
-      `).join("");
+        `
+          )
+          .join("");
 
-      return `
-        <div class="card">
-          <h2>${this.esc(m.title || "")}</h2>
-          <div class="stack">${lessons || `<p class="muted">Aucune leçon.</p>`}</div>
-        </div>
-      `;
-    }).join("");
+        return `
+          <div class="card">
+            <h2>${this.esc(m.title || "")}</h2>
+            <div class="stack">${lessons || `<p class="muted">Aucune leçon.</p>`}</div>
+          </div>
+        `;
+      })
+      .join("");
 
     this.setView(`
       <div class="stack">
@@ -457,11 +583,11 @@ const App = {
     document.getElementById("homeBtn")?.addEventListener("click", () => Router.go("/"));
     document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/"));
 
-    this.mount.querySelectorAll("[data-go='/ref-lesson']").forEach(btn => {
+    this.mount.querySelectorAll("[data-go='/ref-lesson']").forEach((btn) => {
       btn.addEventListener("click", () => {
         Router.go("/ref-lesson", {
           module: btn.getAttribute("data-module"),
-          lesson: btn.getAttribute("data-lesson")
+          lesson: btn.getAttribute("data-lesson"),
         });
       });
     });
@@ -471,11 +597,17 @@ const App = {
     const moduleId = params?.module;
     const lessonId = params?.lesson;
 
-    const mod = (this.ref.modules || []).find(m => String(m.id) === String(moduleId));
-    if (!mod) { this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Module introuvable.</p></div>`); return; }
+    const mod = (this.ref.modules || []).find((m) => String(m.id) === String(moduleId));
+    if (!mod) {
+      this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Module introuvable.</p></div>`);
+      return;
+    }
 
-    const lesson = (mod.lessons || []).find(ls => String(ls.id) === String(lessonId));
-    if (!lesson) { this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Leçon introuvable.</p></div>`); return; }
+    const lesson = (mod.lessons || []).find((ls) => String(ls.id) === String(lessonId));
+    if (!lesson) {
+      this.setView(`<div class="card error"><h2>Erreur</h2><p class="muted">Leçon introuvable.</p></div>`);
+      return;
+    }
 
     this.setView(`
       <div class="stack">
@@ -502,22 +634,24 @@ const App = {
     document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/ref"));
   },
 
-  // ===== REF+ (laisse “best effort” pour l’instant) =====
+  // ===== REF+ (best effort) =====
   viewRefPlus() {
     const fp = this.refPlus || {};
 
     const renderAutoTable = (items) => {
       if (!Array.isArray(items) || !items.length) return `<p class="muted">Aucun contenu.</p>`;
       if (typeof items[0] !== "object") {
-        return `<ul>${items.map(x => `<li>${this.esc(x)}</li>`).join("")}</ul>`;
+        return `<ul>${items.map((x) => `<li>${this.esc(x)}</li>`).join("")}</ul>`;
       }
-      const keys = Array.from(new Set(items.flatMap(o => Object.keys(o || {})))).slice(0, 10);
+      const keys = Array.from(new Set(items.flatMap((o) => Object.keys(o || {})))).slice(0, 10);
       return `
         <div class="table-wrap">
           <table>
-            <thead><tr>${keys.map(k => `<th>${this.esc(k)}</th>`).join("")}</tr></thead>
+            <thead><tr>${keys.map((k) => `<th>${this.esc(k)}</th>`).join("")}</tr></thead>
             <tbody>
-              ${items.map(o => `<tr>${keys.map(k => `<td class="muted">${this.esc(o?.[k] ?? "")}</td>`).join("")}</tr>`).join("")}
+              ${items
+                .map((o) => `<tr>${keys.map((k) => `<td class="muted">${this.esc(o?.[k] ?? "")}</td>`).join("")}</tr>`)
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -552,21 +686,20 @@ const App = {
     document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/"));
   },
 
-  // ===== REVIEW (SRS) — FIX: session possible même “à jour” =====
+  // ===== REVIEW (SRS) — session possible même “à jour” =====
   viewReview() {
     const makeSession = ({ mode }) => {
       const state = AppStorage.load();
       const all = Object.values(state.srs?.cards || {});
       const now = Date.now();
 
-      const due = all.filter(c => (c.nextDue || 0) <= now);
-      const fresh = all.filter(c => (c.reps || 0) === 0);
-      const randomPool = all.filter(c => (c.reps || 0) > 0);
+      const due = all.filter((c) => (c.nextDue || 0) <= now);
+      const fresh = all.filter((c) => (c.reps || 0) === 0);
+      const randomPool = all.filter((c) => (c.reps || 0) > 0);
 
       if (mode === "due") return due.slice(0, 30);
       if (mode === "new") return fresh.slice(0, 20);
       if (mode === "random") {
-        // shuffle simple
         for (let i = randomPool.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [randomPool[i], randomPool[j]] = [randomPool[j], randomPool[i]];
@@ -578,11 +711,10 @@ const App = {
 
     let session = makeSession({ mode: "due" });
 
-    // État “à jour” → menu de démarrage (nouveau / aléatoire)
     if (!session.length) {
       const state = AppStorage.load();
       const all = Object.values(state.srs?.cards || {});
-      const freshCount = all.filter(c => (c.reps || 0) === 0).length;
+      const freshCount = all.filter((c) => (c.reps || 0) === 0).length;
 
       this.setView(`
         <div class="stack">
@@ -601,16 +733,11 @@ const App = {
 
           <div class="card">
             <h2>Démarrer quand même</h2>
-            <p class="muted">
-              Tu peux apprendre des nouvelles cartes ou faire une session aléatoire.
-            </p>
+            <p class="muted">Tu peux apprendre des nouvelles cartes ou faire une session aléatoire.</p>
             <div class="row">
               <button class="btn primary" id="startNewBtn">Apprendre des nouvelles (${freshCount})</button>
               <button class="btn" id="startRandomBtn">Révision aléatoire</button>
             </div>
-            <p class="muted" style="margin-top:10px;">
-              Astuce : si “nouvelles” est à 0, c’est que toutes les cartes ont déjà été vues au moins une fois.
-            </p>
           </div>
         </div>
       `);
@@ -619,19 +746,24 @@ const App = {
       document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/"));
       document.getElementById("startNewBtn")?.addEventListener("click", () => {
         session = makeSession({ mode: "new" });
-        if (!session.length) { alert("Aucune nouvelle carte disponible."); return; }
+        if (!session.length) {
+          alert("Aucune nouvelle carte disponible.");
+          return;
+        }
         this._runReviewSession(session);
       });
       document.getElementById("startRandomBtn")?.addEventListener("click", () => {
         session = makeSession({ mode: "random" });
-        if (!session.length) { alert("Pas assez de cartes pour une révision aléatoire."); return; }
+        if (!session.length) {
+          alert("Pas assez de cartes pour une révision aléatoire.");
+          return;
+        }
         this._runReviewSession(session);
       });
 
       return;
     }
 
-    // Session normale (due)
     this._runReviewSession(session);
   },
 
@@ -659,13 +791,19 @@ const App = {
 
           <div class="card">
             <div class="sw">${this.esc(c.front || "")}</div>
-            ${showBack ? `<div class="fr" style="margin-top:10px;">${this.esc(c.back || "")}</div>` : `<div class="muted" style="margin-top:10px;">Clique sur “Afficher”</div>`}
+            ${
+              showBack
+                ? `<div class="fr" style="margin-top:10px;">${this.esc(c.back || "")}</div>`
+                : `<div class="muted" style="margin-top:10px;">Clique sur “Afficher”</div>`
+            }
             <div class="row" style="margin-top:14px;">
               <button class="btn" id="toggleBtn">${showBack ? "Cacher" : "Afficher"}</button>
             </div>
           </div>
 
-          ${showBack ? `
+          ${
+            showBack
+              ? `
             <div class="card">
               <h2>Auto-évaluation</h2>
               <div class="row" style="gap:10px;">
@@ -675,15 +813,20 @@ const App = {
                 <button class="btn good" data-grade="3">3 — Facile</button>
               </div>
             </div>
-          ` : ""}
+          `
+              : ""
+          }
         </div>
       `);
 
       document.getElementById("homeBtn")?.addEventListener("click", () => Router.go("/"));
       document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/"));
-      document.getElementById("toggleBtn")?.addEventListener("click", () => { showBack = !showBack; render(); });
+      document.getElementById("toggleBtn")?.addEventListener("click", () => {
+        showBack = !showBack;
+        render();
+      });
 
-      this.mount.querySelectorAll("[data-grade]").forEach(btn => {
+      this.mount.querySelectorAll("[data-grade]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const grade = Number(btn.getAttribute("data-grade"));
           AppStorage.gradeCard(c.id, grade);
@@ -756,7 +899,7 @@ const App = {
     document.getElementById("backBtn")?.addEventListener("click", () => Router.back("/"));
     document.getElementById("reviewBtn")?.addEventListener("click", () => Router.go("/review"));
     document.getElementById("resetBtn")?.addEventListener("click", () => AppStorage.reset());
-  }
+  },
 };
 
 // Boot
