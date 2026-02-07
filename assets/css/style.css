@@ -1,103 +1,277 @@
+/* ============================================
+   SVENSKA MÄSTARE PRO - CSS MODERNE
+   Design professionnel avec animations fluides
+============================================ */
+
 :root {
-  --bg-main: #0f172a;
-  --bg-elevated: #1e293b;
-  --bg-secondary: #020617;
-  --text-main: #e5e7eb;
-  --accent-blue: #60a5fa;
+  /* Couleurs principales - Palette moderne */
+  --bg-primary: #0a0e16;
+  --bg-secondary: #141b26;
+  --bg-elevated: #1c2433;
+  --bg-glass: rgba(28, 36, 51, 0.8);
 
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-muted: rgba(255, 255, 255, 0.55);
 
-  --shadow-sm: 0 2px 6px rgba(0,0,0,.25);
+  --accent: #60a5fa;
+  --accent-2: #34d399;
+
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+
+  --shadow-sm: 0 8px 18px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 0 1px rgba(96, 165, 250, 0.28);
+
+  --border: 1px solid rgba(255, 255, 255, 0.08);
+  --border-strong: 1px solid rgba(255, 255, 255, 0.12);
+
+  --blur: 12px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg-main);
-  color: var(--text-main);
+  padding: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(96,165,250,.18), transparent 60%),
+              radial-gradient(1200px 600px at 90% 20%, rgba(52,211,153,.12), transparent 60%),
+              var(--bg-primary);
+  color: var(--text-primary);
 }
+
+a { color: inherit; }
 
 #app {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 22px 18px 40px;
 }
 
-h1,h2,h3 {
-  color: var(--accent-blue);
+/* ===== TOP BAR / HEADER ===== */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
 }
 
-button {
-  background: #2563eb;
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand h1 {
+  font-size: 1.35rem;
+  margin: 0;
+  letter-spacing: .2px;
+}
+
+.brand .sub {
+  color: var(--text-muted);
+  font-size: .92rem;
+}
+
+/* ===== BUTTONS ===== */
+
+.btn {
   border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(96,165,250,1), rgba(59,130,246,1));
   color: white;
+  font-weight: 700;
   cursor: pointer;
-  margin: 4px 0;
+  transition: transform .08s ease, opacity .2s ease;
+  box-shadow: var(--shadow-sm);
 }
 
-button:hover {
-  opacity: .9;
+.btn:hover { opacity: .95; }
+.btn:active { transform: translateY(1px); }
+
+.btn-ghost {
+  background: rgba(255,255,255,.07);
+  border: var(--border);
+  box-shadow: none;
 }
 
-/* ===== MODULE / LESSON LIST ===== */
+.btn-danger {
+  background: linear-gradient(135deg, rgba(239,68,68,1), rgba(220,38,38,1));
+}
 
-.list-item {
+/* ===== CARDS ===== */
+
+.card {
+  position: relative;
   background: var(--bg-elevated);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-
-/* ===== LESSON PREMIUM ===== */
-
-.lesson-section {
-  background: var(--bg-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-lg);
-  padding: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(800px 260px at 10% 0%, rgba(96,165,250,.18), transparent 55%),
+              radial-gradient(800px 260px at 90% 0%, rgba(52,211,153,.12), transparent 55%);
+  pointer-events: none;
+}
+
+.card > * { position: relative; }
+
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+}
+
+.card h3 {
+  margin: 18px 0 10px;
+  font-size: 1.05rem;
+  color: rgba(96,165,250,.95);
+}
+
+/* ===== PILL ===== */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(96,165,250,.14);
+  border: 1px solid rgba(96,165,250,.25);
+  font-weight: 800;
+  letter-spacing: .4px;
+  font-size: .85rem;
+}
+
+/* ===== LIST ITEMS ===== */
+
+.list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.item {
+  background: rgba(255,255,255,.04);
+  border: var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform .08s ease, background .2s ease, border-color .2s ease;
+}
+
+.item:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+  transform: translateY(-1px);
+}
+
+/* ===== CHOICE (examples/vocab already) ===== */
+
+.choice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,.03);
+}
+
+.choice b {
+  color: rgba(255,255,255,.95);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: .92rem;
+  margin-top: 4px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,.1);
+  margin: 18px 0;
+}
+
+/* ============================================
+   LEÇONS PREMIUM — Blocs, phonétique, dialogues
+   (ajout non destructif)
+============================================ */
+
+.lesson-block{
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px;
   margin: 14px 0;
   box-shadow: var(--shadow-sm);
 }
 
-.lesson-title {
-  font-weight: 700;
-  color: var(--accent-blue);
-  margin-bottom: 10px;
+.lesson-heading{
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: var(--accent);
+  margin: 2px 0 10px 0;
 }
 
-.sv-line {
+.lesson-spacer{ height: 10px; }
+
+.lesson-sv{
   font-size: 1.05rem;
-  font-weight: 600;
-  margin-top: 6px;
+  font-weight: 650;
+  margin: 6px 0 0 0;
 }
 
-.phon-line {
+.lesson-phon{
   font-size: .85rem;
-  opacity: .7;
-  margin-left: 8px;
+  opacity: .72;
+  margin: 2px 0 8px 10px;
 }
 
-.vocab-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+.lesson-dialogue{
+  display:flex;
   gap: 10px;
-}
-
-.vocab-card {
-  background: var(--bg-secondary);
+  align-items: flex-start;
+  padding: 10px 12px;
   border-radius: var(--radius-md);
-  padding: 10px;
-  text-align: center;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  margin: 8px 0;
 }
 
-.vocab-card .sv {
-  font-weight: 700;
+.dlg-who{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  font-weight: 800;
+  flex: 0 0 auto;
+  color: rgba(255,255,255,.92);
 }
 
-.vocab-card .phon {
-  font-size: .8rem;
-  opacity: .7;
-}
+.dlg-A{ background: rgba(96,165,250,.35); }
+.dlg-B{ background: rgba(52,211,153,.30); }
+
+.dlg-text{ line-height: 1.35; }
