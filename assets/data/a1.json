@@ -37,10 +37,168 @@
             { "type": "gap", "q": "Complète : Jag ___ från Frankrike.", "answer": "kommer" },
             { "type": "gap", "q": "Complète : Jag ___ i Paris.", "answer": "bor" }
           ]
-        }
-
+        },
+{
+  "id": "a1_premium_02",
+  "title": "Dire ce que tu fais — présent simple + question",
+  "content": [
+    "🎯 Objectif : dire ton action et demander celle de l’autre.",
+    "",
+    "=== Situation ===",
+    "A: Hej! Vad gör du?",
+    "B: Jag jobbar. Och du?",
+    "A: Jag dricker kaffe.",
+    "",
+    "=== Décomposition ===",
+    "Vad gör du? = Que fais-tu ?",
+    "Jag jobbar. = Je travaille.",
+    "Jag dricker kaffe. = Je bois du café.",
+    "",
+    "=== Points clés ===",
+    "• Vad + verbe + sujet = question",
+    "• Jag + verbe = affirmation",
+    "",
+    "=== Tableau système (présent) ===",
+    "jag jobbar / du jobbar",
+    "jag dricker / du dricker",
+    "",
+    "=== Production ===",
+    "Dis 5 phrases : Jag jobbar / Jag dricker / Jag äter / Jag gillar / Jag går"
+  ],
+  "vocab": [
+    { "sv": "vad", "fr": "quoi/que", "pron": "vad" },
+    { "sv": "gör", "fr": "fait", "pron": "yeuor" },
+    { "sv": "jobbar", "fr": "travaille", "pron": "yobb-ar" },
+    { "sv": "dricker", "fr": "bois", "pron": "drik-er" },
+    { "sv": "kaffe", "fr": "café", "pron": "KA-fe" },
+    { "sv": "och", "fr": "et", "pron": "ok" }
+  ],
+  "examples": [
+    { "sv": "Vad gör du?", "fr": "Que fais-tu ?", "pron": "vad yeuor dou" },
+    { "sv": "Jag jobbar.", "fr": "Je travaille.", "pron": "ya yobb-ar" },
+    { "sv": "Jag dricker kaffe.", "fr": "Je bois du café.", "pron": "ya drik-er ka-fe" },
+    { "sv": "Och du?", "fr": "Et toi ?", "pron": "ok dou" }
+  ],
+  "mini_drills": [
+    {
+      "instruction": "Substitution : remplace 'kaffe' par vatten / te / mjölk.",
+      "items": ["Jag dricker kaffe."]
+    },
+    {
+      "instruction": "Question : transforme 'Jag jobbar.' → Vad gör du?",
+      "items": ["Jag jobbar."]
+    }
+  ],
+  "quiz": [
+    { "type": "gap", "q": "Vad ___ du?", "answer": "gör" },
+    { "type": "gap", "q": "Jag ___ kaffe.", "answer": "dricker" },
+    { "type": "gap", "q": "Och ___?", "answer": "du" }
+  ]
+}
+,
+{
+  "id": "a1_premium_03",
+  "title": "Aller / intention — ska + till",
+  "content": [
+    "🎯 Objectif : dire où tu vas.",
+    "",
+    "=== Situation ===",
+    "A: Vart ska du?",
+    "B: Jag ska till centrum.",
+    "A: Idag eller imorgon?",
+    "B: Imorgon.",
+    "",
+    "=== Décomposition ===",
+    "Vart ska du? = Tu vas où ?",
+    "Jag ska till centrum. = Je vais au centre.",
+    "",
+    "=== Points clés ===",
+    "• futur proche : ska + infinitif",
+    "• destination : till + lieu",
+    "",
+    "=== Production ===",
+    "Dis 5 phrases : Imorgon ska jag till ..."
+  ],
+  "vocab": [
+    { "sv": "vart", "fr": "où (destination)", "pron": "vart" },
+    { "sv": "ska", "fr": "vais", "pron": "ska" },
+    { "sv": "till", "fr": "à/vers", "pron": "till" },
+    { "sv": "centrum", "fr": "centre", "pron": "sen-troum" },
+    { "sv": "idag", "fr": "aujourd’hui", "pron": "i-dag" },
+    { "sv": "imorgon", "fr": "demain", "pron": "i-mor-ron" }
+  ],
+  "examples": [
+    { "sv": "Vart ska du?", "fr": "Tu vas où ?", "pron": "vart ska dou" },
+    { "sv": "Jag ska till centrum.", "fr": "Je vais au centre.", "pron": "ya ska till sen-troum" },
+    { "sv": "Imorgon ska jag till hotellet.", "fr": "Demain je vais à l’hôtel.", "pron": "i-mor-ron ska ya till ho-tell-et" }
+  ],
+  "mini_drills": [
+    {
+      "instruction": "Substitution : centrum → stationen / hotellet / flygplatsen.",
+      "items": ["Jag ska till centrum."]
+    }
+  ],
+  "quiz": [
+    { "type": "gap", "q": "Jag ___ till centrum.", "answer": "ska" },
+    { "type": "gap", "q": "Jag ska ___ centrum.", "answer": "till" },
+    { "type": "gap", "q": "___ ska jag till hotellet.", "answer": "Imorgon" }
+  ]
+}
+,
+{
+  "id": "a1_premium_04",
+  "title": "Dire non / capacité — kan + inte",
+  "content": [
+    "🎯 Objectif : dire que tu ne peux pas.",
+    "",
+    "=== Situation ===",
+    "A: Kan du komma idag?",
+    "B: Nej, jag kan inte. Jag jobbar.",
+    "A: Imorgon då?",
+    "B: Ja, imorgon kan jag.",
+    "",
+    "=== Décomposition ===",
+    "Kan du komma? = Tu peux venir ?",
+    "Jag kan inte. = Je ne peux pas.",
+    "",
+    "=== Points clés ===",
+    "• kan = pouvoir",
+    "• inte = ne...pas",
+    "",
+    "=== Production ===",
+    "Dis 6 phrases : Jag kan / Jag kan inte ..."
+  ],
+  "vocab": [
+    { "sv": "kan", "fr": "peux", "pron": "kan" },
+    { "sv": "inte", "fr": "ne...pas", "pron": "intè" },
+    { "sv": "komma", "fr": "venir", "pron": "komm-a" },
+    { "sv": "idag", "fr": "aujourd’hui", "pron": "i-dag" },
+    { "sv": "imorgon", "fr": "demain", "pron": "i-mor-ron" }
+  ],
+  "examples": [
+    { "sv": "Kan du komma idag?", "fr": "Tu peux venir aujourd’hui ?", "pron": "kan dou komm-a i-dag" },
+    { "sv": "Jag kan inte.", "fr": "Je ne peux pas.", "pron": "ya kan intè" },
+    { "sv": "Imorgon kan jag.", "fr": "Demain je peux.", "pron": "i-mor-ron kan ya" }
+  ],
+  "mini_drills": [
+    {
+      "instruction": "Transformation : Kan du komma? → Nej, jag kan inte.",
+      "items": ["Kan du komma idag?"]
+    },
+    {
+      "instruction": "Substitution : komma → jobba / äta / dricka.",
+      "items": ["Jag kan inte komma."]
+    }
+  ],
+  "quiz": [
+    { "type": "gap", "q": "Jag kan ___ .", "answer": "inte" },
+    { "type": "gap", "q": "Kan du ___ idag?", "answer": "komma" },
+    { "type": "gap", "q": "Imorgon ___ jag.", "answer": "kan" }
+  ]
+}
       ]
     }
 
   ]
 }
+
