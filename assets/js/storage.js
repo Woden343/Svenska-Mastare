@@ -1,13 +1,13 @@
-// assets/js/storage.js - VERSION COMPLÈTE CORRIGÉE
+// assets/js/storage.js - VERSION COMPLÈTE (CORRIGÉE: AppStorage)
 
-const Storage = {
+window.AppStorage = {
   key: "svenska_progress_v2",
 
   _default() {
     return {
       done: {},
-      stats: { 
-        correct: 0, 
+      stats: {
+        correct: 0,
         wrong: 0,
         streak: 0,
         lastStudyDate: null
@@ -34,28 +34,29 @@ const Storage = {
     try {
       const raw = localStorage.getItem(this.key);
       const base = this._default();
-      
+
       if (!raw) return base;
-      
+
       const parsed = JSON.parse(raw);
 
       const merged = {
-        done: parsed.done || base.done,
+        done: (parsed && parsed.done) ? parsed.done : base.done,
         stats: {
-          correct: parsed.stats?.correct ?? base.stats.correct,
-          wrong: parsed.stats?.wrong ?? base.stats.wrong,
-          streak: parsed.stats?.streak ?? base.stats.streak,
-          lastStudyDate: parsed.stats?.lastStudyDate ?? base.stats.lastStudyDate
+          correct: parsed && parsed.stats && typeof parsed.stats.correct === "number" ? parsed.stats.correct : base.stats.correct,
+          wrong: parsed && parsed.stats && typeof parsed.stats.wrong === "number" ? parsed.stats.wrong : base.stats.wrong,
+          streak: parsed && parsed.stats && typeof parsed.stats.streak === "number" ? parsed.stats.streak : base.stats.streak,
+          lastStudyDate: parsed && parsed.stats && parsed.stats.lastStudyDate ? parsed.stats.lastStudyDate : base.stats.lastStudyDate
         },
         srs: {
-          cards: parsed.srs?.cards || base.srs.cards,
-          dailyLimit: parsed.srs?.dailyLimit ?? base.srs.dailyLimit,
-          learnedToday: parsed.srs?.learnedToday ?? base.srs.learnedToday,
-          reviewedToday: parsed.srs?.reviewedToday ?? base.srs.reviewedToday,
-          dayStamp: parsed.srs?.dayStamp || base.srs.dayStamp
+          cards: parsed && parsed.srs && parsed.srs.cards ? parsed.srs.cards : base.srs.cards,
+          dailyLimit: parsed && parsed.srs && typeof parsed.srs.dailyLimit === "number" ? parsed.srs.dailyLimit : base.srs.dailyLimit,
+          learnedToday: parsed && parsed.srs && typeof parsed.srs.learnedToday === "number" ? parsed.srs.learnedToday : base.srs.learnedToday,
+          reviewedToday: parsed && parsed.srs && typeof parsed.srs.reviewedToday === "number" ? parsed.srs.reviewedToday : base.srs.reviewedToday,
+          dayStamp: parsed && parsed.srs && parsed.srs.dayStamp ? parsed.srs.dayStamp : base.srs.dayStamp
         }
       };
 
+      // Reset compteur jour si changement de date
       if (merged.srs.dayStamp !== this._todayStamp()) {
         merged.srs.dayStamp = this._todayStamp();
         merged.srs.learnedToday = 0;
@@ -64,7 +65,7 @@ const Storage = {
 
       return merged;
     } catch (e) {
-      console.error("[Storage] Erreur de chargement:", e);
+      console.error("[AppStorage] Erreur de chargement:", e);
       return this._default();
     }
   },
@@ -74,7 +75,7 @@ const Storage = {
       localStorage.setItem(this.key, JSON.stringify(state));
       return true;
     } catch (e) {
-      console.error("[Storage] Erreur de sauvegarde:", e);
+      console.error("[AppStorage] Erreur de sauvegarde:", e);
       return false;
     }
   },
@@ -82,16 +83,14 @@ const Storage = {
   _updateStreak(state) {
     const today = this._todayStamp();
     const last = state.stats.lastStudyDate;
-    
+
     if (!last) {
       state.stats.streak = 1;
       state.stats.lastStudyDate = today;
       return;
     }
 
-    if (last === today) {
-      return;
-    }
+    if (last === today) return;
 
     const lastDate = new Date(last);
     const todayDate = new Date(today);
@@ -120,11 +119,8 @@ const Storage = {
 
   addResult(isCorrect) {
     const s = this.load();
-    if (isCorrect) {
-      s.stats.correct++;
-    } else {
-      s.stats.wrong++;
-    }
+    if (isCorrect) s.stats.correct++;
+    else s.stats.wrong++;
     this._updateStreak(s);
     this.save(s);
   },
@@ -133,16 +129,16 @@ const Storage = {
 
   upsertCards(newCards) {
     if (!Array.isArray(newCards) || newCards.length === 0) {
-      console.log("[Storage] Aucune carte à insérer");
+      console.log("[AppStorage] Aucune carte à insérer");
       return;
     }
-    
+
     const s = this.load();
     const cards = s.srs.cards || {};
 
     for (const c of newCards) {
       if (!c || !c.id) continue;
-      
+
       if (!cards[c.id]) {
         cards[c.id] = {
           id: c.id,
@@ -167,27 +163,29 @@ const Storage = {
 
     s.srs.cards = cards;
     this.save(s);
-    console.log(`[Storage] ${Object.keys(cards).length} cartes SRS enregistrées`);
+    console.log(`[AppStorage] ${Object.keys(cards).length} cartes SRS enregistrées`);
   },
 
   getDueCards(limit = 30) {
     const s = this.load();
     const now = Date.now();
     const cards = Object.values(s.srs.cards || {});
-    
+
     const due = cards.filter(c => (c.nextDue || 0) <= now);
     due.sort((a, b) => (a.nextDue || 0) - (b.nextDue || 0));
-    
+
     return due.slice(0, limit);
   },
 
   gradeCard(cardId, grade) {
     const s = this.load();
-    const c = s.srs.cards?.[cardId];
+    const cardsMap = s.srs.cards || {};
+    const c = cardsMap[cardId];
     if (!c) return;
 
     const now = Date.now();
 
+    // Ajuste ease selon la note
     if (grade === 0) {
       c.ease = Math.max(1.3, c.ease - 0.2);
       c.lapses = (c.lapses || 0) + 1;
@@ -199,33 +197,33 @@ const Storage = {
       c.ease = Math.min(3.0, c.ease + 0.1);
     }
 
+    // Planification
     if (grade === 0) {
       c.intervalDays = 0;
       c.reps = 0;
-      c.nextDue = now + 10 * 60 * 1000;
+      c.nextDue = now + 10 * 60 * 1000; // 10 min
     } else {
       c.reps = (c.reps || 0) + 1;
-      
+
       if (c.reps === 1) {
         c.intervalDays = (grade === 1) ? 1 : (grade === 2) ? 2 : 4;
       } else if (c.reps === 2) {
         c.intervalDays = (grade === 1) ? 3 : (grade === 2) ? 6 : 10;
       } else {
         const multiplier = (grade === 1) ? 1.2 : (grade === 2) ? c.ease : c.ease * 1.3;
-        c.intervalDays = Math.round(c.intervalDays * multiplier);
+        c.intervalDays = Math.round((c.intervalDays || 1) * multiplier);
       }
 
       c.intervalDays = Math.min(365, Math.max(1, c.intervalDays));
       c.nextDue = now + c.intervalDays * 24 * 60 * 60 * 1000;
     }
 
-    if (c.reps === 1) {
-      s.srs.learnedToday = (s.srs.learnedToday || 0) + 1;
-    } else {
-      s.srs.reviewedToday = (s.srs.reviewedToday || 0) + 1;
-    }
+    // Compteurs du jour
+    if (c.reps === 1) s.srs.learnedToday = (s.srs.learnedToday || 0) + 1;
+    else s.srs.reviewedToday = (s.srs.reviewedToday || 0) + 1;
 
-    s.srs.cards[cardId] = c;
+    cardsMap[cardId] = c;
+    s.srs.cards = cardsMap;
     this.save(s);
   },
 
@@ -233,7 +231,7 @@ const Storage = {
     const s = this.load();
     const cards = Object.values(s.srs.cards || {});
     const now = Date.now();
-    
+
     const due = cards.filter(c => (c.nextDue || 0) <= now).length;
     const newCards = cards.filter(c => (c.reps || 0) === 0).length;
     const learning = cards.filter(c => {
