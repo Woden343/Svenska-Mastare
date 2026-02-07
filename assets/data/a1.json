@@ -162,7 +162,8 @@
             { "type": "gap", "q": "Complète : Var ___ du?", "answer": "bor" },
             { "type": "gap", "q": "Complète : Var ___ du ifrån?", "answer": "kommer" }
           ]
-        }{
+        },
+  {
   "id": "a1_premium_02",
   "title": "Dire ce que tu fais — présent simple + question",
   "content": [
@@ -319,4 +320,5 @@
     }
   ]
 }
+
 
