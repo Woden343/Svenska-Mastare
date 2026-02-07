@@ -1,16 +1,13 @@
 // assets/js/app.js
 
 const App = {
-  mount: document.getElementById("app"),
+  mount: null,  // ✅ Initialisé dans init()
 
-  // ---------- Levels ----------
   levels: {},
   levelsOrder: ["A1", "A2", "B1", "B2"],
 
-  // ---------- Reference ----------
   ref: { title: "Références", modules: [] },
 
-  // Référence+ (tables filtrables)
   refPlus: {
     title: "Référence+ (tableaux)",
     themes: [],
@@ -22,6 +19,13 @@ const App = {
   },
 
   async init() {
+    // ✅ Initialiser mount après chargement DOM
+    this.mount = document.getElementById("app");
+    if (!this.mount) {
+      console.error("[App] Element #app introuvable");
+      return;
+    }
+
     // Nav
     document.getElementById("navHome")?.addEventListener("click", () => Router.go("/"));
     document.getElementById("navRef")?.addEventListener("click", () => Router.go("/ref"));
@@ -44,28 +48,33 @@ const App = {
     // Load data
     await this.loadAllData();
 
-    // Build SRS cards from lessons + upsert
+    // Build SRS cards
     Storage.upsertCards(SRS.buildCardsFromLevels(this.levels));
 
     Router.start("/");
   },
 
-  // ---------- Loading ----------
+  // ✅ Correction du chargement avec bon chemin
   async loadAllData() {
     for (const lvl of this.levelsOrder) {
       try {
-        this.levels[lvl] = await this.loadJson(`${lvl.toLowerCase()}.json`);
+        // ✅ Chemin correct vers assets/data/
+        this.levels[lvl] = await this.loadJson(`assets/data/${lvl.toLowerCase()}.json`);
+        console.log(`[App] Niveau ${lvl} chargé:`, this.levels[lvl]);
       } catch (e) {
-        // ignore missing file
+        console.warn(`[App] Niveau ${lvl} non chargé:`, e.message);
       }
     }
 
     try {
-      this.ref = await this.loadJson("ref.json");
-    } catch (e) {}
+      this.ref = await this.loadJson("assets/data/ref.json");
+      console.log("[App] Références chargées:", this.ref);
+    } catch (e) {
+      console.warn("[App] ref.json non chargé:", e.message);
+    }
 
     try {
-      const json = await this.loadJson("ref_plus.json");
+      const json = await this.loadJson("assets/data/ref_plus.json");
       this.refPlus = {
         title: json.title || "Référence+ (tableaux)",
         themes: Array.isArray(json.themes) ? json.themes : [],
@@ -75,21 +84,24 @@ const App = {
         articles: Array.isArray(json.articles) ? json.articles : [],
         articles_guide: Array.isArray(json.articles_guide) ? json.articles_guide : []
       };
-    } catch (e) {}
+      console.log("[App] Référence+ chargée:", this.refPlus);
+    } catch (e) {
+      console.warn("[App] ref_plus.json non chargé:", e.message);
+    }
   },
 
   async loadJson(path) {
     const res = await fetch(path);
-    if (!res.ok) throw new Error(`Fetch failed: ${path}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} sur ${path}`);
     return await res.json();
   },
 
-  // ---------- Rendering helpers ----------
   setView(html) {
-    this.mount.innerHTML = html;
+    if (this.mount) {
+      this.mount.innerHTML = html;
+    }
   },
 
-  // ---------- Lesson premium rendering ----------
   escapeHtml(str) {
     return (str ?? "")
       .toString()
@@ -101,12 +113,6 @@ const App = {
   },
 
   renderLessonContent(lines) {
-    // Rendu visuel premium sans changer la structure JSON :
-    // - "=====" ouvre/ferme un bloc (carte)
-    // - titres (SITUATION, DÉCOMPOSITION, 🧑‍🏫, etc.) stylés
-    // - dialogues A:/B: en bulles
-    // - phonétique (lignes entre parenthèses) plus discrète
-    // - suédois mis en avant
     let html = "";
     let open = false;
 
@@ -161,7 +167,6 @@ const App = {
         continue;
       }
 
-      // Dialogue A: / B:
       const dlg = l.match(/^([AB]):\s*(.*)$/);
       if (dlg) {
         const who = dlg[1];
@@ -175,7 +180,6 @@ const App = {
         continue;
       }
 
-      // Phonétique : ( ... )
       const trimmed = l.trim();
       if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
         const phon = trimmed.slice(1, -1);
@@ -200,7 +204,6 @@ const App = {
     return `<div class="table-wrap"><table>${thead}${tbody}</table></div>`;
   },
 
-  // ---------- Home ----------
   viewHome() {
     const cards = this.levelsOrder
       .filter((lvl) => this.levels[lvl])
@@ -242,7 +245,6 @@ const App = {
     `);
   },
 
-  // ---------- Level ----------
   viewLevel(level) {
     const L = this.levels[level];
     if (!L) {
@@ -298,7 +300,6 @@ const App = {
     `);
   },
 
-  // ---------- Lesson ----------
   viewLesson(level, lessonId) {
     const L = this.levels[level];
     if (!L) return this.setView(`<section class="card"><h2>Leçon introuvable</h2></section>`);
@@ -354,7 +355,6 @@ const App = {
     this.renderQuiz(lesson);
   },
 
-  // ---------- Quiz ----------
   renderQuiz(lesson) {
     const host = document.getElementById("quiz");
     if (!host) return;
@@ -398,7 +398,6 @@ const App = {
     host.appendChild(btn);
   },
 
-  // ---------- Ref ----------
   viewRef() {
     const modules = (this.ref.modules || [])
       .map(
@@ -478,9 +477,7 @@ const App = {
     `);
   },
 
-  // ---------- Ref+ ----------
   viewRefPlus() {
-    // ta vue ref+ existante (inchangée)
     this.setView(`
       <section class="card">
         <h2>${this.refPlus.title || "Référence+ (tableaux)"}</h2>
@@ -492,9 +489,7 @@ const App = {
     `);
   },
 
-  // ---------- Review ----------
   viewReview() {
-    // ta vue SRS existante (inchangée)
     this.setView(`
       <section class="card">
         <h2>Révision (SRS)</h2>
@@ -506,9 +501,7 @@ const App = {
     `);
   },
 
-  // ---------- Stats ----------
   viewStats() {
-    // ta vue stats existante (inchangée)
     this.setView(`
       <section class="card">
         <h2>Stats</h2>
