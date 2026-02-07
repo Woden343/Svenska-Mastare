@@ -195,9 +195,7 @@
     { "type": "gap", "q": "Kan du ___ idag?", "answer": "komma" },
     { "type": "gap", "q": "Imorgon ___ jag.", "answer": "kan" }
   ]
-}
-      ]
-    },
+},
 {
   "id": "a1_premium_05",
   "title": "Café & restaurant — commander",
@@ -307,8 +305,7 @@
     { "type": "gap", "q": "Jag ___ idag.", "answer": "jobbar" },
     { "type": "gap", "q": "Imorgon ___ jag ledig.", "answer": "är" }
   ]
-}
-,
+},
 {
   "id": "a1_premium_08",
   "title": "Météo & émotions",
@@ -336,9 +333,12 @@
   "quiz": [
     { "type": "gap", "q": "Det ___ kallt.", "answer": "är" },
     { "type": "gap", "q": "Jag är ___ .", "answer": "trött" }
+      ]
+    }
   ]
 }
   ]
 }
+
 
 
