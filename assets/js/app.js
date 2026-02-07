@@ -1,4 +1,4 @@
-// assets/js/app.js
+// assets/js/app.js - VERSION COMPLÈTE CORRIGÉE
 
 const App = {
   mount: null,  // ✅ Initialisé dans init()
@@ -26,12 +26,18 @@ const App = {
       return;
     }
 
-    // Nav
-    document.getElementById("navHome")?.addEventListener("click", () => Router.go("/"));
-    document.getElementById("navRef")?.addEventListener("click", () => Router.go("/ref"));
-    document.getElementById("navRefPlus")?.addEventListener("click", () => Router.go("/ref-plus", {}));
-    document.getElementById("navReview")?.addEventListener("click", () => Router.go("/review"));
-    document.getElementById("navStats")?.addEventListener("click", () => Router.go("/stats"));
+    // ✅ Navigation avec vérifications
+    const navHome = document.getElementById("navHome");
+    const navRef = document.getElementById("navRef");
+    const navRefPlus = document.getElementById("navRefPlus");
+    const navReview = document.getElementById("navReview");
+    const navStats = document.getElementById("navStats");
+
+    if (navHome) navHome.addEventListener("click", () => Router.go("/"));
+    if (navRef) navRef.addEventListener("click", () => Router.go("/ref"));
+    if (navRefPlus) navRefPlus.addEventListener("click", () => Router.go("/ref-plus", {}));
+    if (navReview) navReview.addEventListener("click", () => Router.go("/review"));
+    if (navStats) navStats.addEventListener("click", () => Router.go("/stats"));
 
     // Router
     Router.on("/", () => this.viewHome());
@@ -54,11 +60,10 @@ const App = {
     Router.start("/");
   },
 
-  // ✅ Correction du chargement avec bon chemin
+  // ✅ Chargement avec bon chemin
   async loadAllData() {
     for (const lvl of this.levelsOrder) {
       try {
-        // ✅ Chemin correct vers assets/data/
         this.levels[lvl] = await this.loadJson(`assets/data/${lvl.toLowerCase()}.json`);
         console.log(`[App] Niveau ${lvl} chargé:`, this.levels[lvl]);
       } catch (e) {
@@ -96,6 +101,8 @@ const App = {
     return await res.json();
   },
 
+  // ========== HELPERS ==========
+
   setView(html) {
     if (this.mount) {
       this.mount.innerHTML = html;
@@ -129,7 +136,24 @@ const App = {
         s.startsWith("TABLEAU") ||
         s.startsWith("DRILLS") ||
         s.startsWith("MINI-STORY") ||
-        s.startsWith("PRODUCTION")
+        s.startsWith("PRODUCTION") ||
+        s.startsWith("🎯") ||
+        s.startsWith("✅") ||
+        s.startsWith("⚡") ||
+        s.startsWith("📚") ||
+        s.startsWith("🔑") ||
+        s.startsWith("✓") ||
+        s.startsWith("📖") ||
+        s.startsWith("🔤") ||
+        s.startsWith("📌") ||
+        s.startsWith("1️⃣") ||
+        s.startsWith("2️⃣") ||
+        s.startsWith("3️⃣") ||
+        s.startsWith("4️⃣") ||
+        s.startsWith("5️⃣") ||
+        s.startsWith("6️⃣") ||
+        s.startsWith("⚠️") ||
+        s.startsWith("💡")
       );
     };
 
@@ -167,6 +191,7 @@ const App = {
         continue;
       }
 
+      // Dialogue A: / B:
       const dlg = l.match(/^([AB]):\s*(.*)$/);
       if (dlg) {
         const who = dlg[1];
@@ -180,6 +205,7 @@ const App = {
         continue;
       }
 
+      // Phonétique : ( ... )
       const trimmed = l.trim();
       if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
         const phon = trimmed.slice(1, -1);
@@ -204,6 +230,8 @@ const App = {
     return `<div class="table-wrap"><table>${thead}${tbody}</table></div>`;
   },
 
+  // ========== VIEWS ==========
+
   viewHome() {
     const cards = this.levelsOrder
       .filter((lvl) => this.levels[lvl])
@@ -214,8 +242,8 @@ const App = {
             <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
               <div>
                 <div class="pill">${lvl}</div>
-                <div style="margin-top:10px; font-weight:800; font-size:1.05rem;">${L.title || lvl}</div>
-                <div class="muted" style="margin-top:6px;">${L.description || ""}</div>
+                <div style="margin-top:10px; font-weight:800; font-size:1.05rem;">${this.escapeHtml(L.title || lvl)}</div>
+                <div class="muted" style="margin-top:6px;">${this.escapeHtml(L.description || "")}</div>
               </div>
               <div class="muted">→</div>
             </div>
@@ -265,7 +293,7 @@ const App = {
               <div class="item" onclick="Router.go('/lesson',{level:'${L.level}',lessonId:'${ls.id}'})">
                 <div style="display:flex; justify-content:space-between; gap:12px;">
                   <div>
-                    <div style="font-weight:800;">${ls.title || ls.id}</div>
+                    <div style="font-weight:800;">${this.escapeHtml(ls.title || ls.id)}</div>
                     <div class="muted" style="margin-top:6px;">${done ? "✅ Fait" : "⏳ À faire"}</div>
                   </div>
                   <div class="muted">→</div>
@@ -277,8 +305,8 @@ const App = {
 
         return `
           <div style="margin-top:18px;">
-            <div class="pill">${m.id || ""}</div>
-            <h2 style="margin:10px 0 6px;">${m.title || "Module"}</h2>
+            <div class="pill">${this.escapeHtml(m.id || "")}</div>
+            <h2 style="margin:10px 0 6px;">${this.escapeHtml(m.title || "Module")}</h2>
             <div class="list">${lessons || `<div class="muted">Aucune leçon.</div>`}</div>
           </div>
         `;
@@ -287,9 +315,9 @@ const App = {
 
     this.setView(`
       <section class="card">
-        <span class="pill">${L.level}</span>
-        <h2 style="margin-top:10px;">${L.title || "Niveau"}</h2>
-        <div class="muted">${L.description || ""}</div>
+        <span class="pill">${this.escapeHtml(L.level)}</span>
+        <h2 style="margin-top:10px;">${this.escapeHtml(L.title || "Niveau")}</h2>
+        <div class="muted">${this.escapeHtml(L.description || "")}</div>
 
         ${modules}
 
@@ -318,22 +346,22 @@ const App = {
     const examplesHtml = (lesson.examples || []).map(e => `
       <div class="choice" style="cursor:default;">
         <div>
-          <b>${e.sv || ""}</b>
-          <div class="muted">${e.fr || ""}${e.pron ? ` • <i>${e.pron}</i>` : ""}</div>
+          <b>${this.escapeHtml(e.sv || "")}</b>
+          <div class="muted">${this.escapeHtml(e.fr || "")}${e.pron ? ` • <i>${this.escapeHtml(e.pron)}</i>` : ""}</div>
         </div>
       </div>
     `).join("");
     const vocabHtml = (lesson.vocab || []).map(w => `
       <div class="choice" style="cursor:default;">
-        <div style="min-width:130px;"><b>${w.sv || ""}</b></div>
-        <div class="muted">${w.fr || ""}${w.pron ? ` • <i>${w.pron}</i>` : ""}</div>
+        <div style="min-width:130px;"><b>${this.escapeHtml(w.sv || "")}</b></div>
+        <div class="muted">${this.escapeHtml(w.fr || "")}${w.pron ? ` • <i>${this.escapeHtml(w.pron)}</i>` : ""}</div>
       </div>
     `).join("");
 
     this.setView(`
       <section class="card">
-        <span class="pill">${L.level}</span>
-        <h2 style="margin-top:10px;">${lesson.title || "Leçon"}</h2>
+        <span class="pill">${this.escapeHtml(L.level)}</span>
+        <h2 style="margin-top:10px;">${this.escapeHtml(lesson.title || "Leçon")}</h2>
 
         ${contentHtml}
 
@@ -366,36 +394,80 @@ const App = {
       return;
     }
 
-    quiz.forEach((q, idx) => {
-      if (q.type === "gap") {
-        const row = document.createElement("div");
-        row.className = "choice";
-        row.style.marginBottom = "10px";
-        row.innerHTML = `
-          <div style="flex:1;">
-            <b>${idx + 1}.</b> ${q.q}
-            <div class="muted" style="margin-top:8px;">
-              <input data-answer="${this.escapeHtml(q.answer || "")}" placeholder="Réponse" style="width:100%; padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(0,0,0,.25); color:white;" />
-            </div>
+    let idx = 0;
+    const answered = new Array(quiz.length).fill(false);
+
+    const renderOne = () => {
+      const q = quiz[idx];
+      host.innerHTML = `
+        <div class="card" style="margin-top:10px;">
+          <div class="muted" style="margin-bottom:8px;">Exercice ${idx + 1} / ${quiz.length}</div>
+          <div id="qbox"></div>
+          <p id="fb" class="muted" style="margin-top:10px;"></p>
+          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+            <button class="btn" id="prev" ${idx === 0 ? "disabled" : ""}>← Précédent</button>
+            <button class="btn" id="next">${idx === quiz.length - 1 ? "Terminer" : "Suivant →"}</button>
+          </div>
+        </div>
+      `;
+
+      const qbox = host.querySelector("#qbox");
+      const fb = host.querySelector("#fb");
+      const lock = () => answered[idx];
+      const setFeedback = (ok, extra = "") => {
+        fb.textContent = ok ? `✅ Correct. ${extra}` : `❌ Non. ${extra}`;
+      };
+
+      if (q.type === "mcq") {
+        qbox.innerHTML = `
+          <p><b>${this.escapeHtml(q.q || "")}</b></p>
+          <div class="grid">
+            ${(q.choices || []).map((c, i) => `<div class="choice" data-i="${i}">${this.escapeHtml(c)}</div>`).join("")}
           </div>
         `;
-        host.appendChild(row);
+        const nodes = qbox.querySelectorAll(".choice");
+        nodes.forEach(node => {
+          node.onclick = () => {
+            if (lock()) return;
+            const i = Number(node.dataset.i);
+            const ok = i === q.answerIndex;
+            Storage.addResult(ok);
+            answered[idx] = true;
+            nodes.forEach(n => n.classList.remove("correct", "wrong"));
+            node.classList.add(ok ? "correct" : "wrong");
+            const answer = (q.choices && q.choices[q.answerIndex] != null) ? q.choices[q.answerIndex] : "";
+            setFeedback(ok, ok ? "" : `Réponse : ${answer}`);
+          };
+        });
+      } else if (q.type === "gap") {
+        qbox.innerHTML = `
+          <p><b>${this.escapeHtml(q.q || "")}</b></p>
+          <input id="gap" placeholder="Ta réponse..." style="width:100%; padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(0,0,0,.25); color:white;" />
+          <button class="btn" style="margin-top:10px;" id="check">Vérifier</button>
+        `;
+        const input = qbox.querySelector("#gap");
+        const btn = qbox.querySelector("#check");
+        btn.onclick = () => {
+          if (lock()) return;
+          const val = (input.value || "").trim().toLowerCase();
+          const expected = (q.answer || "").trim().toLowerCase();
+          const ok = val === expected;
+          Storage.addResult(ok);
+          answered[idx] = true;
+          setFeedback(ok, ok ? "" : `Attendu : ${q.answer || ""}`);
+        };
+      } else {
+        qbox.innerHTML = `<p class="muted">Type de quiz non géré.</p>`;
       }
-    });
 
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    btn.textContent = "Corriger";
-    btn.onclick = () => {
-      const inputs = host.querySelectorAll("input[data-answer]");
-      inputs.forEach((inp) => {
-        const ans = (inp.getAttribute("data-answer") || "").trim().toLowerCase();
-        const val = (inp.value || "").trim().toLowerCase();
-        const good = ans === val;
-        inp.style.borderColor = good ? "rgba(34,197,94,.8)" : "rgba(239,68,68,.85)";
-      });
+      host.querySelector("#prev").onclick = () => { if (idx > 0) { idx--; renderOne(); } };
+      host.querySelector("#next").onclick = () => {
+        if (idx < quiz.length - 1) { idx++; renderOne(); }
+        else { fb.textContent = "✅ Série terminée."; }
+      };
     };
-    host.appendChild(btn);
+
+    renderOne();
   },
 
   viewRef() {
@@ -403,15 +475,15 @@ const App = {
       .map(
         (m) => `
       <div style="margin-top:16px;">
-        <div class="pill">${m.id || ""}</div>
-        <h2 style="margin-top:10px;">${m.title || "Référence"}</h2>
+        <div class="pill">${this.escapeHtml(m.id || "")}</div>
+        <h2 style="margin-top:10px;">${this.escapeHtml(m.title || "Référence")}</h2>
         <div class="list">
           ${(m.lessons || [])
             .map(
               (ls) => `
             <div class="item" onclick="Router.go('/ref-lesson',{moduleId:'${m.id}',lessonId:'${ls.id}'})">
               <div style="display:flex; justify-content:space-between; gap:12px;">
-                <div style="font-weight:800;">${ls.title || ls.id}</div>
+                <div style="font-weight:800;">${this.escapeHtml(ls.title || ls.id)}</div>
                 <div class="muted">→</div>
               </div>
             </div>
@@ -426,7 +498,7 @@ const App = {
 
     this.setView(`
       <section class="card">
-        <h2>${this.ref.title || "Références"}</h2>
+        <h2>${this.escapeHtml(this.ref.title || "Références")}</h2>
         ${modules || `<div class="muted">Aucune référence.</div>`}
         <div style="margin-top:12px;">
           <button class="btn" onclick="Router.go('/')">← Retour</button>
@@ -451,19 +523,19 @@ const App = {
     const contentHtml = this.renderLessonContent(lesson.content || []);
     const examplesHtml = (lesson.examples || []).map(e => `
       <div class="choice" style="cursor:default;">
-        <div><b>${e.sv || ""}</b><div class="muted">${e.fr || ""}${e.pron ? ` • <i>${e.pron}</i>` : ""}</div></div>
+        <div><b>${this.escapeHtml(e.sv || "")}</b><div class="muted">${this.escapeHtml(e.fr || "")}${e.pron ? ` • <i>${this.escapeHtml(e.pron)}</i>` : ""}</div></div>
       </div>
     `).join("");
     const vocabHtml = (lesson.vocab || []).map(w => `
       <div class="choice" style="cursor:default;">
-        <div style="min-width:130px;"><b>${w.sv || ""}</b></div>
-        <div class="muted">${w.fr || ""}${w.pron ? ` • <i>${w.pron}</i>` : ""}</div>
+        <div style="min-width:130px;"><b>${this.escapeHtml(w.sv || "")}</b></div>
+        <div class="muted">${this.escapeHtml(w.fr || "")}${w.pron ? ` • <i>${this.escapeHtml(w.pron)}</i>` : ""}</div>
       </div>
     `).join("");
 
     this.setView(`
       <section class="card">
-        <h2>${lesson.title || "Fiche"}</h2>
+        <h2>${this.escapeHtml(lesson.title || "Fiche")}</h2>
 
         ${contentHtml}
 
@@ -480,8 +552,8 @@ const App = {
   viewRefPlus() {
     this.setView(`
       <section class="card">
-        <h2>${this.refPlus.title || "Référence+ (tableaux)"}</h2>
-        <div class="muted">Référence+ chargée. (Rendu inchangé ici.)</div>
+        <h2>${this.escapeHtml(this.refPlus.title || "Référence+ (tableaux)")}</h2>
+        <div class="muted">Référence+ chargée. (Rendu à compléter.)</div>
         <div style="margin-top:12px;">
           <button class="btn" onclick="Router.go('/')">← Retour</button>
         </div>
@@ -490,28 +562,117 @@ const App = {
   },
 
   viewReview() {
-    this.setView(`
-      <section class="card">
-        <h2>Révision (SRS)</h2>
-        <div class="muted">Écran SRS inchangé.</div>
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
-        </div>
-      </section>
-    `);
+    const due = Storage.getDueCards(30);
+    const stats = Storage.getSrsStats();
+
+    if (due.length === 0) {
+      return this.setView(`
+        <section class="card">
+          <h2>🎉 Révision SRS</h2>
+          <p class="muted">Aucune carte à réviser pour le moment !</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+            <div class="pill">Total cartes : <b>${stats.total}</b></div>
+            <div class="pill">Dues : <b>${stats.due}</b></div>
+          </div>
+          <button class="btn" onclick="Router.go('/')" style="margin-top:12px;">← Retour</button>
+        </section>
+      `);
+    }
+
+    let idx = 0;
+    let showAnswer = false;
+
+    const render = () => {
+      const c = due[idx];
+      
+      const html = `
+        <section class="card">
+          <div class="muted" style="margin-bottom:8px;">Carte ${idx + 1} / ${due.length}</div>
+          <div id="srs-card" style="min-height:150px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px; text-align:center;">
+            <div style="font-size:24px; margin-bottom:12px;">${this.escapeHtml(c.front)}</div>
+            ${showAnswer ? `<hr style="margin:20px 0;"><div style="font-size:18px; color:var(--accent-blue);">${this.escapeHtml(c.back)}</div>` : ""}
+          </div>
+          <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; justify-content:center;">
+            ${!showAnswer ? `
+              <button class="btn btn-primary" id="show-answer">Afficher la réponse</button>
+            ` : `
+              <button class="btn" id="grade-0">❌ Oublié</button>
+              <button class="btn" id="grade-1">😐 Difficile</button>
+              <button class="btn btn-primary" id="grade-2">✅ Bon</button>
+              <button class="btn btn-success" id="grade-3">🎯 Facile</button>
+            `}
+          </div>
+        </section>
+      `;
+
+      this.setView(html);
+
+      if (!showAnswer) {
+        document.getElementById("show-answer").onclick = () => {
+          showAnswer = true;
+          render();
+        };
+      } else {
+        for (let g = 0; g <= 3; g++) {
+          const btn = document.getElementById(`grade-${g}`);
+          if (btn) {
+            btn.onclick = () => {
+              Storage.gradeCard(c.id, g);
+              showAnswer = false;
+              idx++;
+              if (idx < due.length) {
+                render();
+              } else {
+                this.setView(`
+                  <section class="card">
+                    <h2>🎉 Session terminée !</h2>
+                    <p class="muted">Vous avez révisé ${due.length} carte(s).</p>
+                    <button class="btn btn-primary" onclick="Router.go('/')">← Retour à l'accueil</button>
+                  </section>
+                `);
+              }
+            };
+          }
+        }
+      }
+    };
+
+    render();
   },
 
   viewStats() {
+    const s = Storage.load();
+    const total = (s.stats?.correct ?? 0) + (s.stats?.wrong ?? 0);
+    const rate = total ? Math.round(((s.stats?.correct ?? 0) / total) * 100) : 0;
+    const srsStats = Storage.getSrsStats();
+
     this.setView(`
       <section class="card">
-        <h2>Stats</h2>
-        <div class="muted">Écran stats inchangé.</div>
-        <div style="margin-top:12px;">
-          <button class="btn" onclick="Router.go('/')">← Retour</button>
+        <h2>📊 Statistiques</h2>
+        
+        <h3 style="margin-top:20px;">Exercices</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+          <div class="pill">Total réponses : <b>${total}</b></div>
+          <div class="pill">Taux réussite : <b>${rate}%</b></div>
+          <div class="pill" style="background:rgba(34,197,94,.2);">Bonnes : <b>${s.stats?.correct ?? 0}</b></div>
+          <div class="pill" style="background:rgba(239,68,68,.2);">Erreurs : <b>${s.stats?.wrong ?? 0}</b></div>
         </div>
+
+        <h3 style="margin-top:20px;">Révision SRS</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+          <div class="pill">Total cartes : <b>${srsStats.total}</b></div>
+          <div class="pill" style="background:rgba(251,191,36,.2);">Dues : <b>${srsStats.due}</b></div>
+          <div class="pill">Nouvelles : <b>${srsStats.newCards || 0}</b></div>
+          <div class="pill" style="background:rgba(34,197,94,.2);">Maîtrisées : <b>${srsStats.mature || 0}</b></div>
+        </div>
+
+        <hr />
+        <button class="btn" onclick="Storage.reset()">⚠️ Réinitialiser les données</button>
+        <button class="btn btn-ghost" onclick="Router.go('/')" style="margin-left:10px;">← Retour</button>
       </section>
     `);
   }
 };
 
+// ✅ Auto-init
 window.addEventListener("DOMContentLoaded", () => App.init());
