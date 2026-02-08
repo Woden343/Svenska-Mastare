@@ -2682,6 +2682,190 @@
       "answer": "föredrar"
     }
   ]
+},
+{
+  "id": "a2_core_03_03",
+  "title": "Comparer simplement - mer än / mindre än / lika ... som",
+  "content": [
+    "🎯 Objectif : comparer deux personnes, choses ou situations de manière claire et naturelle (A2).",
+    "",
+    "À la fin de cette leçon tu sais :",
+    "• dire que quelque chose est plus que / moins que",
+    "• dire que deux choses sont égales",
+    "• formuler des comparaisons simples dans la vie quotidienne",
+    "",
+    "==============================",
+    "SITUATION - Comparer",
+    "",
+    "Dialogue :",
+    "A: Är Stockholm större än Paris?",
+    "(èr stok-holm steur-rè èn pa-riss ?)",
+    "B: Ja, Stockholm är större än Paris.",
+    "(ya, stok-holm èr steur-rè èn pa-riss)",
+    "A: Är jobbet svårare nu?",
+    "(èr yob-bet svoir-rè nou ?)",
+    "B: Ja, men det är också mer intressant.",
+    "(ya, mèn dèt èr ok-so mér in-té-res-sant)",
+    "A: Är kaffe lika gott som te?",
+    "(èr kafé li-ka gott som té ?)",
+    "B: Nej, kaffe är bättre.",
+    "(nèï, kafé èr bèt-trè)",
+    "",
+    "==============================",
+    "DÉCOMPOSITION",
+    "",
+    "mer än = plus que",
+    "mindre än = moins que",
+    "lika ... som = aussi ... que",
+    "än = que (comparaison)",
+    "som = que (égalité)",
+    "",
+    "==============================",
+    "🧑‍🏫 EXPLICATION DU PROF",
+    "",
+    "👉 Pourquoi les comparaisons sont essentielles en A2",
+    "",
+    "À partir du niveau A2, tu ne décris plus seulement des choses. Tu les compares. Tu dis qu’une chose est meilleure, plus grande, plus intéressante qu’une autre. C’est indispensable pour donner ton avis et nuancer ton discours.",
+    "",
+    "Le suédois utilise une structure très logique et régulière pour les comparaisons. Bonne nouvelle : elle est plus simple qu’en français.",
+    "",
+    "",
+    "👉 1) « mer än » : plus que",
+    "",
+    "« mer » signifie plus. On l’utilise avec des adjectifs ou des adverbes.",
+    "",
+    "Structure :",
+    "adjectif + mer + än",
+    "",
+    "Exemples :",
+    "Det är mer intressant än jag trodde.",
+    "Jobbet är mer stressigt nu.",
+    "",
+    "⚠️ Attention : « än » est obligatoire pour comparer deux éléments.",
+    "",
+    "",
+    "👉 2) « mindre än » : moins que",
+    "",
+    "« mindre » est l’opposé de « mer ».",
+    "",
+    "Structure identique :",
+    "adjectif + mindre + än",
+    "",
+    "Exemples :",
+    "Det är mindre svårt nu.",
+    "Stockholm är mindre än Paris.",
+    "",
+    "",
+    "👉 3) « lika ... som » : aussi ... que",
+    "",
+    "Pour dire que deux choses sont égales, le suédois utilise une structure en deux parties :",
+    "",
+    "lika + adjectif + som",
+    "",
+    "Exemples :",
+    "Kaffe är lika gott som te.",
+    "Jobbet är lika svårt som innan.",
+    "",
+    "Cette structure est très stable : ne change ni l’ordre, ni les mots.",
+    "",
+    "",
+    "👉 Comparaison avec le français",
+    "",
+    "Français : plus que / moins que / aussi ... que",
+    "Suédois : mer än / mindre än / lika ... som",
+    "",
+    "Le suédois est très régulier :",
+    "• än = comparaison",
+    "• som = égalité",
+    "",
+    "",
+    "👉 Adjectifs irréguliers fréquents",
+    "",
+    "Certains adjectifs ont une forme comparative spéciale :",
+    "",
+    "bra → bättre (meilleur)",
+    "dålig → sämre (pire)",
+    "stor → större (plus grand)",
+    "liten → mindre (plus petit)",
+    "",
+    "Exemples :",
+    "Det är bättre nu.",
+    "Stockholm är större än Göteborg.",
+    "",
+    "",
+    "👉 Erreurs fréquentes des francophones",
+    "",
+    "- oublier än / som",
+    "- mélanger mer et bättre",
+    "- utiliser la structure française",
+    "",
+    "",
+    "👉 À retenir absolument",
+    "",
+    "mer än = plus que",
+    "mindre än = moins que",
+    "lika ... som = aussi ... que",
+    "bra → bättre / dålig → sämre"
+  ],
+  "vocab": [
+    { "sv": "mer", "fr": "plus", "pron": "mér" },
+    { "sv": "mindre", "fr": "moins", "pron": "min-drè" },
+    { "sv": "lika", "fr": "aussi / égal", "pron": "li-ka" },
+    { "sv": "än", "fr": "que (comparaison)", "pron": "èn" },
+    { "sv": "som", "fr": "que (égalité)", "pron": "som" }
+  ],
+  "examples": [
+    {
+      "sv": "Jobbet är mer intressant nu.",
+      "fr": "Le travail est plus intéressant maintenant.",
+      "pron": "yob-bet èr mér in-té-res-sant nou"
+    },
+    {
+      "sv": "Stockholm är större än Paris.",
+      "fr": "Stockholm est plus grande que Paris.",
+      "pron": "stok-holm èr steur-rè èn pa-riss"
+    },
+    {
+      "sv": "Kaffe är lika gott som te.",
+      "fr": "Le café est aussi bon que le thé.",
+      "pron": "kafé èr li-ka gott som té"
+    }
+  ],
+  "mini_drills": [
+    {
+      "instruction": "Compare avec mer än.",
+      "items": ["intressant", "svårt", "dyrt"]
+    },
+    {
+      "instruction": "Compare avec mindre än.",
+      "items": ["stressigt", "svårt"]
+    },
+    {
+      "instruction": "Compare avec lika ... som.",
+      "items": ["gott", "bra"]
+    }
+  ],
+  "quiz": [
+    {
+      "type": "gap",
+      "q": "Complète : Det är ___ intressant nu. (plus)",
+      "answer": "mer"
+    },
+    {
+      "type": "gap",
+      "q": "Complète : Stockholm är större ___ Paris.",
+      "answer": "än"
+    },
+    {
+      "type": "mcq",
+      "q": "Quelle phrase exprime une égalité ?",
+      "choices": [
+        "Jobbet är bättre nu.",
+        "Jobbet är lika svårt som innan."
+      ],
+      "answerIndex": 1
+    }
+  ]
 }
       ]
     }
