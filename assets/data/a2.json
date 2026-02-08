@@ -2188,6 +2188,153 @@
   ]
 }
       ]
+    },
+{
+  "id": "a2_core_03_01",
+  "title": "Exprimer une opinion - jag tycker att / enligt mig",
+  "content": [
+    "🎯 Objectif : exprimer clairement ton opinion personnelle et réagir à celle des autres (A2).",
+    "",
+    "À la fin de cette leçon tu sais :",
+    "• utiliser jag tycker att pour donner ton avis",
+    "• utiliser enligt mig pour nuancer / personnaliser",
+    "• poser des questions d’opinion",
+    "",
+    "==============================",
+    "SITUATION - Donner son avis",
+    "",
+    "Dialogue :",
+    "A: Vad tycker du om jobbet?",
+    "(vad tük-kèr dou om yob-bet ?)",
+    "B: Jag tycker att det är intressant.",
+    "(ya tük-kèr att dèt èr in-té-res-sant)",
+    "A: Jaha. Är det svårt?",
+    "(ya-ha. èr dèt svoir-t ?)",
+    "B: Ibland, men enligt mig är det lärorikt.",
+    "(i-bland, mèn èn-ligt mèy èr dèt lè-ro-rikt)",
+    "",
+    "==============================",
+    "DÉCOMPOSITION",
+    "",
+    "jag tycker att = je pense que / je trouve que",
+    "enligt mig = selon moi",
+    "om = à propos de",
+    "",
+    "==============================",
+    "🧑‍🏫 EXPLICATION DU PROF",
+    "",
+    "👉 A2 : passer des faits aux opinions",
+    "",
+    "En A1 et au début de l’A2, tu parlais surtout de faits : ce que tu fais, ce que tu as fait, ce que tu vas faire.",
+    "À partir du module 3, tu entres dans un suédois plus personnel : tu donnes ton avis, tu expliques ce que tu penses.",
+    "",
+    "L’outil le plus important pour cela est « jag tycker att ».",
+    "",
+    "",
+    "👉 1) « jag tycker att » : donner son opinion",
+    "",
+    "« tycka » signifie penser / trouver (avoir une opinion).",
+    "Avec « jag tycker att », tu introduis une phrase complète qui exprime ton avis.",
+    "",
+    "Structure :",
+    "jag tycker att + phrase",
+    "",
+    "Exemples :",
+    "Jag tycker att jobbet är bra.",
+    "Jag tycker att filmen var tråkig.",
+    "",
+    "⚠️ Important : après « att », tu as une phrase normale avec sujet + verbe.",
+    "",
+    "",
+    "👉 2) « enligt mig » : selon moi (nuance)",
+    "",
+    "« enligt mig » permet d’adoucir ton opinion. C’est très utile dans une conversation polie.",
+    "",
+    "Tu peux l’utiliser :",
+    "• au début de la phrase",
+    "• ou au milieu",
+    "",
+    "Exemples :",
+    "Enligt mig är det svårt.",
+    "Det är, enligt mig, en bra idé.",
+    "",
+    "Cela montre que tu parles de ton point de vue, pas d’une vérité absolue.",
+    "",
+    "",
+    "👉 3) Poser des questions d’opinion",
+    "",
+    "Pour demander l’avis de quelqu’un, on utilise :",
+    "Vad tycker du om ...?",
+    "",
+    "Exemples :",
+    "Vad tycker du om jobbet?",
+    "Vad tycker du om Sverige?",
+    "",
+    "",
+    "👉 Différence avec le français",
+    "",
+    "En français, on dit souvent « je pense que » ou « je trouve que ».",
+    "En suédois, « jag tycker att » couvre ces deux idées et est extrêmement fréquent à l’oral.",
+    "",
+    "",
+    "👉 Erreurs fréquentes",
+    "",
+    "- oublier « att »",
+    "- dire seulement « jag tycker » sans phrase après",
+    "- confondre opinion et fait",
+    "",
+    "",
+    "👉 À retenir absolument",
+    "",
+    "jag tycker att = opinion claire",
+    "enligt mig = opinion personnelle / nuance",
+    "Vad tycker du om ...? = demander un avis"
+  ],
+  "vocab": [
+    { "sv": "tycker", "fr": "pense / trouve", "pron": "tük-kèr" },
+    { "sv": "enligt mig", "fr": "selon moi", "pron": "èn-ligt mèy" },
+    { "sv": "intressant", "fr": "intéressant", "pron": "in-té-res-sant" },
+    { "sv": "tråkig", "fr": "ennuyeux", "pron": "tro-kig" },
+    { "sv": "lärorik", "fr": "instructif", "pron": "lè-ro-rik" }
+  ],
+  "examples": [
+    {
+      "sv": "Jag tycker att jobbet är intressant.",
+      "fr": "Je trouve que le travail est intéressant.",
+      "pron": "ya tük-kèr att yob-bet èr in-té-res-sant"
+    },
+    {
+      "sv": "Enligt mig är filmen tråkig.",
+      "fr": "Selon moi, le film est ennuyeux.",
+      "pron": "èn-ligt mèy èr fil-mèn tro-kig"
+    }
+  ],
+  "mini_drills": [
+    {
+      "instruction": "Donne ton opinion avec jag tycker att.",
+      "items": ["jobbet", "filmen", "Sverige"]
+    },
+    {
+      "instruction": "Nuance avec enligt mig.",
+      "items": ["Det är svårt.", "Det är bra."]
+    }
+  ],
+  "quiz": [
+    {
+      "type": "gap",
+      "q": "Complète : Jag tycker ___ det är bra.",
+      "answer": "att"
+    },
+    {
+      "type": "mcq",
+      "q": "Quelle phrase est la plus naturelle ?",
+      "choices": [
+        "Jag tycker jobbet är bra.",
+        "Jag tycker att jobbet är bra."
+      ],
+      "answerIndex": 1
     }
   ]
+}
+]
 }
