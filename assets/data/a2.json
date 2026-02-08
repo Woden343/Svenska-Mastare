@@ -1,15 +1,15 @@
 {
   "level": "A2",
   "title": "Débutant",
-  "description": "A2 complet : consolidation A1->A2, V2 automatisé, narration (passé), projets, compréhension et production. Style manuel (explications développées), drills FSI, mini-stories, phonétique simplifiée francophone.",
+  "description": "A2 complet : consolidation du niveau A1, V2 automatisé, narration (passé), projets, compréhension et production.",
   "modules": [
     {
       "id": "a2_bridge",
-      "title": "0) Pont A1 -> A2 (consolidation + automatismes)",
+      "title": "0) Transition A1 -> A2",
       "lessons": [
         {
           "id": "a2_bridge_01",
-          "title": "Rappels essentiels - V2 + inte + questions (A2 = vitesse)",
+          "title": "Rappels essentiels - V2 + inte + questions",
           "content": [
             "🎯 Objectif : parler plus vite et plus juste en automatisant 3 piliers : V2, la négation, les questions.",
             "",
@@ -394,7 +394,7 @@
     },
     {
       "id": "a2_core_01",
-      "title": "1) Narration A2 - raconter (hier, la semaine dernière, expérience)",
+      "title": "1) Narration - raconter (hier, la semaine dernière, expérience)",
       "lessons": [
         {
           "id": "a2_core_01_01",
