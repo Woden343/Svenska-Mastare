@@ -3043,6 +3043,179 @@
   ]
 }
       ]
+    },
+{
+  "id": "a2_core_04_01",
+  "title": "Parler de ses habitudes - brukar + présent",
+  "content": [
+    "🎯 Objectif : parler de ce que tu fais habituellement, de tes routines et de tes habitudes (A2).",
+    "",
+    "À la fin de cette leçon tu sais :",
+    "• utiliser brukar pour parler d’habitudes",
+    "• distinguer une action ponctuelle d’une action habituelle",
+    "• décrire ta routine quotidienne de manière naturelle",
+    "",
+    "==============================",
+    "SITUATION - Parler de sa routine",
+    "",
+    "Dialogue :",
+    "A: Vad gör du på vardagar?",
+    "(vad you-ré dou po var-da-gar ?)",
+    "B: Jag brukar jobba på dagen.",
+    "(ya brou-kar yob-ba po da-gen)",
+    "A: Och på kvällen?",
+    "(ok po kvèl-len ?)",
+    "B: Då brukar jag träna eller vila hemma.",
+    "(do brou-kar ya trè-na èl-lèr vi-la hém-ma)",
+    "",
+    "==============================",
+    "DÉCOMPOSITION",
+    "",
+    "brukar = avoir l’habitude de",
+    "vardagar = jours de semaine",
+    "på dagen = la journée",
+    "på kvällen = le soir",
+    "",
+    "==============================",
+    "🧑‍🏫 EXPLICATION DU PROF",
+    "",
+    "👉 Pourquoi « brukar » est fondamental en A2",
+    "",
+    "À partir du niveau A2, on ne parle plus seulement de ce que l’on fait maintenant ou ponctuellement. On parle très souvent de ce que l’on fait en général : routines, habitudes, comportements réguliers.",
+    "",
+    "En suédois, le mot-clé pour exprimer cette idée est « brukar ».",
+    "",
+    "",
+    "👉 1) « brukar » : exprimer une habitude",
+    "",
+    "« brukar » signifie littéralement « avoir l’habitude de ». Il sert à indiquer qu’une action se répète régulièrement.",
+    "",
+    "Structure :",
+    "sujet + brukar + infinitif",
+    "",
+    "Exemples :",
+    "Jag brukar jobba på vardagar.",
+    "Jag brukar dricka kaffe på morgonen.",
+    "Vi brukar träna tillsammans.",
+    "",
+    "⚠️ Important :",
+    "Après « brukar », le verbe est toujours à l’infinitif.",
+    "",
+    "",
+    "👉 2) Différence entre présent simple et « brukar »",
+    "",
+    "Comparer :",
+    "",
+    "Jag jobbar idag.",
+    "→ action ponctuelle (aujourd’hui)",
+    "",
+    "Jag brukar jobba på vardagar.",
+    "→ habitude générale",
+    "",
+    "En français, on utilise souvent le présent pour les deux. En suédois A2, « brukar » rend le discours beaucoup plus clair.",
+    "",
+    "",
+    "👉 3) Les marqueurs de fréquence",
+    "",
+    "« brukar » est souvent accompagné de mots qui indiquent la fréquence :",
+    "",
+    "ofta = souvent",
+    "ibland = parfois",
+    "alltid = toujours",
+    "aldrig = jamais",
+    "",
+    "Exemples :",
+    "Jag brukar ofta träna.",
+    "Jag brukar ibland vila hemma.",
+    "",
+    "",
+    "👉 4) Poser des questions sur les habitudes",
+    "",
+    "Pour demander une habitude, on peut dire :",
+    "",
+    "Vad brukar du göra ...?",
+    "",
+    "Exemples :",
+    "Vad brukar du göra på helgen?",
+    "Vad brukar du äta till lunch?",
+    "",
+    "",
+    "👉 Différence avec le français",
+    "",
+    "Le français dit : « d’habitude, je… »",
+    "Le suédois préfère : « jag brukar + verbe »",
+    "",
+    "Utiliser « brukar » est un marqueur très fort de niveau A2.",
+    "",
+    "",
+    "👉 Erreurs fréquentes",
+    "",
+    "- oublier l’infinitif après brukar",
+    "- utiliser brukar pour une action unique",
+    "- oublier les mots de fréquence",
+    "",
+    "",
+    "👉 À retenir absolument",
+    "",
+    "brukar = habitude",
+    "brukar + infinitif",
+    "présent simple = action ponctuelle"
+  ],
+  "vocab": [
+    { "sv": "brukar", "fr": "a l’habitude de", "pron": "brou-kar" },
+    { "sv": "vardagar", "fr": "jours de semaine", "pron": "var-da-gar" },
+    { "sv": "ofta", "fr": "souvent", "pron": "of-ta" },
+    { "sv": "ibland", "fr": "parfois", "pron": "i-bland" },
+    { "sv": "aldrig", "fr": "jamais", "pron": "al-drig" }
+  ],
+  "examples": [
+    {
+      "sv": "Jag brukar jobba på vardagar.",
+      "fr": "J’ai l’habitude de travailler en semaine.",
+      "pron": "ya brou-kar yob-ba po var-da-gar"
+    },
+    {
+      "sv": "Jag brukar ofta träna.",
+      "fr": "J’ai souvent l’habitude de m’entraîner.",
+      "pron": "ya brou-kar of-ta trè-na"
+    }
+  ],
+  "mini_drills": [
+    {
+      "instruction": "Parle de tes habitudes avec brukar.",
+      "items": [
+        "på morgonen",
+        "på kvällen",
+        "på helgen"
+      ]
+    },
+    {
+      "instruction": "Transforme en habitude.",
+      "items": [
+        "Jag jobbar.",
+        "Jag dricker kaffe.",
+        "Jag tränar."
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "type": "gap",
+      "q": "Complète : Jag ___ jobba på vardagar. (habitude)",
+      "answer": "brukar"
+    },
+    {
+      "type": "mcq",
+      "q": "Quelle phrase parle d’une habitude ?",
+      "choices": [
+        "Jag jobbar idag.",
+        "Jag brukar jobba på vardagar."
+      ],
+      "answerIndex": 1
     }
   ]
+}
+  ]
+}
+]
 }
