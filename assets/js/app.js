@@ -350,7 +350,8 @@ renderContent(lines) {
     .flatMap(x => explodeCompactLine(String(x ?? "").trim()))
     .map(x => String(x ?? "").trim())
     .filter(Boolean)
-    .filter(x => !/^[=\-_*]{6,}$/.test(x));
+    .filter(x => !/^[=\-_*]{6,}$/.test(x))
+    .filter(x => !/^(👩‍🏫|🧑‍🏫)$/.test(x.trim()));
 
   if (!raw.length) return "";
 
@@ -383,15 +384,17 @@ const isInlineSection = (line) => {
   const isListItem = (s) => /^[-•]\s+/.test(s);
 
   const isCallout = (s) => {
-    const low = norm(s);
-    return (
-      low.startsWith("astuce") ||
-      low.startsWith("note") ||
-      low.startsWith("a retenir") ||
-      low.startsWith("attention") ||
-      s.includes("=>")
-    );
-  };
+  const low = norm(s);
+  return (
+    low.startsWith("astuce") ||
+    low.startsWith("note") ||
+    low.startsWith("attention") ||
+    low.startsWith("a retenir") ||
+    low.includes("a retenir") ||
+    s.includes("=>") ||
+    /^\s*[👉⚠️✅❗💡]/.test(s.trim())
+  );
+};
 
   const isObjective = (s) => norm(s).startsWith("objectif");
 
@@ -575,12 +578,32 @@ const isInlineSection = (line) => {
     }
 
     if (isCallout(line)) {
-      flushList(); flushParagraph();
-      const cleaned = line.replace(/^\s*(Astuce|Note|À retenir|A retenir|Attention)\s*[:\-]\s*/i, "").trim();
-      const label = (/^\s*attention/i.test(norm(line))) ? "Attention" : "À retenir";
-      blocks.push({ type: "callout", label, text: cleaned });
-      continue;
-    }
+  flushList(); flushParagraph();
+
+  let cleaned = line.trim();
+
+  // retire préfixes texte + emojis
+  cleaned = cleaned
+    .replace(/^\s*(Astuce|Note|À retenir|A retenir|Attention)\s*[:\-]\s*/i, "")
+    .replace(/^\s*[👉💡✅❗]\s*/g, "")
+    .trim();
+
+  const label = (/^\s*attention/i.test(norm(line)) || /^\s*⚠️/.test(line.trim()))
+    ? "Attention"
+    : "À retenir";
+
+  // améliore la lisibilité: coupe les gros blocs “Structure : … Exemple : …”
+  cleaned = cleaned
+    .replace(/\s*(Structure\s*:\s*)/gi, "\n$1")
+    .replace(/\s*(Exemples?\s*:\s*)/gi, "\n$1")
+    .replace(/\s*(PRONONCIATION UTILE\s*\(.*?\)\s*)/gi, "\n$1")
+    .replace(/\s*(STRUCTURES CL[ÉE]S\s*\(.*?\)\s*)/gi, "\n$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  blocks.push({ type: "callout", label, text: cleaned });
+  continue;
+}
 
     flushList();
     paragraph.push(line);
@@ -589,7 +612,12 @@ const isInlineSection = (line) => {
   flushList(); flushParagraph(); flushDialogue(); flushBreakdown();
 
   const renderBlocks = blocks.map(b => {
-    if (b.type === "h") return `<h3><span class="hl">${this.esc(b.text)}</span></h3>`;
+    if (b.type === "h") {
+  const t = String(b.text || "");
+  const n = (t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim());
+  const prefix = n.includes("explication du prof") ? "👩‍🏫 " : "";
+  return `<h3><span class="hl">${this.esc(prefix + t)}</span></h3>`;
+}
 
     if (b.type === "lead") {
       const t = b.text.replace(/^\s*Objectif\s*:\s*/i, "").trim();
@@ -601,8 +629,9 @@ const isInlineSection = (line) => {
     }
 
     if (b.type === "callout") {
-      return `<div class="callout"><div class="label">${this.esc(b.label || "À retenir")}</div><p>${this.esc(b.text || "")}</p></div>`;
-    }
+  const html = this.esc(b.text || "").replace(/\n/g, "<br>");
+  return `<div class="callout"><div class="label">${this.esc(b.label || "À retenir")}</div><p>${html}</p></div>`;
+}
 
     if (b.type === "dialogue") {
       const bubbles = b.turns.map(t => {
