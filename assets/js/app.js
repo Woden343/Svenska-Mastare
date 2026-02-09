@@ -1,5 +1,29 @@
 // assets/js/app.js — NORDIC MINIMAL (stable + clean layout)
 
+// === DEBUG STARTUP GUARD (affiche les erreurs à l’écran) ===
+(function () {
+  const show = (title, err) => {
+    const el = document.getElementById("app");
+    if (!el) return;
+    el.innerHTML = `
+      <div class="card error">
+        <h2>${title}</h2>
+        <p class="muted">Une erreur JS empêche le chargement.</p>
+        <pre class="muted" style="white-space:pre-wrap; overflow:auto; max-height:55vh;">${String(err || "").replaceAll("<","&lt;")}</pre>
+        <p class="muted">Astuce: envoie-moi cette erreur et je te corrige le code immédiatement.</p>
+      </div>
+    `;
+  };
+
+  window.addEventListener("error", (e) => {
+    show("Erreur JavaScript", (e?.error?.stack || e?.message || e));
+  });
+
+  window.addEventListener("unhandledrejection", (e) => {
+    show("Promise rejetée", (e?.reason?.stack || e?.reason || e));
+  });
+})();
+
 const App = {
   mount: null,
 
