@@ -1,6 +1,6 @@
 /* assets/css/style.css — NORDIC MINIMAL (light, clean, language-learning friendly) */
 
-{ box-sizing: border-box; }
+*{ box-sizing: border-box; }
 html, body { height: 100%; }
 
 
@@ -10,18 +10,18 @@ html, body { height: 100%; }
 --bg2:#eef2f7;
 --paper:#ffffff;
 
---text:#0f172a;       /* slate 900 /
---muted:#475569;      / slate 600 /
---muted2:#64748b;     / slate 500 */
+--text:#0f172a;       /* slate 900 */
+--muted:#475569;      /* slate 600 */
+--muted2:#64748b;     /* slate 500 */
 
---stroke:#e2e8f0;     /* slate 200 /
---stroke2:#cbd5e1;    / slate 300 */
+--stroke:#e2e8f0;     /* slate 200 */
+--stroke2:#cbd5e1;    /* slate 300 */
 
---accent:#0ea5e9;     /* sky 500 /
---accent2:#14b8a6;    / teal 500 /
---ok:#16a34a;         / green 600 /
---warn:#f59e0b;       / amber 500 /
---bad:#ef4444;        / red 500 */
+--accent:#0ea5e9;     /* sky 500 */
+--accent2:#14b8a6;    /* teal 500 */
+--ok:#16a34a;         /* green 600 */
+--warn:#f59e0b;       /* amber 500 */
+--bad:#ef4444;        /* red 500 */
 
 --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
 --shadow2: 0 18px 52px rgba(15, 23, 42, 0.10);
@@ -506,45 +506,32 @@ table{ min-width: 520px; }
 
 /* ===== Motion ===== */
 @media (prefers-reduced-motion: reduce){
-
-{ animation: none !important; transition: none !important; }
+  *{ animation: none !important; transition: none !important; }
 }
-
 
 @keyframes fadeUp{
 from{ opacity:0; transform: translateY(8px); }
 to{ opacity:1; transform: translateY(0); }
 }
+
 /* ================================
    PATCH — Dialogue lisible (A/B)
-   + fix reset selectors
+   (ne casse rien si app.js reste identique)
    ================================ */
 
-/* FIX 1: reset selectors (tu avais "{ ... }") */
-*{ box-sizing: border-box; }
-
-/* FIX 2: prefers-reduced-motion (tu avais "{ ... }") */
-@media (prefers-reduced-motion: reduce){
-  *{ animation: none !important; transition: none !important; }
-}
-
-/* ===== Dialogue: meilleure hiérarchie SV / FR / 🔊 ===== */
 .dialogue{
   display: grid;
   gap: 12px;
 }
 
-/* Plus lisible sur mobile: bulles un peu plus “plates” */
 .bubble{
-  padding: 12px 14px;
-  border-radius: 16px;
   max-width: 86%;
-  box-shadow: 0 8px 18px rgba(15,23,42,0.06);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 8px 18px rgba(15,23,42,0.06);
 }
 
-/* Barre latérale discrète A/B (style “manuel”) */
+/* Barre latérale A/B */
 .bubble:before{
   content:"";
   position:absolute;
@@ -558,33 +545,21 @@ to{ opacity:1; transform: translateY(0); }
 .bubble.b:before{
   background: linear-gradient(180deg, rgba(167,139,250,0.95), rgba(167,139,250,0.35));
 }
-.bubble.n:before{
-  background: rgba(100,116,139,0.45);
-}
 
-/* Meta: plus compact + moins “bruyant” */
+/* Meta moins agressive */
 .bubble .meta{
-  margin-bottom: 8px;
-  font-size: 11px;
+  text-transform: none;
   letter-spacing: .6px;
-  text-transform: none;   /* au lieu de uppercase */
-  color: var(--muted2);
-}
-.bubble .tag{
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
-/* SV: priorité visuelle */
+/* SV + FR + Pron plus hiérarchisés */
 .bubble .sv{
   font-weight: 900;
-  letter-spacing: 0.2px;
   font-size: 16px;
   line-height: 1.45;
 }
 
-/* FR: clairement secondaire + très lisible */
 .bubble .fr{
   margin-top: 8px;
   padding-top: 8px;
@@ -594,7 +569,6 @@ to{ opacity:1; transform: translateY(0); }
   line-height: 1.55;
 }
 
-/* Pron: bloc “outil” style mono + badge */
 .bubble .pron{
   margin-top: 8px;
   display: inline-flex;
