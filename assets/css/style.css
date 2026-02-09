@@ -515,3 +515,103 @@ table{ min-width: 520px; }
 from{ opacity:0; transform: translateY(8px); }
 to{ opacity:1; transform: translateY(0); }
 }
+/* ================================
+   PATCH — Dialogue lisible (A/B)
+   + fix reset selectors
+   ================================ */
+
+/* FIX 1: reset selectors (tu avais "{ ... }") */
+*{ box-sizing: border-box; }
+
+/* FIX 2: prefers-reduced-motion (tu avais "{ ... }") */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+
+/* ===== Dialogue: meilleure hiérarchie SV / FR / 🔊 ===== */
+.dialogue{
+  display: grid;
+  gap: 12px;
+}
+
+/* Plus lisible sur mobile: bulles un peu plus “plates” */
+.bubble{
+  padding: 12px 14px;
+  border-radius: 16px;
+  max-width: 86%;
+  box-shadow: 0 8px 18px rgba(15,23,42,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Barre latérale discrète A/B (style “manuel”) */
+.bubble:before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width: 4px;
+  opacity: 0.9;
+}
+.bubble.a:before{
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+}
+.bubble.b:before{
+  background: linear-gradient(180deg, rgba(167,139,250,0.95), rgba(167,139,250,0.35));
+}
+.bubble.n:before{
+  background: rgba(100,116,139,0.45);
+}
+
+/* Meta: plus compact + moins “bruyant” */
+.bubble .meta{
+  margin-bottom: 8px;
+  font-size: 11px;
+  letter-spacing: .6px;
+  text-transform: none;   /* au lieu de uppercase */
+  color: var(--muted2);
+}
+.bubble .tag{
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* SV: priorité visuelle */
+.bubble .sv{
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+/* FR: clairement secondaire + très lisible */
+.bubble .fr{
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(203,213,225,0.9);
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* Pron: bloc “outil” style mono + badge */
+.bubble .pron{
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(226,232,240,0.9);
+  background: rgba(15,23,42,0.02);
+  color: var(--muted2);
+  font-size: 12.5px;
+  font-family: var(--mono);
+}
+
+/* Mobile: bulles plus larges et alignement plus net */
+@media (max-width: 520px){
+  .bubble{ max-width: 100%; }
+  .bubble.a{ justify-self: stretch; }
+  .bubble.b{ justify-self: stretch; }
+}
