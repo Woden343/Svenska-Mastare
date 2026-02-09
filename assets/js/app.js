@@ -319,9 +319,50 @@ renderContent(lines) {
   if (!Array.isArray(lines)) return "";
 
   // --- 0) explode "compact" lines (LESSON 1 case) into logical lines ---
-  const explodeCompactLine = (s) => {
-    if (!s) return [];
-    let t = String(s);
+const explodeCompactLine = (s) => {
+  if (!s) return [];
+  let t = String(s);
+
+  // Normalise certains séparateurs
+  t = t.replace(/\u00A0/g, " "); // nbsp
+  t = t.replace(/\s+/g, " ").trim();
+
+  // Force breaks before common section markers if they appear inline
+  t = t.replace(/\s*(SITUATION\s*[—-]\s*)/gi, "\n$1");
+  t = t.replace(/\s*(DIALOGUE\b)/gi, "\n$1");
+  t = t.replace(/\s*(DÉCOMPOSITION\b|DECOMPOSITION\b)/gi, "\nDÉCOMPOSITION");
+  t = t.replace(/\s*(EXPLICATION DU PROF\b)/gi, "\nEXPLICATION DU PROF");
+  t = t.replace(/\s*(PRONONCIATION UTILE\b)/gi, "\nPRONONCIATION UTILE");
+  t = t.replace(/\s*(STRUCTURES CLÉS\b|STRUCTURES CLES\b)/gi, "\nSTRUCTURES CLÉS");
+  t = t.replace(/\s*(ERREURS FR[EÉ]QUENTES\b)/gi, "\nERREURS FRÉQUENTES");
+  t = t.replace(/\s*(QUESTIONS\b)/gi, "\nQUESTIONS");
+  t = t.replace(/\s*(ORDRE DES MOTS\b)/gi, "\nORDRE DES MOTS");
+  t = t.replace(/\s*(TABLEAU SYST[EÈ]ME\b)/gi, "\nTABLEAU SYSTÈME");
+
+  // Force breaks for dialogue markers found inline
+  t = t.replace(/\s+([A-ZÅÄÖ])\s*:\s*/g, "\n$1: "); // " A: " / " B: "
+  t = t.replace(/\s*→\s*/g, "\n→ ");               // FR line
+  t = t.replace(/\s*🔊\s*/g, "\n🔊 ");             // Pron line
+
+  // Teacher emoji: si collé dans un paragraphe, on le met sur sa ligne
+  t = t.replace(/\s*(🧑‍🏫|👨‍🏫|👩‍🏫)\s*/g, "\n$1\n");
+
+  // Si la ligne est très longue, on coupe en phrases (sans trop casser)
+  if (t.length > 180) {
+    // coupe après . ! ? quand la phrase suivante commence par une majuscule ou un emoji
+    t = t.replace(/([.!?])\s+(?=([A-ZÀ-Ö]|🧑‍🏫|👨‍🏫|👩‍🏫|👉|⚠️|✅|❓))/g, "$1\n");
+  }
+
+  // Micro-coupes utiles (améliore le pavé "HETER = ...")
+  t = t.replace(/\s*(HETER\s*=\s*)/gi, "\n$1");
+  t = t.replace(/\s*(KOMMER\s*FR[ÅA]N\s*=\s*)/gi, "\n$1");
+  t = t.replace(/\s*(BOR\s*I\s*=\s*)/gi, "\n$1");
+
+  return t
+    .split("\n")
+    .map(x => x.trim())
+    .filter(Boolean);
+};
 
     // Force breaks before common section markers if they appear inline
     // (adds structure even if JSON is a single big paragraph)
@@ -346,12 +387,42 @@ renderContent(lines) {
   };
 
   // Build raw lines + auto explode
-  const raw = (lines || [])
-    .flatMap(x => explodeCompactLine(String(x ?? "").trim()))
-    .map(x => String(x ?? "").trim())
-    .filter(Boolean)
-    .filter(x => !/^[=\-_*]{6,}$/.test(x))
-    .filter(x => !/^(👩‍🏫|🧑‍🏫)$/.test(x.trim()));
+  let raw = (lines || [])
+  .flatMap(x => explodeCompactLine(String(x ?? "").trim()))
+  .map(x => String(x ?? "").trim())
+  .filter(Boolean)
+  .filter(x => !/^[=\-_*]{6,}$/.test(x));
+
+// --- 0bis) merge emoji prof seul avec la ligne suivante (évite la "carte vide") ---
+const teacherEmojiSet = new Set(["🧑‍🏫", "👨‍🏫", "👩‍🏫"]);
+const isHeadingLine = (s) => {
+  const tt = String(s || "").trim();
+  if (!tt) return false;
+  if (tt.endsWith(":")) return true;
+  const letters = tt.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g, "");
+  const upperRatio = letters ? (letters.replace(/[^A-ZÀ-ÖØ-Þ]/g, "").length / letters.length) : 0;
+  return (tt.length <= 44 && upperRatio >= 0.75);
+};
+
+const merged = [];
+for (let i = 0; i < raw.length; i++) {
+  const cur = raw[i].trim();
+
+  // Si la ligne est uniquement l’emoji prof -> on la fusionne avec la prochaine ligne "normale"
+  if (teacherEmojiSet.has(cur)) {
+    // Cherche la prochaine ligne non vide
+    let j = i + 1;
+    while (j < raw.length && !raw[j].trim()) j++;
+
+    if (j < raw.length && !isHeadingLine(raw[j])) {
+      raw[j] = `🧑‍🏫 ${raw[j].trim()}`;
+    }
+    continue; // on ne push pas l’emoji seul
+  }
+
+  merged.push(cur);
+}
+raw = merged;
 
   if (!raw.length) return "";
 
