@@ -315,208 +315,290 @@ const App = {
   },
 
   // ===== CONTENT RENDERER (Dialogue + Décomposition) =====
-  renderContent(lines) {
-    if (!Array.isArray(lines)) return "";
-    const raw = lines
-      .map(x => String(x ?? "").trim())
-      .filter(Boolean)
-      .filter(x => !/^[=\-_*]{6,}$/.test(x));
+renderContent(lines) {
+  if (!Array.isArray(lines)) return "";
 
-    if (!raw.length) return "";
+  // IMPORTANT :
+  // - on garde la logique "raw" (sans séparateurs ======)
+  // - mais on ne dépend PLUS des lignes vides pour structurer le dialogue
+  const raw = lines
+    .map(x => String(x ?? "").trim())
+    .filter(Boolean)
+    .filter(x => !/^[=\-_*]{6,}$/.test(x));
 
-    const norm = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  if (!raw.length) return "";
 
-    const isHeading = (s) => {
-      const t = s.trim();
-      if (t.endsWith(":")) return true;
-      const letters = t.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g, "");
-      const upperRatio = letters ? (letters.replace(/[^A-ZÀ-ÖØ-Þ]/g, "").length / letters.length) : 0;
-      return (t.length <= 44 && upperRatio >= 0.75);
-    };
+  const norm = (s) =>
+    s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
-    const isListItem = (s) => /^[-•]\s+/.test(s);
+  const isHeading = (s) => {
+    const t = s.trim();
+    if (t.endsWith(":")) return true;
+    const letters = t.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g, "");
+    const upperRatio = letters
+      ? (letters.replace(/[^A-ZÀ-ÖØ-Þ]/g, "").length / letters.length)
+      : 0;
+    return (t.length <= 44 && upperRatio >= 0.75);
+  };
 
-    const isCallout = (s) => {
-      const low = norm(s);
-      return (
-        low.startsWith("astuce") ||
-        low.startsWith("note") ||
-        low.startsWith("a retenir") ||
-        low.startsWith("attention") ||
-        s.includes("→") ||
-        s.includes("=>")
-      );
-    };
+  const isListItem = (s) => /^[-•]\s+/.test(s);
 
-    const isObjective = (s) => norm(s).startsWith("objectif");
+  const isCallout = (s) => {
+    const low = norm(s);
+    return (
+      low.startsWith("astuce") ||
+      low.startsWith("note") ||
+      low.startsWith("a retenir") ||
+      low.startsWith("attention") ||
+      s.includes("→") ||
+      s.includes("=>")
+    );
+  };
 
-    const splitDialogueTurns = (text) => {
-      const t = text.replace(/\s+/g, " ").trim();
-      const re = /(^|[\s])([A-ZÅÄÖ]):\s*/g;
-      const matches = [];
-      let m;
-      while ((m = re.exec(t)) !== null) matches.push({ idx: m.index + (m[1] ? 1 : 0), speaker: m[2] });
-      if (!matches.length) return null;
+  const isObjective = (s) => norm(s).startsWith("objectif");
 
-      const parts = [];
-      for (let i = 0; i < matches.length; i++) {
-        const cur = matches[i];
-        const next = matches[i + 1];
-        const start = cur.idx + 2;
-        const end = next ? next.idx : t.length;
-        const body = t.slice(start, end).trim();
-        if (body) parts.push({ speaker: cur.speaker, text: body });
-      }
-      return parts.length ? parts : null;
-    };
+  // ==============================
+  // ✅ NOUVEAU : parser dialogue "manuel"
+  // supporte :
+  // A: 🇸🇪 ...
+  // → 🇫🇷 ...
+  // 🔊 ...
+  //
+  // Et aussi fallback ancien format :
+  // A: ... (pron)
+  // ==============================
+  const isSvLine = (l) => /^[AB]:\s*(🇸🇪\s*)?/i.test(l);
+  const isFrLine = (l) => /^→\s*(🇫🇷\s*)?/i.test(l);
+  const isPronLine = (l) => /^🔊\s*/.test(l);
 
-    const splitBreakdown = (s) => {
-      const idx = s.indexOf("=");
-      if (idx === -1) return null;
-      const left = s.slice(0, idx).trim();
-      const right = s.slice(idx + 1).trim();
-      if (!left || !right) return null;
-      return { left, right };
-    };
+  const parseSpeaker = (l) => (l.trim().startsWith("A:") ? "A" : "B");
 
-    const blocks = [];
-    let paragraph = [];
-    let list = [];
-    let mode = "normal";
-    let breakdownRows = [];
-    let dialogueTurns = [];
+  const cleanSv = (l) => l.replace(/^[AB]:\s*(🇸🇪\s*)?/i, "").trim();
+  const cleanFr = (l) => l.replace(/^→\s*(🇫🇷\s*)?/i, "").trim();
+  const cleanPron = (l) => l.replace(/^🔊\s*/i, "").trim();
 
-    const flushParagraph = () => {
-      if (!paragraph.length) return;
-      blocks.push({ type: "p", text: paragraph.join(" ") });
-      paragraph = [];
-    };
-    const flushList = () => {
-      if (!list.length) return;
-      blocks.push({ type: "ul", items: list.slice() });
-      list = [];
-    };
-    const flushDialogue = () => {
-      if (!dialogueTurns.length) return;
-      blocks.push({ type: "dialogue", turns: dialogueTurns.slice() });
-      dialogueTurns = [];
-    };
-    const flushBreakdown = () => {
-      if (!breakdownRows.length) return;
-      blocks.push({ type: "breakdown", rows: breakdownRows.slice() });
-      breakdownRows = [];
-    };
+  const splitBreakdown = (s) => {
+    const idx = s.indexOf("=");
+    if (idx === -1) return null;
+    const left = s.slice(0, idx).trim();
+    const right = s.slice(idx + 1).trim();
+    if (!left || !right) return null;
+    return { left, right };
+  };
 
-    for (const line of raw) {
-      const n = norm(line);
+  // blocs
+  const blocks = [];
+  let paragraph = [];
+  let list = [];
+  let mode = "normal";
+  let breakdownRows = [];
 
-      if (isHeading(line)) {
-        flushList(); flushParagraph(); flushDialogue(); flushBreakdown();
-        blocks.push({ type: "h", text: line.replace(/:$/, "") });
-        if (n.includes("dialogue")) mode = "dialogue";
-        else if (n.includes("decomposition")) mode = "breakdown";
-        else mode = "normal";
-        continue;
-      }
+  // dialogue structuré
+  let dialogueItems = [];
+  let currentDlg = null;
 
-      if (mode === "dialogue") {
-        const turns = splitDialogueTurns(line);
-        if (turns) turns.forEach(t => dialogueTurns.push(t));
-        else dialogueTurns.push({ speaker: "•", text: line });
-        continue;
-      }
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+    blocks.push({ type: "p", text: paragraph.join(" ") });
+    paragraph = [];
+  };
 
-      if (mode === "breakdown") {
-        const row = splitBreakdown(line);
-        if (row) breakdownRows.push(row);
-        else { flushBreakdown(); paragraph.push(line); }
-        continue;
-      }
+  const flushList = () => {
+    if (!list.length) return;
+    blocks.push({ type: "ul", items: list.slice() });
+    list = [];
+  };
 
-      if (isObjective(line)) {
-        flushList(); flushParagraph();
-        blocks.push({ type: "lead", text: line });
-        continue;
-      }
+  const flushBreakdown = () => {
+    if (!breakdownRows.length) return;
+    blocks.push({ type: "breakdown", rows: breakdownRows.slice() });
+    breakdownRows = [];
+  };
 
-      if (isListItem(line)) {
-        flushParagraph();
-        list.push(line.replace(/^[-•]\s+/, ""));
-        continue;
-      }
+  const flushDialogue = () => {
+    if (currentDlg) {
+      dialogueItems.push(currentDlg);
+      currentDlg = null;
+    }
+    if (!dialogueItems.length) return;
+    blocks.push({ type: "dialogue2", items: dialogueItems.slice() });
+    dialogueItems = [];
+  };
 
-      if (isCallout(line)) {
-        flushList(); flushParagraph();
-        blocks.push({ type: "callout", text: line });
-        continue;
-      }
+  // ancienne compat : "A: ... (pron)" sur une seule ligne
+  const splitOldTurn = (line) => {
+    const m = line.match(/^([A-ZÅÄÖ]):\s*(.+)$/);
+    if (!m) return null;
+    const speaker = m[1];
+    const text = (m[2] || "").trim();
 
-      flushList();
-      paragraph.push(line);
+    // pron entre parenthèses en fin de ligne
+    const pronMatch = text.match(/\(([^)]+)\)\s*$/);
+    const pron = pronMatch ? pronMatch[1].trim() : "";
+    const sv = pronMatch ? text.replace(/\(([^)]+)\)\s*$/, "").trim() : text;
+
+    return { speaker, sv, fr: "", pron };
+  };
+
+  // parcours lignes
+  for (const line of raw) {
+    const n = norm(line);
+
+    // Titre / Heading
+    if (isHeading(line)) {
+      flushList(); flushParagraph(); flushDialogue(); flushBreakdown();
+      blocks.push({ type: "h", text: line.replace(/:$/, "") });
+
+      if (n.includes("dialogue")) mode = "dialogue";
+      else if (n.includes("decomposition")) mode = "breakdown";
+      else mode = "normal";
+      continue;
     }
 
-    flushList(); flushParagraph(); flushDialogue(); flushBreakdown();
+    // MODE DIALOGUE (nouveau)
+    if (mode === "dialogue") {
+      // Nouveau standard : SV / FR / 🔊
+      if (isSvLine(line)) {
+        // push ancien item si existait
+        if (currentDlg) dialogueItems.push(currentDlg);
 
-    const renderBlocks = blocks.map(b => {
-      if (b.type === "h") return `<h3><span class="hl">${this.esc(b.text)}</span></h3>`;
-
-      if (b.type === "lead") {
-        const t = b.text.replace(/^\s*Objectif\s*:\s*/i, "").trim();
-        return `<div class="lead"><div class="k">Objectif</div><p>${this.esc(t)}</p></div>`;
+        const speaker = parseSpeaker(line);
+        currentDlg = { speaker, sv: cleanSv(line), fr: "", pron: "" };
+        continue;
       }
 
-      if (b.type === "ul") {
-        return `<div class="sheet"><ul>${b.items.map(it => `<li>${this.esc(it)}</li>`).join("")}</ul></div>`;
+      if (isFrLine(line)) {
+        if (!currentDlg) {
+          // si FR sans SV (rare), on ignore proprement
+          continue;
+        }
+        currentDlg.fr = cleanFr(line);
+        continue;
       }
 
-      if (b.type === "callout") {
-        const cleaned = b.text.replace(/^\s*(Astuce|Note|À retenir|A retenir|Attention)\s*[:\-]\s*/i, "").trim();
-        const label = (/^\s*attention/i.test(norm(b.text))) ? "Attention" : "À retenir";
-        return `<div class="callout"><div class="label">${this.esc(label)}</div><p>${this.esc(cleaned)}</p></div>`;
+      if (isPronLine(line)) {
+        if (!currentDlg) continue;
+        currentDlg.pron = cleanPron(line);
+        continue;
       }
 
-      if (b.type === "dialogue") {
-        const bubbles = b.turns.map(t => {
-          const speaker = (t.speaker || "").trim();
-          const cls = (speaker === "B") ? "b" : "a";
-
-          const text = t.text || "";
-          const pronMatch = text.match(/\(([^)]+)\)\s*$/);
-          const pron = pronMatch ? pronMatch[1].trim() : "";
-          const main = pronMatch ? text.replace(/\(([^)]+)\)\s*$/, "").trim() : text;
-
-          return `
-            <div class="bubble ${cls}">
-              <div class="meta"><span class="tag">${this.esc(speaker || "•")}</span> ${this.esc(speaker ? `Locuteur ${speaker}` : "Dialogue")}</div>
-              <div class="sv">${this.esc(main)}</div>
-              ${pron ? `<div class="pron">${this.esc(pron)}</div>` : ""}
-            </div>
-          `;
-        }).join("");
-        return `<div class="dialogue">${bubbles}</div>`;
+      // Fallback : ancien format "A: ..." (sur une seule ligne)
+      const old = splitOldTurn(line);
+      if (old) {
+        if (currentDlg) dialogueItems.push(currentDlg);
+        currentDlg = old;
+        continue;
       }
 
-      if (b.type === "breakdown") {
-        const rows = b.rows.map(r => `
-          <div class="break-row">
-            <div class="break-sv">${this.esc(r.left)}</div>
-            <div class="break-fr">${this.esc(r.right)}</div>
+      // Texte libre en dialogue : on l'ajoute dans sv (utile si une ligne passe hors pattern)
+      if (currentDlg) {
+        currentDlg.sv = (currentDlg.sv ? currentDlg.sv + " " : "") + line;
+      } else {
+        // sinon on crée une bulle neutre (rare)
+        dialogueItems.push({ speaker: "•", sv: line, fr: "", pron: "" });
+      }
+      continue;
+    }
+
+    // MODE DÉCOMPOSITION
+    if (mode === "breakdown") {
+      const row = splitBreakdown(line);
+      if (row) breakdownRows.push(row);
+      else { flushBreakdown(); paragraph.push(line); }
+      continue;
+    }
+
+    // lead "Objectif"
+    if (isObjective(line)) {
+      flushList(); flushParagraph();
+      blocks.push({ type: "lead", text: line });
+      continue;
+    }
+
+    // liste
+    if (isListItem(line)) {
+      flushParagraph();
+      list.push(line.replace(/^[-•]\s+/, ""));
+      continue;
+    }
+
+    // callout
+    if (isCallout(line)) {
+      flushList(); flushParagraph();
+      blocks.push({ type: "callout", text: line });
+      continue;
+    }
+
+    // paragraphe
+    flushList();
+    paragraph.push(line);
+  }
+
+  flushList(); flushParagraph(); flushDialogue(); flushBreakdown();
+
+  // rendu blocs
+  const renderBlocks = blocks.map(b => {
+    if (b.type === "h") return `<h3><span class="hl">${this.esc(b.text)}</span></h3>`;
+
+    if (b.type === "lead") {
+      const t = b.text.replace(/^\s*Objectif\s*:\s*/i, "").trim();
+      return `<div class="lead"><div class="k">Objectif</div><p>${this.esc(t)}</p></div>`;
+    }
+
+    if (b.type === "ul") {
+      return `<div class="sheet"><ul>${b.items.map(it => `<li>${this.esc(it)}</li>`).join("")}</ul></div>`;
+    }
+
+    if (b.type === "callout") {
+      const cleaned = b.text.replace(/^\s*(Astuce|Note|À retenir|A retenir|Attention)\s*[:\-]\s*/i, "").trim();
+      const label = (/^\s*attention/i.test(norm(b.text))) ? "Attention" : "À retenir";
+      return `<div class="callout"><div class="label">${this.esc(label)}</div><p>${this.esc(cleaned)}</p></div>`;
+    }
+
+    // ✅ NOUVEAU RENDU DIALOGUE
+    if (b.type === "dialogue2") {
+      const bubbles = b.items.map(it => {
+        const speaker = (it.speaker || "•").trim();
+        const cls = (speaker === "B") ? "b" : (speaker === "A" ? "a" : "n");
+
+        const label =
+          speaker === "A" ? "Locuteur A" :
+          speaker === "B" ? "Locuteur B" :
+          "Dialogue";
+
+        return `
+          <div class="bubble ${cls}">
+            <div class="meta"><span class="tag">${this.esc(speaker)}</span> ${this.esc(label)}</div>
+            <div class="sv">${this.esc(it.sv || "")}</div>
+            ${it.fr ? `<div class="fr">→ ${this.esc(it.fr)}</div>` : ""}
+            ${it.pron ? `<div class="pron">🔊 ${this.esc(it.pron)}</div>` : ""}
           </div>
-        `).join("");
-        return `<div class="breakdown">${rows}</div>`;
-      }
+        `;
+      }).join("");
+      return `<div class="dialogue">${bubbles}</div>`;
+    }
 
-      if (b.type === "p") return `<div class="sheet"><p>${this.esc(b.text)}</p></div>`;
-      return "";
-    }).join("\n");
+    if (b.type === "breakdown") {
+      const rows = b.rows.map(r => `
+        <div class="break-row">
+          <div class="break-sv">${this.esc(r.left)}</div>
+          <div class="break-fr">${this.esc(r.right)}</div>
+        </div>
+      `).join("");
+      return `<div class="breakdown">${rows}</div>`;
+    }
 
-    return `
-      <div class="card">
-        <div class="section-title"><span class="chip"></span><h2>Contenu</h2></div>
-        <div class="article">${renderBlocks}</div>
-      </div>
-    `;
-  },
+    if (b.type === "p") return `<div class="sheet"><p>${this.esc(b.text)}</p></div>`;
+    return "";
+  }).join("\n");
+
+  return `
+    <div class="card">
+      <div class="section-title"><span class="chip"></span><h2>Contenu</h2></div>
+      <div class="article">${renderBlocks}</div>
+    </div>
+  `;
+},
 
   // ===== Exemples =====
   renderExamples(examples) {
