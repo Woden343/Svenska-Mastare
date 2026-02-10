@@ -48,6 +48,69 @@ const App = {
     if (navReview)    navReview.addEventListener("click", () => Router.go("/review"));
     if (navStats)     navStats.addEventListener("click", () => Router.go("/stats"));
 
+    // ===== UI (dark mode + sidebar mobile + nav active) =====
+const root = document.documentElement;
+
+// Dark mode persisted
+try {
+  const saved = localStorage.getItem("sm_dark");
+  if (saved === "1") root.classList.add("dark");
+} catch {}
+
+const applyTheme = (isDark) => {
+  root.classList.toggle("dark", !!isDark);
+  try { localStorage.setItem("sm_dark", isDark ? "1" : "0"); } catch {}
+};
+
+const toggleTheme = () => applyTheme(!root.classList.contains("dark"));
+
+document.getElementById("themeToggle")?.addEventListener("click", toggleTheme);
+document.getElementById("themeToggleMobile")?.addEventListener("click", toggleTheme);
+
+// Mobile sidebar
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const openSidebar = (open) => {
+  if (!sidebar || !overlay) return;
+  sidebar.classList.toggle("open", !!open);
+  overlay.classList.toggle("show", !!open);
+};
+
+document.getElementById("menuBtn")?.addEventListener("click", () => openSidebar(true));
+overlay?.addEventListener("click", () => openSidebar(false));
+
+// Close sidebar on nav click (mobile)
+["nav-home-link", "nav-ref", "nav-review", "nav-stats"].forEach(id => {
+  document.getElementById(id)?.addEventListener("click", () => openSidebar(false));
+});
+
+// Active nav helper
+const setActiveNav = (key) => {
+  const map = {
+    home: "nav-home-link",
+    ref: "nav-ref",
+    review: "nav-review",
+    stats: "nav-stats",
+  };
+  const all = Object.values(map);
+  all.forEach(i => document.getElementById(i)?.classList.remove("is-active"));
+  const target = map[key] || map.home;
+  document.getElementById(target)?.classList.add("is-active");
+};
+
+// Inject into views (minimal)
+const _home = this.viewHome.bind(this);
+this.viewHome = () => { setActiveNav("home"); _home(); };
+
+const _ref = this.viewRef.bind(this);
+this.viewRef = () => { setActiveNav("ref"); _ref(); };
+
+const _review = this.viewReview.bind(this);
+this.viewReview = () => { setActiveNav("review"); _review(); };
+
+const _stats = this.viewStats.bind(this);
+this.viewStats = () => { setActiveNav("stats"); _stats(); };
+
     // Routes
     Router.add("/", () => this.viewHome());
     Router.add("/level", (params) => this.viewLevel(params));
